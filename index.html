@@ -1966,14 +1966,21 @@ function getOrderLock(){
   }
 }
 
-function saveOrderLock(order){
+function saveOrderLock(order,createdAt=Date.now()){
 
   try{
+
+    if(
+      !Number.isFinite(createdAt)||
+      createdAt<=0
+    ){
+      createdAt=Date.now();
+    }
 
     localStorage.setItem(
       ORDER_LOCK_KEY,
       JSON.stringify({
-        createdAt:Date.now(),
+        createdAt,
         order
       })
     );
@@ -2204,7 +2211,8 @@ function restoreOrderLock(){
     if(lock){
 
       saveOrderLock(
-        lock.order
+        lock.order,
+        lock.createdAt
       );
     }
   }
