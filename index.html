@@ -1,6 +1,4 @@
-from pathlib import Path
-
-html = r'''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -8,86 +6,1512 @@ html = r'''<!DOCTYPE html>
 <meta name="theme-color" content="#08090d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>AppCore</title>
+
 <style>
-:root{--bg:#08090d;--card:#12141b;--text:#fff;--muted:#8d93a3;--line:rgba(255,255,255,.08)}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{background:var(--bg)}
-body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0%,rgba(91,70,255,.13),transparent 32%),radial-gradient(circle at 100% 15%,rgba(0,200,255,.08),transparent 28%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;padding-bottom:150px}
-button,input{font:inherit} button{-webkit-appearance:none}
-.container{width:100%;max-width:920px;margin:auto;padding:18px 15px 30px}
-.header{margin-bottom:18px}.top{display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:11px}.brand-logo{width:43px;height:43px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:900;background:linear-gradient(135deg,#7557ff,#4b31d9);box-shadow:0 8px 28px rgba(93,65,255,.28)}
-.brand-title{font-size:20px;font-weight:800;letter-spacing:-.5px}.online{display:flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:20px;color:#b5bac7;font-size:12px}.online-dot{width:7px;height:7px;border-radius:50%;background:#37db7c;box-shadow:0 0 10px rgba(55,219,124,.7)}
-h1{margin:27px 0 7px;font-size:clamp(30px,8vw,44px);line-height:1;letter-spacing:-1.7px}.subtitle{max-width:650px;color:var(--muted);font-size:14px;line-height:1.5}
-.support-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding:13px 14px;border-radius:17px;background:linear-gradient(135deg,rgba(118,83,255,.14),rgba(0,180,255,.06));border:1px solid rgba(135,109,255,.2)}
-.support-top-text{font-size:13px;font-weight:750}.support-top-sub{margin-top:3px;color:#858c9a;font-size:11px}.support-button{flex:0 0 auto;border:0;border-radius:12px;padding:10px 13px;background:linear-gradient(135deg,#fff,#e9e9ee);color:#08090d;font-size:11px;font-weight:850;text-decoration:none}
-.discount-box{margin-top:18px;padding:15px;border-radius:18px;background:linear-gradient(135deg,rgba(118,83,255,.18),rgba(0,180,255,.08));border:1px solid rgba(135,109,255,.22);overflow:hidden;position:relative}.discount-box:after{content:"";position:absolute;width:130px;height:130px;right:-45px;top:-65px;border-radius:50%;background:rgba(110,80,255,.16);filter:blur(2px)}.discount-title,.discount-text{position:relative;z-index:1}.discount-title{font-size:14px;font-weight:800}.discount-text{margin-top:5px;color:#aeb4c4;font-size:12px;line-height:1.45}.discount-highlight{color:#b69cff;font-weight:800}
-.search-wrap{margin-top:17px;position:relative}.search{width:100%;height:49px;border:1px solid var(--line);border-radius:15px;background:rgba(18,20,27,.94);color:#fff;outline:none;padding:0 44px;font-size:14px}.search:focus{border-color:rgba(135,109,255,.4);box-shadow:0 0 0 3px rgba(117,83,255,.07)}.search::placeholder{color:#656b7a}.search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#858b99;font-size:20px;z-index:2}.clear{display:none;position:absolute;right:8px;top:7px;width:35px;height:35px;border:0;border-radius:10px;background:rgba(255,255,255,.06);color:#aeb4c0;cursor:pointer}
-.categories{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:13px 1px 3px}.categories::-webkit-scrollbar{display:none}.category{flex:0 0 auto;height:36px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.035);color:#9298a7;cursor:pointer;font-size:12px;font-weight:650}.category.active{color:#fff;border-color:rgba(126,98,255,.42);background:linear-gradient(135deg,rgba(110,77,255,.28),rgba(73,52,170,.2))}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}.app-card{min-height:165px;padding:14px;position:relative;overflow:hidden;cursor:pointer;border-radius:20px;border:1px solid rgba(255,255,255,.07);background:#12141a;transition:transform .18s,border-color .18s,box-shadow .18s}.app-card:before{content:"";position:absolute;width:110px;height:110px;right:-50px;top:-50px;border-radius:50%;background:var(--app-color);opacity:.13;filter:blur(3px)}.app-card:active{transform:scale(.975)}.app-card.selected{border-color:var(--app-color);box-shadow:0 0 0 1px var(--app-color),0 12px 35px rgba(0,0,0,.25)}
-.app-icon{position:relative;z-index:1;width:50px;height:50px;border-radius:15px;background:var(--app-gradient);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.22);padding:6px}.app-icon img{width:100%;height:100%;object-fit:contain;display:block}.fallback{color:#fff;font-size:16px;font-weight:900}
-.check{position:absolute;z-index:3;right:11px;top:11px;width:25px;height:25px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;color:transparent;font-size:13px;font-weight:900}.app-card.selected .check{color:#111;background:#fff;border-color:#fff}
-.app-name{position:relative;z-index:1;margin-top:13px;padding-right:22px;font-size:14px;font-weight:800;line-height:1.25}.app-type{position:relative;z-index:1;margin-top:5px;color:#777e8c;font-size:11px}
-.empty{display:none;padding:65px 20px;text-align:center}.empty.show{display:block}.empty-icon{width:52px;height:52px;margin:auto auto 13px;border-radius:17px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);color:#737a89;font-size:22px}.empty-title{font-size:16px;font-weight:800}.empty-text{margin-top:6px;color:#707785;font-size:13px}
-.bottom{position:fixed;z-index:20;left:0;right:0;bottom:0;padding:10px 14px calc(11px + env(safe-area-inset-bottom));background:linear-gradient(to top,rgba(8,9,13,1) 55%,rgba(8,9,13,.96) 76%,rgba(8,9,13,0))}.bottom-inner{width:100%;max-width:920px;margin:auto}.price-panel{display:none;margin-bottom:9px;padding:12px 14px;border-radius:17px;background:rgba(20,22,29,.97);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(20px)}.price-panel.visible{display:block}.price-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.price-label{color:#858c9a;font-size:12px}.price-value{color:#fff;font-size:13px;font-weight:700}.total-row{margin-top:7px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)}.total-row .price-label{color:#fff;font-weight:700}.total-row .price-value{font-size:17px}.sale{color:#55e18b!important}.continue{width:100%;height:52px;border:0;border-radius:16px;background:linear-gradient(135deg,#fff,#e9e9ee);color:#090a0e;font-size:15px;font-weight:850;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,.22)}.continue:disabled{opacity:.38;box-shadow:none}
-.toast{position:fixed;z-index:150;left:50%;bottom:155px;transform:translate(-50%,20px);max-width:calc(100% - 30px);padding:11px 15px;border-radius:13px;background:#242731;border:1px solid rgba(255,255,255,.09);color:#fff;font-size:13px;opacity:0;pointer-events:none;transition:.22s;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
-.payment-overlay,.confirm-overlay{position:fixed;z-index:100;inset:0;display:none;align-items:flex-end;justify-content:center;padding:15px;background:rgba(0,0,0,.68);backdrop-filter:blur(8px)}.payment-overlay.show,.confirm-overlay.show{display:flex}.payment-modal,.confirm-modal{width:100%;max-width:520px;max-height:90vh;overflow-y:auto;border-radius:24px;padding:20px;background:linear-gradient(145deg,#181b25,#101219);border:1px solid rgba(255,255,255,.1);box-shadow:0 25px 80px rgba(0,0,0,.55)}
-.payment-header,.confirm-header{display:flex;align-items:center;justify-content:space-between;gap:12px}.payment-title,.confirm-title{font-size:21px;font-weight:850}.payment-close,.confirm-close{width:38px;height:38px;border:0;border-radius:12px;background:rgba(255,255,255,.07);color:#fff;font-size:24px}.payment-subtitle,.confirm-text{margin-top:7px;color:#858c9a;font-size:13px;line-height:1.45}.confirm-icon{width:54px;height:54px;margin:2px 0 15px;border-radius:17px;display:flex;align-items:center;justify-content:center;background:rgba(255,193,7,.1);border:1px solid rgba(255,193,7,.16);font-size:25px}.confirm-buttons{display:flex;gap:9px;margin-top:18px}.confirm-cancel,.confirm-yes{flex:1;height:48px;border:0;border-radius:14px;font-size:13px;font-weight:850}.confirm-cancel{background:rgba(255,255,255,.07);color:#fff}.confirm-yes{background:linear-gradient(135deg,#fff,#e9e9ee);color:#08090d}
-.order-box,.requisite{margin-top:16px;padding:14px;border-radius:17px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07)}.order-title,.requisite-label{font-size:11px;color:#858c9a;margin-bottom:8px}.selected-apps{display:flex;flex-direction:column;gap:7px}.selected-app{display:flex;justify-content:space-between;gap:10px;font-size:13px}.selected-app-name{color:#fff}.selected-app-price{color:#858c9a}.payment-total{display:flex;justify-content:space-between;margin-top:11px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07)}.payment-total span:first-child{color:#858c9a}.payment-total span:last-child{font-size:18px;font-weight:850}.requisites-title{margin-top:20px;font-size:16px;font-weight:800}.requisite-value-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.requisite-value{color:#fff;font-size:14px;font-weight:750;word-break:break-word}.copy-button{border:0;border-radius:10px;padding:8px 10px;background:rgba(255,255,255,.08);color:#fff;font-size:11px}.phone-input{width:100%;height:43px;border:0;outline:none;background:transparent;color:#fff;font-size:14px;font-weight:750}.phone-input::placeholder{color:#656b7a}.payment-note{margin-top:13px;padding:12px;border-radius:14px;background:#ffd400;border:1px solid #ffd400;color:#fff;font-size:17px;font-weight:600;line-height:1.45}.payment-done{width:100%;height:48px;margin-top:15px;border:0;border-radius:14px;background:linear-gradient(135deg,#fff,#e9e9ee);color:#08090d;font-size:14px;font-weight:850}.payment-done:disabled{opacity:.5}
-.status-panel,.cancelled-panel,.install-panel{display:none;margin:18px 0;padding:17px;border-radius:19px;background:rgba(20,22,29,.97);border:1px solid rgba(255,255,255,.08)}.status-panel.show,.cancelled-panel.show,.install-panel.show{display:block}.status-title,.install-title{font-size:18px;font-weight:850}.status-text,.install-subtitle{margin-top:7px;color:#858c9a;font-size:13px;line-height:1.5}.order-number-display{margin-top:12px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.05);color:#bdaeff;font-size:13px;font-weight:800;word-break:break-word}.status-panel.focused{animation:statusFocus 2.2s ease;border-color:rgba(118,83,255,.75);box-shadow:0 0 0 2px rgba(118,83,255,.18),0 18px 55px rgba(91,70,255,.22)}
-@keyframes statusFocus{0%{transform:scale(.98);box-shadow:0 0 0 0 rgba(118,83,255,.55)}35%{transform:scale(1.015);box-shadow:0 0 0 6px rgba(118,83,255,.12),0 18px 55px rgba(91,70,255,.28)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(118,83,255,0),0 18px 45px rgba(0,0,0,.18)}}
-.status-support{margin-top:14px;padding:14px;border-radius:16px;background:rgba(118,83,255,.07);border:1px solid rgba(135,109,255,.14)}.status-support-title{font-size:13px;font-weight:850}.status-support-text{margin-top:5px;color:#858c9a;font-size:11px;line-height:1.45}.status-support-button{display:flex;width:100%;height:44px;margin-top:11px;align-items:center;justify-content:center;border-radius:12px;background:linear-gradient(135deg,#55e18b,#25b86c);color:#07110b;text-decoration:none;font-size:12px;font-weight:850}.new-order-button{width:100%;margin-top:14px;height:46px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.07);color:#fff;font-size:13px;font-weight:850;cursor:pointer}.new-order-button:active{transform:scale(.985)}.new-order-button:disabled{opacity:.4;cursor:not-allowed}
-.install-panel{border-color:rgba(55,219,124,.16)}.install-list{display:flex;flex-direction:column;gap:9px;margin-top:15px}.install-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07)}.install-name{color:#fff;font-size:13px;font-weight:750}.install-button{padding:9px 12px;border:0;border-radius:10px;background:linear-gradient(135deg,#fff,#e9e9ee);color:#08090d;font-size:11px;font-weight:850;text-decoration:none}.installed-button{width:100%;margin-top:14px;height:47px;border:0;border-radius:14px;background:linear-gradient(135deg,#55e18b,#25b86c);color:#07110b;font-size:13px;font-weight:850}.installed-button:disabled{opacity:.55}.activation-panel{display:none;margin-top:14px;padding:17px;border-radius:19px;background:linear-gradient(135deg,rgba(55,219,124,.08),rgba(118,83,255,.08));border:1px solid rgba(55,219,124,.18)}.activation-panel.show{display:block}.activation-text{margin-top:7px;color:#858c9a;font-size:13px;line-height:1.5}.activation-note{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,193,7,.035);border:1px solid rgba(255,193,7,.08);color:#777e8c;font-size:11px;line-height:1.45}.whatsapp-button{display:flex;width:100%;height:49px;margin-top:15px;align-items:center;justify-content:center;border:0;border-radius:14px;background:linear-gradient(135deg,#55e18b,#25b86c);color:#07110b;font-size:14px;font-weight:850;text-decoration:none}
-@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.payment-overlay,.confirm-overlay{align-items:center}}
-@media(max-width:380px){.container{padding-left:12px;padding-right:12px}.app-card{min-height:155px;padding:12px}.app-icon{width:46px;height:46px}.app-name{font-size:13px}.payment-modal,.confirm-modal{padding:16px}.support-top{align-items:flex-start;flex-direction:column}.support-button{width:100%;text-align:center}}
+:root{
+  --bg:#08090d;
+  --card:#12141b;
+  --text:#fff;
+  --muted:#8d93a3;
+  --line:rgba(255,255,255,.08);
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent
+}
+
+html{
+  background:var(--bg)
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 20% 0%,rgba(91,70,255,.13),transparent 32%),
+    radial-gradient(circle at 100% 15%,rgba(0,200,255,.08),transparent 28%),
+    var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
+  padding-bottom:150px
+}
+
+button,input{
+  font:inherit
+}
+
+button{
+  -webkit-appearance:none
+}
+
+.container{
+  width:100%;
+  max-width:920px;
+  margin:auto;
+  padding:18px 15px 30px
+}
+
+.header{
+  margin-bottom:18px
+}
+
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px
+}
+
+.brand-logo{
+  width:43px;
+  height:43px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+  font-weight:900;
+  background:linear-gradient(135deg,#7557ff,#4b31d9);
+  box-shadow:0 8px 28px rgba(93,65,255,.28)
+}
+
+.brand-title{
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.5px
+}
+
+.online{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 11px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.035);
+  border-radius:20px;
+  color:#b5bac7;
+  font-size:12px
+}
+
+.online-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#37db7c;
+  box-shadow:0 0 10px rgba(55,219,124,.7)
+}
+
+h1{
+  margin:27px 0 7px;
+  font-size:clamp(30px,8vw,44px);
+  line-height:1;
+  letter-spacing:-1.7px
+}
+
+.subtitle{
+  max-width:650px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5
+}
+
+.support-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:16px;
+  padding:13px 14px;
+  border-radius:17px;
+  background:linear-gradient(135deg,rgba(118,83,255,.14),rgba(0,180,255,.06));
+  border:1px solid rgba(135,109,255,.2)
+}
+
+.support-top-text{
+  font-size:13px;
+  font-weight:750
+}
+
+.support-top-sub{
+  margin-top:3px;
+  color:#858c9a;
+  font-size:11px
+}
+
+.support-button{
+  flex:0 0 auto;
+  border:0;
+  border-radius:12px;
+  padding:10px 13px;
+  background:linear-gradient(135deg,#fff,#e9e9ee);
+  color:#08090d;
+  font-size:11px;
+  font-weight:850;
+  text-decoration:none
+}
+
+.discount-box{
+  margin-top:18px;
+  padding:15px;
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(118,83,255,.18),rgba(0,180,255,.08));
+  border:1px solid rgba(135,109,255,.22);
+  overflow:hidden;
+  position:relative
+}
+
+.discount-box:after{
+  content:"";
+  position:absolute;
+  width:130px;
+  height:130px;
+  right:-45px;
+  top:-65px;
+  border-radius:50%;
+  background:rgba(110,80,255,.16);
+  filter:blur(2px)
+}
+
+.discount-title,
+.discount-text{
+  position:relative;
+  z-index:1
+}
+
+.discount-title{
+  font-size:14px;
+  font-weight:800
+}
+
+.discount-text{
+  margin-top:5px;
+  color:#aeb4c4;
+  font-size:12px;
+  line-height:1.45
+}
+
+.discount-highlight{
+  color:#b69cff;
+  font-weight:800
+}
+
+.search-wrap{
+  margin-top:17px;
+  position:relative
+}
+
+.search{
+  width:100%;
+  height:49px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:rgba(18,20,27,.94);
+  color:#fff;
+  outline:none;
+  padding:0 44px;
+  font-size:14px
+}
+
+.search:focus{
+  border-color:rgba(135,109,255,.4);
+  box-shadow:0 0 0 3px rgba(117,83,255,.07)
+}
+
+.search::placeholder{
+  color:#656b7a
+}
+
+.search-icon{
+  position:absolute;
+  left:15px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#858b99;
+  font-size:20px;
+  z-index:2
+}
+
+.clear{
+  display:none;
+  position:absolute;
+  right:8px;
+  top:7px;
+  width:35px;
+  height:35px;
+  border:0;
+  border-radius:10px;
+  background:rgba(255,255,255,.06);
+  color:#aeb4c0;
+  cursor:pointer
+}
+
+.categories{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding:13px 1px 3px
+}
+
+.categories::-webkit-scrollbar{
+  display:none
+}
+
+.category{
+  flex:0 0 auto;
+  height:36px;
+  padding:0 14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:rgba(255,255,255,.035);
+  color:#9298a7;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:650
+}
+
+.category.active{
+  color:#fff;
+  border-color:rgba(126,98,255,.42);
+  background:linear-gradient(135deg,rgba(110,77,255,.28),rgba(73,52,170,.2))
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-top:16px
+}
+
+.app-card{
+  min-height:165px;
+  padding:14px;
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.07);
+  background:#12141a;
+  transition:transform .18s,border-color .18s,box-shadow .18s
+}
+
+.app-card:before{
+  content:"";
+  position:absolute;
+  width:110px;
+  height:110px;
+  right:-50px;
+  top:-50px;
+  border-radius:50%;
+  background:var(--app-color);
+  opacity:.13;
+  filter:blur(3px)
+}
+
+.app-card:active{
+  transform:scale(.975)
+}
+
+.app-card.selected{
+  border-color:var(--app-color);
+  box-shadow:0 0 0 1px var(--app-color),0 12px 35px rgba(0,0,0,.25)
+}
+
+.app-icon{
+  position:relative;
+  z-index:1;
+  width:50px;
+  height:50px;
+  border-radius:15px;
+  background:var(--app-gradient);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  box-shadow:0 8px 20px rgba(0,0,0,.22)
+}
+
+.app-icon img{
+  width:100%;
+  height:100%;
+  object-fit:cover
+}
+
+.fallback{
+  color:#fff;
+  font-size:16px;
+  font-weight:900
+}
+
+.check{
+  position:absolute;
+  z-index:3;
+  right:11px;
+  top:11px;
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.22);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:transparent;
+  font-size:13px;
+  font-weight:900
+}
+
+.app-card.selected .check{
+  color:#111;
+  background:#fff;
+  border-color:#fff
+}
+
+.app-name{
+  position:relative;
+  z-index:1;
+  margin-top:13px;
+  padding-right:22px;
+  font-size:14px;
+  font-weight:800;
+  line-height:1.25
+}
+
+.app-type{
+  position:relative;
+  z-index:1;
+  margin-top:5px;
+  color:#777e8c;
+  font-size:11px
+}
+
+.empty{
+  display:none;
+  padding:65px 20px;
+  text-align:center
+}
+
+.empty.show{
+  display:block
+}
+
+.empty-icon{
+  width:52px;
+  height:52px;
+  margin:auto auto 13px;
+  border-radius:17px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.05);
+  color:#737a89;
+  font-size:22px
+}
+
+.empty-title{
+  font-size:16px;
+  font-weight:800
+}
+
+.empty-text{
+  margin-top:6px;
+  color:#707785;
+  font-size:13px
+}
+
+.bottom{
+  position:fixed;
+  z-index:20;
+  left:0;
+  right:0;
+  bottom:0;
+  padding:10px 14px calc(11px + env(safe-area-inset-bottom));
+  background:linear-gradient(to top,rgba(8,9,13,1) 55%,rgba(8,9,13,.96) 76%,rgba(8,9,13,0))
+}
+
+.bottom-inner{
+  width:100%;
+  max-width:920px;
+  margin:auto
+}
+
+.price-panel{
+  display:none;
+  margin-bottom:9px;
+  padding:12px 14px;
+  border-radius:17px;
+  background:rgba(20,22,29,.97);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(20px)
+}
+
+.price-panel.visible{
+  display:block
+}
+
+.price-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px
+}
+
+.price-label{
+  color:#858c9a;
+  font-size:12px
+}
+
+.price-value{
+  color:#fff;
+  font-size:13px;
+  font-weight:700
+}
+
+.total-row{
+  margin-top:7px;
+  padding-top:8px;
+  border-top:1px solid rgba(255,255,255,.06)
+}
+
+.total-row .price-label{
+  color:#fff;
+  font-weight:700
+}
+
+.total-row .price-value{
+  font-size:17px
+}
+
+.sale{
+  color:#55e18b!important
+}
+
+.continue{
+  width:100%;
+  height:52px;
+  border:0;
+  border-radius:16px;
+  background:linear-gradient(135deg,#fff,#e9e9ee);
+  color:#090a0e;
+  font-size:15px;
+  font-weight:850;
+  cursor:pointer;
+  box-shadow:0 8px 25px rgba(0,0,0,.22)
+}
+
+.continue:disabled{
+  opacity:.38;
+  box-shadow:none
+}
+
+.toast{
+  position:fixed;
+  z-index:150;
+  left:50%;
+  bottom:155px;
+  transform:translate(-50%,20px);
+  max-width:calc(100% - 30px);
+  padding:11px 15px;
+  border-radius:13px;
+  background:#242731;
+  border:1px solid rgba(255,255,255,.09);
+  color:#fff;
+  font-size:13px;
+  opacity:0;
+  pointer-events:none;
+  transition:.22s;
+  white-space:nowrap
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0)
+}
+
+.payment-overlay,
+.confirm-overlay{
+  position:fixed;
+  z-index:100;
+  inset:0;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:15px;
+  background:rgba(0,0,0,.68);
+  backdrop-filter:blur(8px)
+}
+
+.payment-overlay.show,
+.confirm-overlay.show{
+  display:flex
+}
+
+.payment-modal,
+.confirm-modal{
+  width:100%;
+  max-width:520px;
+  max-height:90vh;
+  overflow-y:auto;
+  border-radius:24px;
+  padding:20px;
+  background:linear-gradient(145deg,#181b25,#101219);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 25px 80px rgba(0,0,0,.55)
+}
+
+.payment-header,
+.confirm-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px
+}
+
+.payment-title,
+.confirm-title{
+  font-size:21px;
+  font-weight:850
+}
+
+.payment-close,
+.confirm-close{
+  width:38px;
+  height:38px;
+  border:0;
+  border-radius:12px;
+  background:rgba(255,255,255,.07);
+  color:#fff;
+  font-size:24px
+}
+
+.payment-subtitle,
+.confirm-text{
+  margin-top:7px;
+  color:#858c9a;
+  font-size:13px;
+  line-height:1.45
+}
+
+.confirm-icon{
+  width:54px;
+  height:54px;
+  margin:2px 0 15px;
+  border-radius:17px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,193,7,.1);
+  border:1px solid rgba(255,193,7,.16);
+  font-size:25px
+}
+
+.confirm-buttons{
+  display:flex;
+  gap:9px;
+  margin-top:18px
+}
+
+.confirm-cancel,
+.confirm-yes{
+  flex:1;
+  height:48px;
+  border:0;
+  border-radius:14px;
+  font-size:13px;
+  font-weight:850
+}
+
+.confirm-cancel{
+  background:rgba(255,255,255,.07);
+  color:#fff
+}
+
+.confirm-yes{
+  background:linear-gradient(135deg,#fff,#e9e9ee);
+  color:#08090d
+}
+
+.order-box,
+.requisite{
+  margin-top:16px;
+  padding:14px;
+  border-radius:17px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.07)
+}
+
+.order-title,
+.requisite-label{
+  font-size:11px;
+  color:#858c9a;
+  margin-bottom:8px
+}
+
+.selected-apps{
+  display:flex;
+  flex-direction:column;
+  gap:7px
+}
+
+.selected-app{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:13px
+}
+
+.selected-app-name{
+  color:#fff
+}
+
+.selected-app-price{
+  color:#858c9a
+}
+
+.payment-total{
+  display:flex;
+  justify-content:space-between;
+  margin-top:11px;
+  padding-top:10px;
+  border-top:1px solid rgba(255,255,255,.07)
+}
+
+.payment-total span:first-child{
+  color:#858c9a
+}
+
+.payment-total span:last-child{
+  font-size:18px;
+  font-weight:850
+}
+
+.requisites-title{
+  margin-top:20px;
+  font-size:16px;
+  font-weight:800
+}
+
+.requisite-value-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px
+}
+
+.requisite-value{
+  color:#fff;
+  font-size:14px;
+  font-weight:750;
+  word-break:break-word
+}
+
+.copy-button{
+  border:0;
+  border-radius:10px;
+  padding:8px 10px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  font-size:11px
+}
+
+.phone-input{
+  width:100%;
+  height:43px;
+  border:0;
+  outline:none;
+  background:transparent;
+  color:#fff;
+  font-size:14px;
+  font-weight:750
+}
+
+.phone-input::placeholder{
+  color:#656b7a
+}
+
+.payment-note{
+  margin-top:13px;
+  padding:12px;
+  border-radius:14px;
+  background:#ffd400;
+  border:1px solid #ffd400;
+  color:#fff;
+  font-size:17px;
+  font-weight:600;
+  line-height:1.45
+}
+
+.payment-done{
+  width:100%;
+  height:48px;
+  margin-top:15px;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#fff,#e9e9ee);
+  color:#08090d;
+  font-size:14px;
+  font-weight:850
+}
+
+.payment-done:disabled{
+  opacity:.5
+}
+
+.status-panel,
+.cancelled-panel,
+.install-panel{
+  display:none;
+  margin:18px 0;
+  padding:17px;
+  border-radius:19px;
+  background:rgba(20,22,29,.97);
+  border:1px solid rgba(255,255,255,.08)
+}
+
+.status-panel.show,
+.cancelled-panel.show,
+.install-panel.show{
+  display:block
+}
+
+.status-title,
+.install-title{
+  font-size:18px;
+  font-weight:850
+}
+
+.status-text,
+.install-subtitle{
+  margin-top:7px;
+  color:#858c9a;
+  font-size:13px;
+  line-height:1.5
+}
+
+.order-number-display{
+  margin-top:12px;
+  padding:11px 12px;
+  border-radius:12px;
+  background:rgba(255,255,255,.05);
+  color:#bdaeff;
+  font-size:13px;
+  font-weight:800;
+  word-break:break-word
+}
+
+.status-panel.focused{
+  animation:statusFocus 2.2s ease;
+  border-color:rgba(118,83,255,.75);
+  box-shadow:
+    0 0 0 2px rgba(118,83,255,.18),
+    0 18px 55px rgba(91,70,255,.22)
+}
+
+@keyframes statusFocus{
+  0%{
+    transform:scale(.98);
+    box-shadow:0 0 0 0 rgba(118,83,255,.55)
+  }
+
+  35%{
+    transform:scale(1.015);
+    box-shadow:
+      0 0 0 6px rgba(118,83,255,.12),
+      0 18px 55px rgba(91,70,255,.28)
+  }
+
+  100%{
+    transform:scale(1);
+    box-shadow:
+      0 0 0 0 rgba(118,83,255,0),
+      0 18px 45px rgba(0,0,0,.18)
+  }
+}
+
+.status-support{
+  margin-top:14px;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(118,83,255,.07);
+  border:1px solid rgba(135,109,255,.14)
+}
+
+.status-support-title{
+  font-size:13px;
+  font-weight:850
+}
+
+.status-support-text{
+  margin-top:5px;
+  color:#858c9a;
+  font-size:11px;
+  line-height:1.45
+}
+
+.status-support-button{
+  display:flex;
+  width:100%;
+  height:44px;
+  margin-top:11px;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background:linear-gradient(135deg,#55e18b,#25b86c);
+  color:#07110b;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:850
+}
+
+.new-order-button{
+  width:100%;
+  margin-top:14px;
+  height:46px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  background:rgba(255,255,255,.07);
+  color:#fff;
+  font-size:13px;
+  font-weight:850;
+  cursor:pointer
+}
+
+.new-order-button:active{
+  transform:scale(.985)
+}
+
+.new-order-button:disabled{
+  opacity:.4;
+  cursor:not-allowed
+}
+
+.install-panel{
+  border-color:rgba(55,219,124,.16)
+}
+
+.install-list{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  margin-top:15px
+}
+
+.install-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:11px 12px;
+  border-radius:14px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.07)
+}
+
+.install-name{
+  color:#fff;
+  font-size:13px;
+  font-weight:750
+}
+
+.install-button{
+  padding:9px 12px;
+  border:0;
+  border-radius:10px;
+  background:linear-gradient(135deg,#fff,#e9e9ee);
+  color:#08090d;
+  font-size:11px;
+  font-weight:850;
+  text-decoration:none
+}
+
+.installed-button{
+  width:100%;
+  margin-top:14px;
+  height:47px;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#55e18b,#25b86c);
+  color:#07110b;
+  font-size:13px;
+  font-weight:850
+}
+
+.installed-button:disabled{
+  opacity:.55
+}
+
+.activation-panel{
+  display:none;
+  margin-top:14px;
+  padding:17px;
+  border-radius:19px;
+  background:linear-gradient(135deg,rgba(55,219,124,.08),rgba(118,83,255,.08));
+  border:1px solid rgba(55,219,124,.18)
+}
+
+.activation-panel.show{
+  display:block
+}
+
+.activation-text{
+  margin-top:7px;
+  color:#858c9a;
+  font-size:13px;
+  line-height:1.5
+}
+
+.activation-note{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:rgba(255,193,7,.035);
+  border:1px solid rgba(255,193,7,.08);
+  color:#777e8c;
+  font-size:11px;
+  line-height:1.45
+}
+
+.whatsapp-button{
+  display:flex;
+  width:100%;
+  height:49px;
+  margin-top:15px;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#55e18b,#25b86c);
+  color:#07110b;
+  font-size:14px;
+  font-weight:850;
+  text-decoration:none
+}
+
+@media(min-width:650px){
+  .grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))
+  }
+
+  .payment-overlay,
+  .confirm-overlay{
+    align-items:center
+  }
+}
+
+@media(max-width:380px){
+  .container{
+    padding-left:12px;
+    padding-right:12px
+  }
+
+  .app-card{
+    min-height:155px;
+    padding:12px
+  }
+
+  .app-icon{
+    width:46px;
+    height:46px
+  }
+
+  .app-name{
+    font-size:13px
+  }
+
+  .payment-modal,
+  .confirm-modal{
+    padding:16px
+  }
+
+  .support-top{
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+  .support-button{
+    width:100%;
+    text-align:center
+  }
+}
 </style>
 </head>
+
 <body>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 const SUPABASE_URL="https://dkgipfotfjntlhabakns.supabase.co";
 const SUPABASE_KEY="sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const supabaseClient=window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 </script>
 
 <div class="container">
-<header class="header">
-<div class="top"><div class="brand"><div class="brand-logo">A</div><div class="brand-title">AppCore</div></div><div class="online"><span class="online-dot"></span>Доступно</div></div>
-<div class="support-top"><div><div class="support-top-text">🛠️ Техническая поддержка</div><div class="support-top-sub">Проблема или нужна помощь?</div></div><a id="supportTopButton" class="support-button" href="#" target="_blank" rel="noopener noreferrer">Написать</a></div>
-<h1>Что установить?</h1>
-<div class="subtitle">Выберите одно или несколько приложений. Мы подготовим установку дистанционно.</div>
-<div class="discount-box"><div class="discount-title">🎁 Чем больше приложений — тем больше скидка</div><div class="discount-text">1 приложение — без скидки · 2 — <span class="discount-highlight">5%</span> · 3 — <span class="discount-highlight">10%</span> · 4 — <span class="discount-highlight">15%</span> · 5+ — <span class="discount-highlight">20%</span></div></div>
-<div class="search-wrap"><span class="search-icon">⌕</span><input id="search" class="search" type="search" placeholder="Поиск приложения…" autocomplete="off" autocorrect="off" spellcheck="false"><button id="clear" class="clear" type="button">×</button></div>
-<div class="categories" id="categories"><button class="category active" data-category="all">Все</button><button class="category" data-category="finance">Банки и инвестиции</button><button class="category" data-category="social">Социальные</button><button class="category" data-category="useful">Сервисы</button></div>
-</header>
 
-<div id="statusPanel" class="status-panel"><div class="status-title" id="statusTitle">⏳ Заказ принят</div><div class="status-text" id="statusText">Ожидайте проверки оплаты. После подтверждения оплаты приложения будут доступны для установки.</div><div class="order-number-display" id="orderNumberDisplay"></div><div class="status-support"><div class="status-support-title">Если статус долго не обновляется</div><div class="status-support-text">Нажмите кнопку ниже — номер заказа и данные клиента будут автоматически добавлены в сообщение.</div><a id="statusSupportButton" class="status-support-button" href="#" target="_blank" rel="noopener noreferrer">💬 Перейти в поддержку</a></div><button id="newOrderStatusButton" class="new-order-button" type="button">🔄 Новый заказ</button></div>
-<div id="cancelledPanel" class="cancelled-panel"><div class="status-title">❌ Заказ отменён</div><div class="status-text">Если это произошло по ошибке, создайте новый заказ.</div><div class="order-number-display" id="cancelledOrderNumber"></div><button id="newOrderCancelledButton" class="new-order-button" type="button">🔄 Новый заказ</button></div>
-<div id="installPanel" class="install-panel"><div class="install-title">✅ Оплата подтверждена</div><div class="install-subtitle">После подтверждения оплаты приложения доступны для установки. Нажмите «Установить» рядом с каждым приложением.</div><div id="installList" class="install-list"></div><button id="installedButton" class="installed-button" type="button">👉 Я установил все приложения → продолжить</button><div class="activation-note">⚠️ Приложения пока не работают.<br>После установки нажмите кнопку выше, чтобы перейти к активации.</div><div id="activationPanel" class="activation-panel"><div class="activation-text">✅ Приложения установлены.<br>Нажмите кнопку ниже, чтобы получить инструкцию по активации.</div><a id="activationWhatsapp" class="whatsapp-button" href="#" target="_blank" rel="noopener noreferrer">💬 Получить инструкцию в WhatsApp</a></div><button id="newOrderInstallButton" class="new-order-button" type="button">🔄 Новый заказ</button></div>
-<main id="appList"></main><div id="empty" class="empty"><div class="empty-icon">⌕</div><div class="empty-title">Ничего не найдено</div><div class="empty-text">Попробуйте изменить запрос или категорию.</div></div>
+<header class="header">
+
+<div class="top">
+  <div class="brand">
+    <div class="brand-logo">A</div>
+    <div class="brand-title">AppCore</div>
+  </div>
+
+  <div class="online">
+    <span class="online-dot"></span>
+    Доступно
+  </div>
 </div>
 
-<div class="bottom"><div class="bottom-inner"><div id="pricePanel" class="price-panel"><div class="price-row"><span class="price-label">Приложений</span><span id="count" class="price-value">0</span></div><div class="price-row"><span class="price-label">Сумма</span><span id="original" class="price-value">0 ₽</span></div><div class="price-row"><span class="price-label">Скидка</span><span id="discount" class="price-value sale">0%</span></div><div class="price-row total-row"><span class="price-label">Итого</span><span id="total" class="price-value">0 ₽</span></div></div><button id="continue" class="continue" disabled>Выберите приложение</button></div></div>
+<div class="support-top">
+  <div>
+    <div class="support-top-text">🛠️ Техническая поддержка</div>
+    <div class="support-top-sub">Проблема или нужна помощь?</div>
+  </div>
 
-<div id="paymentOverlay" class="payment-overlay"><div class="payment-modal"><div class="payment-header"><div class="payment-title">Оплата заказа</div><button id="paymentClose" class="payment-close" type="button">×</button></div><div class="payment-subtitle">Проверьте выбранные приложения и переведите указанную сумму по реквизитам ниже.</div><div class="order-box"><div class="order-title">ВАШ ЗАКАЗ</div><div id="selectedApps" class="selected-apps"></div><div class="payment-total"><span>К оплате</span><span id="paymentTotal">0 ₽</span></div></div><div class="requisites-title">Контакт для заказа</div><div class="requisite"><div class="requisite-label">Номер телефона</div><div class="requisite-value-row"><input id="phoneInput" class="phone-input" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00"></div></div><div class="requisites-title">Реквизиты для оплаты</div><div class="requisite"><div class="requisite-label">Получатель</div><div class="requisite-value-row"><div class="requisite-value">Мурат Межидов М</div><button class="copy-button" data-copy="Мурат Межидов М" type="button">Копировать</button></div></div><div class="requisite"><div class="requisite-label">Телефон / СБП</div><div class="requisite-value-row"><div class="requisite-value">+79289480706</div><button class="copy-button" data-copy="+79289480706" type="button">Копировать</button></div></div><div class="requisite"><div class="requisite-label">Банк</div><div class="requisite-value-row"><div class="requisite-value">Т-Банк</div><button class="copy-button" data-copy="Т-Банк" type="button">Копировать</button></div></div><div class="payment-note">⚠️ После перевода нажмите «Я оплатил». После этого будет выполнена проверка оплаты.</div><button id="paymentDone" class="payment-done" type="button">Я оплатил</button></div></div>
+  <a
+    id="supportTopButton"
+    class="support-button"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+  >Написать</a>
+</div>
 
-<div id="confirmOverlay" class="confirm-overlay"><div class="confirm-modal"><div class="confirm-icon">⚠️</div><div class="confirm-header"><div class="confirm-title">Новый заказ</div><button id="confirmClose" class="confirm-close" type="button">×</button></div><div class="confirm-text">Вы уверены, что хотите начать новый заказ? Текущий заказ останется сохранённым в системе, но на этой странице вы начнёте оформление нового заказа.</div><div class="confirm-buttons"><button id="confirmCancel" class="confirm-cancel" type="button">Отмена</button><button id="confirmYes" class="confirm-yes" type="button">Да, новый заказ</button></div></div></div>
+<h1>Что установить?</h1>
+
+<div class="subtitle">
+  Выберите одно или несколько приложений.
+  Мы подготовим установку дистанционно.
+</div>
+
+<div class="discount-box">
+  <div class="discount-title">
+    🎁 Чем больше приложений — тем больше скидка
+  </div>
+
+  <div class="discount-text">
+    1 приложение — без скидки ·
+    2 — <span class="discount-highlight">5%</span> ·
+    3 — <span class="discount-highlight">10%</span> ·
+    4 — <span class="discount-highlight">15%</span> ·
+    5+ — <span class="discount-highlight">20%</span>
+  </div>
+</div>
+
+<div class="search-wrap">
+  <span class="search-icon">⌕</span>
+
+  <input
+    id="search"
+    class="search"
+    type="search"
+    placeholder="Поиск приложения…"
+    autocomplete="off"
+    autocorrect="off"
+    spellcheck="false"
+  >
+
+  <button id="clear" class="clear" type="button">×</button>
+</div>
+
+<div class="categories" id="categories">
+  <button class="category active" data-category="all">Все</button>
+  <button class="category" data-category="finance">Банки и инвестиции</button>
+  <button class="category" data-category="social">Социальные</button>
+  <button class="category" data-category="useful">Сервисы</button>
+</div>
+
+</header>
+
+<div id="statusPanel" class="status-panel">
+
+  <div class="status-title" id="statusTitle">
+    ⏳ Заказ принят
+  </div>
+
+  <div class="status-text" id="statusText">
+    Ожидайте проверки оплаты. После подтверждения оплаты приложения будут доступны для установки.
+  </div>
+
+  <div class="order-number-display" id="orderNumberDisplay"></div>
+
+  <div class="status-support">
+
+    <div class="status-support-title">
+      Если статус долго не обновляется
+    </div>
+
+    <div class="status-support-text">
+      Нажмите кнопку ниже — номер заказа и данные клиента будут автоматически добавлены в сообщение.
+    </div>
+
+    <a
+      id="statusSupportButton"
+      class="status-support-button"
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      💬 Перейти в поддержку
+    </a>
+
+  </div>
+
+  <button
+    id="newOrderStatusButton"
+    class="new-order-button"
+    type="button"
+  >
+    🔄 Новый заказ
+  </button>
+
+</div>
+
+<div id="cancelledPanel" class="cancelled-panel">
+
+  <div class="status-title">
+    ❌ Заказ отменён
+  </div>
+
+  <div class="status-text">
+    Если это произошло по ошибке, создайте новый заказ.
+  </div>
+
+  <div class="order-number-display" id="cancelledOrderNumber"></div>
+
+  <button
+    id="newOrderCancelledButton"
+    class="new-order-button"
+    type="button"
+  >
+    🔄 Новый заказ
+  </button>
+
+</div>
+
+<div id="installPanel" class="install-panel">
+
+  <div class="install-title">
+    ✅ Оплата подтверждена
+  </div>
+
+  <div class="install-subtitle">
+    После подтверждения оплаты приложения доступны для установки.
+    Нажмите «Установить» рядом с каждым приложением.
+  </div>
+
+  <div id="installList" class="install-list"></div>
+
+  <button
+    id="installedButton"
+    class="installed-button"
+    type="button"
+  >
+    👉 Я установил все приложения → продолжить
+  </button>
+
+  <div class="activation-note">
+    ⚠️ Приложения пока не работают.<br>
+    После установки нажмите кнопку выше, чтобы перейти к активации.
+  </div>
+
+  <div id="activationPanel" class="activation-panel">
+
+    <div class="activation-text">
+      ✅ Приложения установлены.<br>
+      Нажмите кнопку ниже, чтобы получить инструкцию по активации.
+    </div>
+
+    <a
+      id="activationWhatsapp"
+      class="whatsapp-button"
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      💬 Получить инструкцию в WhatsApp
+    </a>
+
+  </div>
+
+  <button
+    id="newOrderInstallButton"
+    class="new-order-button"
+    type="button"
+  >
+    🔄 Новый заказ
+  </button>
+
+</div>
+
+<main id="appList"></main>
+
+<div id="empty" class="empty">
+  <div class="empty-icon">⌕</div>
+  <div class="empty-title">Ничего не найдено</div>
+  <div class="empty-text">
+    Попробуйте изменить запрос или категорию.
+  </div>
+</div>
+
+</div>
+
+<div class="bottom">
+<div class="bottom-inner">
+
+<div id="pricePanel" class="price-panel">
+
+  <div class="price-row">
+    <span class="price-label">Приложений</span>
+    <span id="count" class="price-value">0</span>
+  </div>
+
+  <div class="price-row">
+    <span class="price-label">Сумма</span>
+    <span id="original" class="price-value">0 ₽</span>
+  </div>
+
+  <div class="price-row">
+    <span class="price-label">Скидка</span>
+    <span id="discount" class="price-value sale">0%</span>
+  </div>
+
+  <div class="price-row total-row">
+    <span class="price-label">Итого</span>
+    <span id="total" class="price-value">0 ₽</span>
+  </div>
+
+</div>
+
+<button id="continue" class="continue" disabled>
+  Выберите приложение
+</button>
+
+</div>
+</div>
+
+<div id="paymentOverlay" class="payment-overlay">
+
+<div class="payment-modal">
+
+<div class="payment-header">
+  <div class="payment-title">Оплата заказа</div>
+  <button id="paymentClose" class="payment-close" type="button">×</button>
+</div>
+
+<div class="payment-subtitle">
+  Проверьте выбранные приложения и переведите
+  указанную сумму по реквизитам ниже.
+</div>
+
+<div class="order-box">
+
+<div class="order-title">ВАШ ЗАКАЗ</div>
+
+<div id="selectedApps" class="selected-apps"></div>
+
+<div class="payment-total">
+  <span>К оплате</span>
+  <span id="paymentTotal">0 ₽</span>
+</div>
+
+</div>
+
+<div class="requisites-title">Контакт для заказа</div>
+
+<div class="requisite">
+
+  <div class="requisite-label">
+    Номер телефона
+  </div>
+
+  <div class="requisite-value-row">
+
+    <input
+      id="phoneInput"
+      class="phone-input"
+      type="tel"
+      inputmode="tel"
+      autocomplete="tel"
+      placeholder="+7 900 000-00-00"
+    >
+
+  </div>
+
+</div>
+
+<div class="requisites-title">
+  Реквизиты для оплаты
+</div>
+
+<div class="requisite">
+
+  <div class="requisite-label">
+    Получатель
+  </div>
+
+  <div class="requisite-value-row">
+    <div class="requisite-value">
+      Мурат Межидов М
+    </div>
+
+    <button
+      class="copy-button"
+      data-copy="Мурат Межидов М"
+      type="button"
+    >
+      Копировать
+    </button>
+  </div>
+
+</div>
+
+<div class="requisite">
+
+  <div class="requisite-label">
+    Телефон / СБП
+  </div>
+
+  <div class="requisite-value-row">
+    <div class="requisite-value">
+      +79289480706
+    </div>
+
+    <button
+      class="copy-button"
+      data-copy="+79289480706"
+      type="button"
+    >
+      Копировать
+    </button>
+  </div>
+
+</div>
+
+<div class="requisite">
+
+  <div class="requisite-label">
+    Банк
+  </div>
+
+  <div class="requisite-value-row">
+    <div class="requisite-value">
+      Т-Банк
+    </div>
+
+    <button
+      class="copy-button"
+      data-copy="Т-Банк"
+      type="button"
+    >
+      Копировать
+    </button>
+  </div>
+
+</div>
+
+<div class="payment-note">
+  ⚠️ После перевода нажмите «Я оплатил». После этого будет выполнена проверка оплаты.
+</div>
+
+<button id="paymentDone" class="payment-done" type="button">
+  Я оплатил
+</button>
+
+</div>
+</div>
+
+<div id="confirmOverlay" class="confirm-overlay">
+
+  <div class="confirm-modal">
+
+    <div class="confirm-icon">
+      ⚠️
+    </div>
+
+    <div class="confirm-header">
+      <div class="confirm-title">
+        Новый заказ
+      </div>
+
+      <button
+        id="confirmClose"
+        class="confirm-close"
+        type="button"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="confirm-text">
+      Вы уверены, что хотите начать новый заказ?
+      Текущий заказ останется сохранённым в системе,
+      но на этой странице вы начнёте оформление нового заказа.
+    </div>
+
+    <div class="confirm-buttons">
+
+      <button
+        id="confirmCancel"
+        class="confirm-cancel"
+        type="button"
+      >
+        Отмена
+      </button>
+
+      <button
+        id="confirmYes"
+        class="confirm-yes"
+        type="button"
+      >
+        Да, новый заказ
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
 <div id="toast" class="toast"></div>
 
 <script>
 "use strict";
-const PRICE=500,ORDER_LOCK_KEY="appcore_order_lock",CLIENT_ORDER_KEY="appcore_client_order",CLIENT_ORDER_TIME_KEY="appcore_client_order_time",INSTALLED_ORDER_KEY="appcore_installed_order",ORDER_LOCK_TIME=12*60*60*1000,WHATSAPP_NUMBER="79289480706";
 
-/* Официальные/брендовые графические знаки. Все изображения вписываются в квадрат через object-fit:contain без растяжения. */
+const PRICE=500;
+
+const ORDER_LOCK_KEY="appcore_order_lock";
+const CLIENT_ORDER_KEY="appcore_client_order";
+const CLIENT_ORDER_TIME_KEY="appcore_client_order_time";
+const INSTALLED_ORDER_KEY="appcore_installed_order";
+
+/*
+ * Один клиент может оформить новый заказ
+ * только через 12 часов после создания предыдущего.
+ */
+const ORDER_LOCK_TIME=12*60*60*1000;
+
+const WHATSAPP_NUMBER="79289480706";
+
 const apps=[
 {id:"sberbank",name:"Сбербанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#21a366",gradient:"linear-gradient(135deg,#25b86c,#08783e)",install:"https://installios.ru/apps/Huo4uP"},
 {id:"sber-invest",name:"СберИнвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#18a765",gradient:"linear-gradient(135deg,#2ac979,#087c46)",install:"https://installios.ru/apps/xCMK2b"},
-{id:"tbank",name:"Т-Банк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/tbank/000000",color:"#ffd500",gradient:"#f9df55",install:"https://installios.ru/apps/NQAqoO",logoBg:"#f9df55"},
-{id:"t-invest",name:"Т-Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/tbank/000000",color:"#f3ca00",gradient:"#f9df55",install:"https://installios.ru/apps/rOxSmd",logoBg:"#f9df55"},
+{id:"tbank",name:"Т-Банк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/tbank",color:"#ffd500",gradient:"linear-gradient(135deg,#ffe33e,#e7b900)",install:"https://installios.ru/apps/NQAqoO"},
+{id:"t-invest",name:"Т-Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/tbank",color:"#f3ca00",gradient:"linear-gradient(135deg,#ffe64a,#d9a900)",install:"https://installios.ru/apps/rOxSmd"},
 {id:"alfa",name:"Альфа-Банк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/alfabank",color:"#ef3124",gradient:"linear-gradient(135deg,#ff5145,#c70d09)",install:"https://installios.ru/apps/rOqtjI"},
 {id:"alfa-invest",name:"Альфа-Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/alfabank",color:"#e93027",gradient:"linear-gradient(135deg,#ff5b4f,#bb1009)",install:"https://installios.ru/apps/NqXG8Z"},
-{id:"vtb",name:"ВТБ",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#009fdf",gradient:"linear-gradient(135deg,#19b9f0,#0a2973)",install:"https://installios.ru/apps/gzPg3N",logoBg:"#fff"},
-{id:"vtb-invest",name:"ВТБ Мои Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#1a82ed",gradient:"linear-gradient(135deg,#19b9f0,#0a2973)",install:"https://installios.ru/apps/1ttQGQ",logoBg:"#fff"},
+{id:"vtb",name:"ВТБ",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#1685ff",gradient:"linear-gradient(135deg,#36a4ff,#0757d9)",install:"https://installios.ru/apps/gzPg3N"},
+{id:"vtb-invest",name:"ВТБ Мои Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#1a82ed",gradient:"linear-gradient(135deg,#3ca8ff,#0a4fc2)",install:"https://installios.ru/apps/1ttQGQ"},
 {id:"gazprom",name:"Газпромбанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/gazprombank",color:"#3b78ff",gradient:"linear-gradient(135deg,#55a1ff,#154bc9)",install:"https://installios.ru/apps/fQOdHa"},
 {id:"gazprom-invest",name:"Газпромбанк Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/gazprombank",color:"#3673ff",gradient:"linear-gradient(135deg,#58a9ff,#164ac8)",install:"https://installios.ru/apps/GKOngE"},
 {id:"rshb",name:"Россельхозбанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/rosselkhozbank",color:"#48a93f",gradient:"linear-gradient(135deg,#6bd35c,#1e7427)",install:"https://installios.ru/apps/z7363T"},
@@ -105,59 +1529,1927 @@ const apps=[
 {id:"chatgpt",name:"ChatGPT",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/openai",color:"#10a37f",gradient:"linear-gradient(135deg,#20c997,#087c60)",install:"https://installios.ru/apps/ux5YKb"}
 ];
 
-let selected=new Set(),currentCategory="all",query="",currentOrder=null,isCreatingOrder=false,statusTimer=null,lockTimer=null,toastTimer=null;
+let selected=new Set();
+let currentCategory="all";
+let query="";
+let currentOrder=null;
+let isCreatingOrder=false;
+let statusTimer=null;
+let lockTimer=null;
+let toastTimer=null;
+
 const $=id=>document.getElementById(id);
-const appList=$("appList"),empty=$("empty"),search=$("search"),clear=$("clear"),categories=$("categories"),pricePanel=$("pricePanel"),countEl=$("count"),originalEl=$("original"),discountEl=$("discount"),totalEl=$("total"),continueButton=$("continue"),toast=$("toast"),paymentOverlay=$("paymentOverlay"),paymentClose=$("paymentClose"),paymentDone=$("paymentDone"),selectedApps=$("selectedApps"),paymentTotal=$("paymentTotal"),phoneInput=$("phoneInput"),statusPanel=$("statusPanel"),statusTitle=$("statusTitle"),statusText=$("statusText"),orderNumberDisplay=$("orderNumberDisplay"),installPanel=$("installPanel"),installList=$("installList"),installedButton=$("installedButton"),activationPanel=$("activationPanel"),activationWhatsapp=$("activationWhatsapp"),supportTopButton=$("supportTopButton"),statusSupportButton=$("statusSupportButton"),cancelledPanel=$("cancelledPanel"),cancelledOrderNumber=$("cancelledOrderNumber"),newOrderStatusButton=$("newOrderStatusButton"),newOrderInstallButton=$("newOrderInstallButton"),newOrderCancelledButton=$("newOrderCancelledButton"),confirmOverlay=$("confirmOverlay"),confirmClose=$("confirmClose"),confirmCancel=$("confirmCancel"),confirmYes=$("confirmYes");
 
-function getDiscount(c){return c>=5?20:c===4?15:c===3?10:c===2?5:0}
-function calculatePrice(c){const original=c*PRICE,discountPercent=getDiscount(c),discountAmount=original*discountPercent/100;return{original,discountPercent,discountAmount,total:original-discountAmount}}
-function money(v){return Math.round(v).toLocaleString("ru-RU")+" ₽"}
-function initials(n){const w=n.replace(/[^а-яА-Яa-zA-Z0-9\s]/g,"").trim().split(/\s+/);return w.length>=2?(w[0][0]+w[1][0]).toUpperCase():n.replace(/[^а-яА-Яa-zA-Z0-9]/g,"").substring(0,2).toUpperCase()}
-function updatePrice(){const c=selected.size;if(!c){pricePanel.classList.remove("visible");countEl.textContent="0";originalEl.textContent="0 ₽";discountEl.textContent="0%";totalEl.textContent="0 ₽";continueButton.disabled=true;continueButton.textContent="Выберите приложение";return}const p=calculatePrice(c);pricePanel.classList.add("visible");countEl.textContent=c;originalEl.textContent=money(p.original);discountEl.textContent=p.discountPercent+"%";totalEl.textContent=money(p.total);continueButton.disabled=false;continueButton.textContent="Продолжить · "+money(p.total)}
-function render(){const q=query.trim().toLowerCase(),filtered=apps.filter(a=>(currentCategory==="all"||a.category===currentCategory)&&(!q||a.name.toLowerCase().includes(q)||a.type.toLowerCase().includes(q)));appList.innerHTML="";if(!filtered.length){empty.classList.add("show");return}empty.classList.remove("show");const grid=document.createElement("div");grid.className="grid";filtered.forEach(app=>{const card=document.createElement("div");card.className="app-card";if(selected.has(app.id))card.classList.add("selected");card.style.setProperty("--app-color",app.color);card.style.setProperty("--app-gradient",app.gradient);const check=document.createElement("div");check.className="check";check.textContent="✓";const icon=document.createElement("div");icon.className="app-icon";if(app.logoBg)icon.style.background=app.logoBg;const fallback=document.createElement("span");fallback.className="fallback";fallback.textContent=initials(app.name);icon.appendChild(fallback);if(app.logo){const img=document.createElement("img");img.src=app.logo;img.alt=app.name;img.loading="lazy";img.onload=()=>fallback.style.display="none";img.onerror=()=>img.remove();icon.appendChild(img)}const name=document.createElement("div");name.className="app-name";name.textContent=app.name;const type=document.createElement("div");type.className="app-type";type.textContent=app.type;card.append(check,icon,name,type);card.addEventListener("click",()=>{if(currentOrder){showToast("Сначала завершите текущий заказ.");return}selected.has(app.id)?selected.delete(app.id):selected.add(app.id);render();updatePrice()});grid.appendChild(card)});appList.appendChild(grid)}
-function showToast(m){toast.textContent=m;toast.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove("show"),3000)}
-function generateOrderNumber(){const n=new Date();return`AC-${String(n.getFullYear()).slice(-2)}${String(n.getMonth()+1).padStart(2,"0")}${String(n.getDate()).padStart(2,"0")}-${Math.floor(1000+Math.random()*9000)}`}
-function normalizePhone(v){return v.replace(/[^\d+]/g,"").trim()} function isValidPhone(p){const d=p.replace(/\D/g,"");return d.length>=10&&d.length<=15}
-function isValidSavedOrder(o){if(!o||typeof o!=="object"||typeof o.order_number!=="string"||!o.order_number.trim()||typeof o.client_phone!=="string"||!isValidPhone(o.client_phone)||!Array.isArray(o.apps)||o.apps.length<1||o.apps.length>apps.length)return false;const ids=o.apps.map(a=>a&&a.id);return !ids.some(id=>typeof id!=="string")&&new Set(ids).size===ids.length&&ids.every(id=>apps.some(a=>a.id===id))&&Array.isArray(o.app_ids)&&o.app_ids.length===ids.length&&!o.app_ids.some(id=>!ids.includes(id))&&typeof o.total==="number"&&Number.isFinite(o.total)&&o.total>=0}
-function markAppsInstalled(o){try{localStorage.setItem(INSTALLED_ORDER_KEY,o.order_number)}catch(e){}}
-function isAppsInstalled(o){try{return localStorage.getItem(INSTALLED_ORDER_KEY)===o.order_number}catch(e){return false}}
-function getOrderLock(){try{const s=localStorage.getItem(ORDER_LOCK_KEY);if(!s)return null;const d=JSON.parse(s);if(!d||typeof d.createdAt!=="number"||!d.order||!isValidSavedOrder(d.order)){localStorage.removeItem(ORDER_LOCK_KEY);return null}const age=Date.now()-d.createdAt;if(age<0||age>=ORDER_LOCK_TIME){localStorage.removeItem(ORDER_LOCK_KEY);return null}return d}catch(e){try{localStorage.removeItem(ORDER_LOCK_KEY)}catch(x){}return null}}
-function saveOrderLock(o,t=Date.now()){try{localStorage.setItem(ORDER_LOCK_KEY,JSON.stringify({createdAt:t,order:o}));return true}catch(e){return false}}
-function saveClientOrder(o,t=Date.now()){try{localStorage.setItem(CLIENT_ORDER_KEY,JSON.stringify(o));localStorage.setItem(CLIENT_ORDER_TIME_KEY,String(t));return true}catch(e){return false}}
-function getClientOrder(){try{const s=localStorage.getItem(CLIENT_ORDER_KEY);if(!s)return null;const o=JSON.parse(s);return isValidSavedOrder(o)?o:null}catch(e){return null}}
-function getClientOrderFallback(){try{const s=localStorage.getItem(CLIENT_ORDER_KEY),t=Number(localStorage.getItem(CLIENT_ORDER_TIME_KEY));if(!s||!Number.isFinite(t)||t<=0)return null;const age=Date.now()-t;if(age<0||age>=ORDER_LOCK_TIME)return null;const o=JSON.parse(s);return isValidSavedOrder(o)?{createdAt:t,order:o}:null}catch(e){return null}}
-function clearOrderStorage(){try{[ORDER_LOCK_KEY,CLIENT_ORDER_KEY,CLIENT_ORDER_TIME_KEY,INSTALLED_ORDER_KEY].forEach(k=>localStorage.removeItem(k))}catch(e){}}
-function resetExpiredOrder(){if(statusTimer){clearInterval(statusTimer);statusTimer=null}clearTimeout(lockTimer);lockTimer=null;currentOrder=null;selected.clear();statusPanel.classList.remove("show");cancelledPanel.classList.remove("show");installPanel.classList.remove("show");activationPanel.classList.remove("show");clearOrderStorage();render();updatePrice();updateWhatsAppLinks();showToast("12 часов прошли — можно создать новый заказ.")}
-function restoreOrderLock(){let lock=getOrderLock();if(!lock){lock=getClientOrderFallback();if(lock)saveOrderLock(lock.order,lock.createdAt)}if(!lock){currentOrder=null;if(statusTimer){clearInterval(statusTimer);statusTimer=null}return}currentOrder=lock.order;clearTimeout(lockTimer);const remaining=ORDER_LOCK_TIME-(Date.now()-lock.createdAt);if(remaining<=0){resetExpiredOrder();return}lockTimer=setTimeout(resetExpiredOrder,remaining)}
-function openNewOrderConfirmation(){confirmOverlay.classList.add("show");document.body.style.overflow="hidden"}function closeNewOrderConfirmation(){confirmOverlay.classList.remove("show");document.body.style.overflow=""}
-function startNewOrder(){if(statusTimer){clearInterval(statusTimer);statusTimer=null}clearTimeout(lockTimer);lockTimer=null;currentOrder=null;selected.clear();isCreatingOrder=false;clearOrderStorage();statusPanel.classList.remove("show");cancelledPanel.classList.remove("show");installPanel.classList.remove("show");activationPanel.classList.remove("show");paymentOverlay.classList.remove("show");phoneInput.value="";document.body.style.overflow="";render();updatePrice();updateWhatsAppLinks();closeNewOrderConfirmation();window.scrollTo({top:0,behavior:"smooth"});showToast("Готово. Можно создать новый заказ.")}
-function getSafeSelectedApps(){const c=selected.size;if(!Number.isInteger(c)||c<1||c>apps.length)return null;const list=apps.filter(a=>selected.has(a.id));return list.length===c?list:null}
-function openPaymentModal(){if(currentOrder){showToast("Заказ уже создан. Ожидайте проверки.");return}const list=getSafeSelectedApps();if(!list){selected.clear();render();updatePrice();showToast("Некорректное количество приложений");return}paymentTotal.textContent=money(calculatePrice(list.length).total);selectedApps.innerHTML="";list.forEach(a=>{const r=document.createElement("div");r.className="selected-app";const n=document.createElement("span");n.className="selected-app-name";n.textContent=a.name;const p=document.createElement("span");p.className="selected-app-price";p.textContent=money(PRICE);r.append(n,p);selectedApps.appendChild(r)});paymentOverlay.classList.add("show");document.body.style.overflow="hidden"}
-function closePaymentModal(){paymentOverlay.classList.remove("show");document.body.style.overflow=""}
-function humanStatus(s){return s==="paid"?"Оплата подтверждена":s==="completed"?"Заказ выполнен":s==="cancelled"?"Заказ отменён":"Ожидает проверки оплаты"}
-function buildWhatsAppMessage(type){const o=currentOrder||getClientOrder();if(type==="support"||type==="status"){return o?`Здравствуйте!\n\n${type==="support"?"Мне нужна техническая поддержка.":"Не обновляется статус заказа."}\n\nНомер заказа: ${o.order_number}\nТелефон клиента: ${o.client_phone}\nПриложения: ${(o.apps||[]).map(a=>a.name).join(", ")||"—"}\nИсходная сумма: ${money(o.original||0)}\nСкидка: ${money(o.discount||0)}\nКоличество приложений: ${(o.apps||[]).length}\nСумма заказа: ${money(o.total||0)}\nСтатус: ${humanStatus(o.status)}\n\nПожалуйста, проверьте мой заказ.`:`Здравствуйте!\n\nМне нужна техническая поддержка.\n\nЗаказ ещё не создан.`}return o?`Здравствуйте!\n\nХочу активировать приложения.\n\nНомер заказа: ${o.order_number}\nТелефон клиента: ${o.client_phone}\nПриложения: ${(o.apps||[]).map(a=>a.name).join(", ")}\nСумма заказа: ${money(o.total||0)}\nСтатус: Оплата подтверждена\n\nВсе приложения установлены.`:"Здравствуйте!\n\nХочу активировать приложения.\n\nЗаказ ещё не найден."}
+const appList=$("appList");
+const empty=$("empty");
+const search=$("search");
+const clear=$("clear");
+const categories=$("categories");
+const pricePanel=$("pricePanel");
+const countEl=$("count");
+const originalEl=$("original");
+const discountEl=$("discount");
+const totalEl=$("total");
+const continueButton=$("continue");
+const toast=$("toast");
+
+const paymentOverlay=$("paymentOverlay");
+const paymentClose=$("paymentClose");
+const paymentDone=$("paymentDone");
+const selectedApps=$("selectedApps");
+const paymentTotal=$("paymentTotal");
+const phoneInput=$("phoneInput");
+
+const statusPanel=$("statusPanel");
+const statusTitle=$("statusTitle");
+const statusText=$("statusText");
+const orderNumberDisplay=$("orderNumberDisplay");
+
+const installPanel=$("installPanel");
+const installList=$("installList");
+const installedButton=$("installedButton");
+const activationPanel=$("activationPanel");
+const activationWhatsapp=$("activationWhatsapp");
+
+const supportTopButton=$("supportTopButton");
+const statusSupportButton=$("statusSupportButton");
+
+const cancelledPanel=$("cancelledPanel");
+const cancelledOrderNumber=$("cancelledOrderNumber");
+
+const newOrderStatusButton=$("newOrderStatusButton");
+const newOrderInstallButton=$("newOrderInstallButton");
+const newOrderCancelledButton=$("newOrderCancelledButton");
+
+const confirmOverlay=$("confirmOverlay");
+const confirmClose=$("confirmClose");
+const confirmCancel=$("confirmCancel");
+const confirmYes=$("confirmYes");
+
+function getDiscount(count){
+  if(count>=5)return 20;
+  if(count===4)return 15;
+  if(count===3)return 10;
+  if(count===2)return 5;
+  return 0;
 }
-function updateWhatsAppLinks(){supportTopButton.href="https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(buildWhatsAppMessage("support"));statusSupportButton.href="https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(buildWhatsAppMessage("status"));activationWhatsapp.href="https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(buildWhatsAppMessage("activation"))}
-async function createOrder(){if(currentOrder){closePaymentModal();showToast("Заказ уже создан. Ожидайте проверки.");return true}if(isCreatingOrder)return false;const phone=normalizePhone(phoneInput.value);if(!isValidPhone(phone)){showToast("Введите корректный номер телефона");phoneInput.focus();return false}const list=getSafeSelectedApps();if(!list){showToast("Некорректное количество приложений");return false}const p=calculatePrice(list.length),order={order_number:generateOrderNumber(),client_phone:phone,app_ids:list.map(a=>a.id),apps:list.map(a=>({id:a.id,name:a.name,type:a.type})),original:Math.round(p.original),discount:Math.round(p.discountAmount),free_apps:0,total:Math.round(p.total),status:"awaiting_review"};if(!isValidSavedOrder(order)){showToast("Не удалось проверить данные заказа");return false}isCreatingOrder=true;paymentDone.disabled=true;paymentDone.textContent="Сохраняем заказ…";try{const {error}=await supabaseClient.from("orders").insert([order]);if(error){showToast("Ошибка Supabase: "+(error.message||"неизвестная ошибка"));return false}const t=Date.now();currentOrder=order;saveOrderLock(order,t);saveClientOrder(order,t);closePaymentModal();selected.clear();render();updatePrice();showOrderStatus(order,true);startStatusChecking();updateWhatsAppLinks();showToast("Заказ "+order.order_number+" создан");return true}catch(e){showToast("Ошибка соединения с сервером");return false}finally{isCreatingOrder=false;paymentDone.disabled=false;paymentDone.textContent="Я оплатил"}}
-function showOrderStatus(o,autoScroll=false){statusPanel.classList.add("show");installPanel.classList.remove("show");cancelledPanel.classList.remove("show");statusTitle.textContent="⏳ Заказ принят";statusText.textContent="Ожидайте проверки оплаты. После подтверждения оплаты приложения будут доступны для установки.";orderNumberDisplay.textContent="Номер заказа: "+o.order_number;updateWhatsAppLinks();if(autoScroll)setTimeout(()=>{statusPanel.scrollIntoView({behavior:"smooth",block:"center"});statusPanel.classList.remove("focused");void statusPanel.offsetWidth;statusPanel.classList.add("focused");setTimeout(()=>statusPanel.classList.remove("focused"),2300)},120)}
-function renderInstallPanel(o){statusPanel.classList.remove("show");cancelledPanel.classList.remove("show");installPanel.classList.add("show");installList.innerHTML="";(o.apps||[]).forEach(oa=>{const a=apps.find(x=>x.id===oa.id);if(!a)return;const item=document.createElement("div"),name=document.createElement("div"),link=document.createElement("a");item.className="install-item";name.className="install-name";name.textContent=a.name;link.className="install-button";link.href=a.install;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Установить";item.append(name,link);installList.appendChild(item)});if(isAppsInstalled(o)){installedButton.disabled=true;installedButton.textContent="✅ Приложения установлены";activationPanel.classList.add("show")}else{installedButton.disabled=false;installedButton.textContent="👉 Я установил все приложения → продолжить";activationPanel.classList.remove("show")}updateWhatsAppLinks()}
-function renderCancelled(o){statusPanel.classList.remove("show");installPanel.classList.remove("show");cancelledPanel.classList.add("show");cancelledOrderNumber.textContent="Заказ: "+o.order_number;updateWhatsAppLinks()}
-async function checkOrderStatus(){const o=currentOrder;if(!o||!isValidSavedOrder(o))return;try{const {data,error}=await supabaseClient.rpc("get_client_order_status",{p_order_number:o.order_number,p_client_phone:o.client_phone});if(error||!data||!data.length)return;const s=data[0],updated={...o,status:s.status,apps:Array.isArray(s.apps)&&s.apps.length?s.apps:o.apps};if(!isValidSavedOrder(updated))return;let t=Date.now();try{const l=JSON.parse(localStorage.getItem(ORDER_LOCK_KEY)||"null");if(l&&typeof l.createdAt==="number")t=l.createdAt;else{const x=Number(localStorage.getItem(CLIENT_ORDER_TIME_KEY));if(Number.isFinite(x)&&x>0)t=x}}catch(e){}saveClientOrder(updated,t);currentOrder=updated;saveOrderLock(updated,t);updateWhatsAppLinks();if(s.status==="awaiting_review")showOrderStatus(updated);else if(s.status==="paid"||s.status==="completed")renderInstallPanel(updated);else if(s.status==="cancelled")renderCancelled(updated)}catch(e){}}
-function startStatusChecking(){if(!currentOrder)return;if(statusTimer)clearInterval(statusTimer);checkOrderStatus();statusTimer=setInterval(checkOrderStatus,7000)}
 
-continueButton.addEventListener("click",openPaymentModal);paymentClose.addEventListener("click",closePaymentModal);paymentOverlay.addEventListener("click",e=>{if(e.target===paymentOverlay)closePaymentModal()});confirmClose.addEventListener("click",closeNewOrderConfirmation);confirmCancel.addEventListener("click",closeNewOrderConfirmation);confirmYes.addEventListener("click",startNewOrder);confirmOverlay.addEventListener("click",e=>{if(e.target===confirmOverlay)closeNewOrderConfirmation()});
-[newOrderStatusButton,newOrderInstallButton,newOrderCancelledButton].forEach(b=>b.addEventListener("click",openNewOrderConfirmation));
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closePaymentModal();closeNewOrderConfirmation()}});
-document.querySelectorAll(".copy-button").forEach(b=>b.addEventListener("click",async()=>{const v=b.dataset.copy;try{await navigator.clipboard.writeText(v)}catch(e){}const old=b.textContent;b.textContent="Скопировано";setTimeout(()=>b.textContent=old,1500)}));
-search.addEventListener("input",()=>{query=search.value;clear.style.display=query?"block":"none";render()});clear.addEventListener("click",()=>{search.value="";query="";clear.style.display="none";search.focus();render()});
-categories.addEventListener("click",e=>{const b=e.target.closest(".category");if(!b)return;document.querySelectorAll(".category").forEach(x=>x.classList.remove("active"));b.classList.add("active");currentCategory=b.dataset.category;render()});
-paymentDone.addEventListener("click",createOrder);installedButton.addEventListener("click",()=>{if(!currentOrder)return;markAppsInstalled(currentOrder);installedButton.disabled=true;installedButton.textContent="✅ Приложения установлены";activationPanel.classList.add("show");updateWhatsAppLinks();showToast("Готово! Теперь можно перейти в WhatsApp.")});
-function initTelegram(){if(window.Telegram&&window.Telegram.WebApp)try{const tg=window.Telegram.WebApp;tg.ready();tg.expand();tg.setHeaderColor&&tg.setHeaderColor("#08090d");tg.setBackgroundColor&&tg.setBackgroundColor("#08090d")}catch(e){}}
-restoreOrderLock();if(currentOrder)startStatusChecking();render();updatePrice();updateWhatsAppLinks();initTelegram();
+function calculatePrice(count){
+
+  const original=count*PRICE;
+  const discountPercent=getDiscount(count);
+  const discountAmount=original*discountPercent/100;
+
+  return{
+    original,
+    discountPercent,
+    discountAmount,
+    total:original-discountAmount
+  };
+}
+
+function money(value){
+  return Math.round(value).toLocaleString("ru-RU")+" ₽";
+}
+
+function initials(name){
+
+  const words=name
+    .replace(/[^а-яА-Яa-zA-Z0-9\s]/g,"")
+    .trim()
+    .split(/\s+/);
+
+  if(words.length>=2){
+    return(words[0][0]+words[1][0]).toUpperCase();
+  }
+
+  return name
+    .replace(/[^а-яА-Яa-zA-Z0-9]/g,"")
+    .substring(0,2)
+    .toUpperCase();
+}
+
+function updatePrice(){
+
+  const count=selected.size;
+
+  if(!count){
+
+    pricePanel.classList.remove("visible");
+
+    countEl.textContent="0";
+    originalEl.textContent="0 ₽";
+    discountEl.textContent="0%";
+    totalEl.textContent="0 ₽";
+
+    continueButton.disabled=true;
+    continueButton.textContent="Выберите приложение";
+
+    return;
+  }
+
+  const price=calculatePrice(count);
+
+  pricePanel.classList.add("visible");
+
+  countEl.textContent=count;
+  originalEl.textContent=money(price.original);
+  discountEl.textContent=price.discountPercent+"%";
+  totalEl.textContent=money(price.total);
+
+  continueButton.disabled=false;
+  continueButton.textContent="Продолжить · "+money(price.total);
+}
+
+function render(){
+
+  const searchText=query.trim().toLowerCase();
+  const hasSearch=searchText.length>0;
+
+  const filtered=apps.filter(app=>{
+
+    const categoryOk=
+      currentCategory==="all"||
+      app.category===currentCategory;
+
+    const searchOk=
+      !hasSearch||
+      app.name.toLowerCase().includes(searchText)||
+      app.type.toLowerCase().includes(searchText);
+
+    return categoryOk&&searchOk;
+  });
+
+  appList.innerHTML="";
+
+  if(!filtered.length){
+
+    empty.classList.add("show");
+    return;
+  }
+
+  empty.classList.remove("show");
+
+  const grid=document.createElement("div");
+  grid.className="grid";
+
+  filtered.forEach(app=>{
+
+    const card=document.createElement("div");
+    card.className="app-card";
+
+    if(selected.has(app.id)){
+      card.classList.add("selected");
+    }
+
+    card.style.setProperty("--app-color",app.color);
+    card.style.setProperty("--app-gradient",app.gradient);
+
+    const check=document.createElement("div");
+    check.className="check";
+    check.textContent="✓";
+
+    const icon=document.createElement("div");
+    icon.className="app-icon";
+
+    const fallback=document.createElement("span");
+    fallback.className="fallback";
+    fallback.textContent=initials(app.name);
+
+    icon.appendChild(fallback);
+
+    if(app.logo){
+
+      const img=document.createElement("img");
+
+      img.src=app.logo;
+      img.alt="";
+
+      img.onload=()=>{
+        fallback.style.display="none";
+      };
+
+      img.onerror=()=>{
+        img.remove();
+      };
+
+      icon.appendChild(img);
+    }
+
+    const name=document.createElement("div");
+    name.className="app-name";
+    name.textContent=app.name;
+
+    const type=document.createElement("div");
+    type.className="app-type";
+    type.textContent=app.type;
+
+    card.append(check,icon,name,type);
+
+    card.addEventListener("click",()=>{
+
+      if(currentOrder){
+
+        showToast("Сначала завершите текущий заказ.");
+        return;
+      }
+
+      selected.has(app.id)
+        ?selected.delete(app.id)
+        :selected.add(app.id);
+
+      render();
+      updatePrice();
+    });
+
+    grid.appendChild(card);
+  });
+
+  appList.appendChild(grid);
+}
+
+function showToast(message){
+
+  toast.textContent=message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer=setTimeout(()=>{
+    toast.classList.remove("show");
+  },3000);
+}
+
+function generateOrderNumber(){
+
+  const now=new Date();
+
+  const year=String(now.getFullYear()).slice(-2);
+  const month=String(now.getMonth()+1).padStart(2,"0");
+  const day=String(now.getDate()).padStart(2,"0");
+  const random=Math.floor(1000+Math.random()*9000);
+
+  return`AC-${year}${month}${day}-${random}`;
+}
+
+function normalizePhone(value){
+  return value.replace(/[^\d+]/g,"").trim();
+}
+
+function isValidPhone(phone){
+
+  const digits=phone.replace(/\D/g,"");
+
+  return digits.length>=10&&digits.length<=15;
+}
+
+/*
+ * Проверяем, что сохранённый заказ действительно
+ * соответствует структуре нашего приложения.
+ */
+function isValidSavedOrder(order){
+
+  if(!order||typeof order!=="object"){
+    return false;
+  }
+
+  if(
+    typeof order.order_number!=="string"||
+    !order.order_number.trim()
+  ){
+    return false;
+  }
+
+  if(
+    typeof order.client_phone!=="string"||
+    !isValidPhone(order.client_phone)
+  ){
+    return false;
+  }
+
+  if(
+    !Array.isArray(order.apps)||
+    order.apps.length<1||
+    order.apps.length>apps.length
+  ){
+    return false;
+  }
+
+  const ids=order.apps.map(app=>app&&app.id);
+
+  if(
+    ids.some(id=>typeof id!=="string")||
+    new Set(ids).size!==ids.length
+  ){
+    return false;
+  }
+
+  if(
+    ids.some(id=>!apps.some(app=>app.id===id))
+  ){
+    return false;
+  }
+
+  if(
+    !Array.isArray(order.app_ids)||
+    order.app_ids.length!==order.apps.length
+  ){
+    return false;
+  }
+
+  if(
+    order.app_ids.some(id=>!ids.includes(id))
+  ){
+    return false;
+  }
+
+  if(
+    typeof order.total!=="number"||
+    !Number.isFinite(order.total)||
+    order.total<0
+  ){
+    return false;
+  }
+
+  return true;
+}
+
+function markAppsInstalled(order){
+
+  try{
+
+    localStorage.setItem(
+      INSTALLED_ORDER_KEY,
+      order.order_number
+    );
+
+  }catch(error){
+
+    console.log(
+      "Installed state save error:",
+      error
+    );
+  }
+}
+
+function isAppsInstalled(order){
+
+  try{
+
+    return localStorage.getItem(
+      INSTALLED_ORDER_KEY
+    )===order.order_number;
+
+  }catch(error){
+
+    return false;
+  }
+}
+
+function getOrderLock(){
+
+  try{
+
+    const saved=
+      localStorage.getItem(
+        ORDER_LOCK_KEY
+      );
+
+    if(!saved)return null;
+
+    const data=JSON.parse(saved);
+
+    if(
+      !data||
+      typeof data.createdAt!=="number"||
+      !Number.isFinite(data.createdAt)||
+      !data.order||
+      !isValidSavedOrder(data.order)
+    ){
+
+      localStorage.removeItem(
+        ORDER_LOCK_KEY
+      );
+
+      return null;
+    }
+
+    const age=Date.now()-data.createdAt;
+
+    if(
+      age<0||
+      age>=ORDER_LOCK_TIME
+    ){
+
+      localStorage.removeItem(
+        ORDER_LOCK_KEY
+      );
+
+      return null;
+    }
+
+    return data;
+
+  }catch(error){
+
+    console.log(
+      "Order lock restore error:",
+      error
+    );
+
+    try{
+      localStorage.removeItem(
+        ORDER_LOCK_KEY
+      );
+    }catch(e){}
+
+    return null;
+  }
+}
+
+function saveOrderLock(order,createdAt=Date.now()){
+
+  try{
+
+    if(
+      !Number.isFinite(createdAt)||
+      createdAt<=0
+    ){
+      createdAt=Date.now();
+    }
+
+    localStorage.setItem(
+      ORDER_LOCK_KEY,
+      JSON.stringify({
+        createdAt,
+        order
+      })
+    );
+
+    return true;
+
+  }catch(error){
+
+    console.log(
+      "Order lock save error:",
+      error
+    );
+
+    return false;
+  }
+}
+
+function saveClientOrder(order,createdAt=Date.now()){
+
+  try{
+
+    localStorage.setItem(
+      CLIENT_ORDER_KEY,
+      JSON.stringify(order)
+    );
+
+    localStorage.setItem(
+      CLIENT_ORDER_TIME_KEY,
+      String(createdAt)
+    );
+
+    return true;
+
+  }catch(error){
+
+    console.log(
+      "Client order save error:",
+      error
+    );
+
+    return false;
+  }
+}
+
+function getClientOrder(){
+
+  try{
+
+    const saved=
+      localStorage.getItem(
+        CLIENT_ORDER_KEY
+      );
+
+    if(!saved)return null;
+
+    const order=JSON.parse(saved);
+
+    if(!isValidSavedOrder(order)){
+      return null;
+    }
+
+    return order;
+
+  }catch(error){
+
+    return null;
+  }
+}
+
+/*
+ * Дополнительное восстановление через CLIENT_ORDER_KEY.
+ * Используется только если запись ещё находится
+ * внутри 12-часового периода.
+ */
+function getClientOrderFallback(){
+
+  try{
+
+    const saved=
+      localStorage.getItem(
+        CLIENT_ORDER_KEY
+      );
+
+    const savedTime=
+      localStorage.getItem(
+        CLIENT_ORDER_TIME_KEY
+      );
+
+    if(!saved||!savedTime){
+      return null;
+    }
+
+    const createdAt=
+      Number(savedTime);
+
+    if(
+      !Number.isFinite(createdAt)||
+      createdAt<=0
+    ){
+      return null;
+    }
+
+    const age=Date.now()-createdAt;
+
+    if(
+      age<0||
+      age>=ORDER_LOCK_TIME
+    ){
+      localStorage.removeItem(
+        CLIENT_ORDER_KEY
+      );
+
+      localStorage.removeItem(
+        CLIENT_ORDER_TIME_KEY
+      );
+
+      return null;
+    }
+
+    const order=JSON.parse(saved);
+
+    if(!isValidSavedOrder(order)){
+      return null;
+    }
+
+    return{
+      createdAt,
+      order
+    };
+
+  }catch(error){
+
+    console.log(
+      "Client order fallback error:",
+      error
+    );
+
+    return null;
+  }
+}
+
+function clearOrderStorage(){
+
+  try{
+    localStorage.removeItem(
+      ORDER_LOCK_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_TIME_KEY
+    );
+
+    localStorage.removeItem(
+      INSTALLED_ORDER_KEY
+    );
+
+  }catch(error){
+
+    console.log(
+      "Storage clear error:",
+      error
+    );
+  }
+}
+
+function resetExpiredOrder(){
+
+  if(statusTimer){
+
+    clearInterval(statusTimer);
+    statusTimer=null;
+  }
+
+  clearTimeout(lockTimer);
+  lockTimer=null;
+
+  currentOrder=null;
+  selected.clear();
+
+  statusPanel.classList.remove("show");
+  cancelledPanel.classList.remove("show");
+  installPanel.classList.remove("show");
+  activationPanel.classList.remove("show");
+
+  try{
+    localStorage.removeItem(
+      ORDER_LOCK_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_TIME_KEY
+    );
+
+    localStorage.removeItem(
+      INSTALLED_ORDER_KEY
+    );
+  }catch(error){}
+
+  render();
+  updatePrice();
+  updateWhatsAppLinks();
+
+  showToast(
+    "12 часов прошли — можно создать новый заказ."
+  );
+}
+
+function restoreOrderLock(){
+
+  let lock=getOrderLock();
+
+  /*
+   * Если основная запись отсутствует,
+   * пробуем восстановить заказ из резервной записи.
+   */
+  if(!lock){
+
+    lock=getClientOrderFallback();
+
+    if(lock){
+
+      saveOrderLock(
+        lock.order,
+        lock.createdAt
+      );
+    }
+  }
+
+  if(!lock){
+
+    currentOrder=null;
+
+    if(statusTimer){
+
+      clearInterval(statusTimer);
+      statusTimer=null;
+    }
+
+    return;
+  }
+
+  if(!isValidSavedOrder(lock.order)){
+
+    resetExpiredOrder();
+    return;
+  }
+
+  currentOrder=lock.order;
+
+  clearTimeout(lockTimer);
+
+  const elapsed=
+    Date.now()-lock.createdAt;
+
+  const remaining=
+    ORDER_LOCK_TIME-elapsed;
+
+  if(remaining<=0){
+
+    resetExpiredOrder();
+    return;
+  }
+
+  lockTimer=setTimeout(()=>{
+
+    resetExpiredOrder();
+
+  },remaining);
+}
+
+function openNewOrderConfirmation(){
+
+  confirmOverlay.classList.add("show");
+
+  document.body.style.overflow="hidden";
+}
+
+function closeNewOrderConfirmation(){
+
+  confirmOverlay.classList.remove("show");
+
+  document.body.style.overflow="";
+}
+
+function startNewOrder(){
+
+  if(statusTimer){
+
+    clearInterval(statusTimer);
+    statusTimer=null;
+  }
+
+  clearTimeout(lockTimer);
+  lockTimer=null;
+
+  currentOrder=null;
+  selected.clear();
+  isCreatingOrder=false;
+
+  clearOrderStorage();
+
+  statusPanel.classList.remove("show");
+  cancelledPanel.classList.remove("show");
+  installPanel.classList.remove("show");
+  activationPanel.classList.remove("show");
+
+  paymentOverlay.classList.remove("show");
+
+  phoneInput.value="";
+
+  document.body.style.overflow="";
+
+  render();
+  updatePrice();
+  updateWhatsAppLinks();
+
+  closeNewOrderConfirmation();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+  showToast(
+    "Готово. Можно создать новый заказ."
+  );
+}
+
+/*
+ * Возвращает только безопасный список выбранных приложений.
+ */
+function getSafeSelectedApps(){
+
+  const count=Number(selected.size);
+
+  if(
+    !Number.isInteger(count)||
+    count<1||
+    count>apps.length
+  ){
+    return null;
+  }
+
+  const selectedList=
+    apps.filter(app=>selected.has(app.id));
+
+  if(
+    selectedList.length!==count||
+    selectedList.length<1||
+    selectedList.length>apps.length
+  ){
+    return null;
+  }
+
+  const ids=
+    selectedList.map(app=>app.id);
+
+  if(
+    new Set(ids).size!==ids.length
+  ){
+    return null;
+  }
+
+  return selectedList;
+}
+
+function openPaymentModal(){
+
+  if(currentOrder){
+
+    showToast(
+      "Заказ уже создан. Ожидайте проверки."
+    );
+
+    return;
+  }
+
+  const selectedList=
+    getSafeSelectedApps();
+
+  if(!selectedList){
+
+    selected.clear();
+    render();
+    updatePrice();
+
+    showToast(
+      "Некорректное количество приложений"
+    );
+
+    return;
+  }
+
+  const price=
+    calculatePrice(selectedList.length);
+
+  selectedApps.innerHTML="";
+
+  selectedList.forEach(app=>{
+
+    const row=document.createElement("div");
+    row.className="selected-app";
+
+    const name=document.createElement("span");
+    name.className="selected-app-name";
+    name.textContent=app.name;
+
+    const appPrice=document.createElement("span");
+    appPrice.className="selected-app-price";
+    appPrice.textContent=money(PRICE);
+
+    row.append(name,appPrice);
+
+    selectedApps.appendChild(row);
+  });
+
+  paymentTotal.textContent=
+    money(price.total);
+
+  paymentOverlay.classList.add("show");
+
+  document.body.style.overflow="hidden";
+}
+
+function closePaymentModal(){
+
+  paymentOverlay.classList.remove("show");
+
+  document.body.style.overflow="";
+}
+
+function humanStatus(status){
+
+  switch(status){
+
+    case"paid":
+      return"Оплата подтверждена";
+
+    case"completed":
+      return"Заказ выполнен";
+
+    case"cancelled":
+      return"Заказ отменён";
+
+    default:
+      return"Ожидает проверки оплаты";
+  }
+}
+
+function buildWhatsAppMessage(type){
+
+  const order=
+    currentOrder||
+    getClientOrder();
+
+  if(type==="support"){
+
+    let text=
+      "Здравствуйте!\n\n"+
+      "Мне нужна техническая поддержка.\n\n";
+
+    if(order){
+
+      const appNames=
+        (order.apps||[])
+          .map(app=>app.name)
+          .join(", ");
+
+      text+=
+        `Номер заказа: ${order.order_number}\n`+
+        `Телефон клиента: ${order.client_phone}\n`+
+        `Приложения: ${appNames||"—"}\n`+
+        `Исходная сумма: ${money(order.original||0)}\n`+
+        `Скидка: ${money(order.discount||0)}\n`+
+        `Бесплатных приложений: ${order.free_apps||0}\n`+
+        `Количество приложений: ${(order.apps||[]).length}\n`+
+        `Сумма заказа: ${money(order.total||0)}\n`+
+        `Статус: ${humanStatus(order.status)}\n\n`+
+        "Опишите, пожалуйста, проблему.";
+
+    }else{
+
+      text+=
+        "Заказ ещё не создан.\n\n"+
+        "Опишите, пожалуйста, проблему.";
+    }
+
+    return text;
+  }
+
+  if(type==="status"){
+
+    if(!order){
+
+      return(
+        "Здравствуйте!\n\n"+
+        "Не обновляется статус заказа.\n\n"+
+        "Заказ ещё не найден.\n\n"+
+        "Проверьте, пожалуйста, статус заказа."
+      );
+    }
+
+    const appNames=
+      (order.apps||[])
+        .map(app=>app.name)
+        .join(", ");
+
+    return(
+      "Здравствуйте!\n\n"+
+      "Не обновляется статус заказа.\n\n"+
+      `Номер заказа: ${order.order_number}\n`+
+      `Телефон клиента: ${order.client_phone}\n`+
+      `Приложения: ${appNames||"—"}\n`+
+      `Исходная сумма: ${money(order.original||0)}\n`+
+      `Скидка: ${money(order.discount||0)}\n`+
+      `Бесплатных приложений: ${order.free_apps||0}\n`+
+      `Количество приложений: ${(order.apps||[]).length}\n`+
+      `Сумма заказа: ${money(order.total||0)}\n`+
+      `Статус: ${humanStatus(order.status)}\n\n`+
+      "Пожалуйста, проверьте мой заказ."
+    );
+  }
+
+  if(!order){
+
+    return(
+      "Здравствуйте!\n\n"+
+      "Хочу активировать приложения.\n\n"+
+      "Заказ ещё не найден."
+    );
+  }
+
+  const appNames=
+    (order.apps||[])
+      .map(app=>app.name)
+      .join(", ");
+
+  return(
+    "Здравствуйте!\n\n"+
+    "Хочу активировать приложения.\n\n"+
+    `Номер заказа: ${order.order_number}\n`+
+    `Телефон клиента: ${order.client_phone}\n`+
+    `Приложения: ${appNames||"—"}\n`+
+    `Сумма заказа: ${money(order.total||0)}\n`+
+    "Статус: Оплата подтверждена\n\n"+
+    "Все приложения установлены."
+  );
+}
+
+function updateWhatsAppLinks(){
+
+  const supportUrl=
+    "https://wa.me/"+
+    WHATSAPP_NUMBER+
+    "?text="+
+    encodeURIComponent(
+      buildWhatsAppMessage("support")
+    );
+
+  supportTopButton.href=supportUrl;
+
+  statusSupportButton.href=
+    "https://wa.me/"+
+    WHATSAPP_NUMBER+
+    "?text="+
+    encodeURIComponent(
+      buildWhatsAppMessage("status")
+    );
+
+  activationWhatsapp.href=
+    "https://wa.me/"+
+    WHATSAPP_NUMBER+
+    "?text="+
+    encodeURIComponent(
+      buildWhatsAppMessage("activation")
+    );
+}
+
+async function createOrder(){
+
+  if(currentOrder){
+
+    closePaymentModal();
+
+    showToast(
+      "Заказ уже создан. Ожидайте проверки."
+    );
+
+    return true;
+  }
+
+  if(isCreatingOrder){
+
+    showToast(
+      "Заказ уже отправляется…"
+    );
+
+    return false;
+  }
+
+  const phone=
+    normalizePhone(
+      phoneInput.value
+    );
+
+  if(!isValidPhone(phone)){
+
+    showToast(
+      "Введите корректный номер телефона"
+    );
+
+    phoneInput.focus();
+
+    return false;
+  }
+
+  const selectedList=
+    getSafeSelectedApps();
+
+  if(!selectedList){
+
+    showToast(
+      "Некорректное количество приложений"
+    );
+
+    selected.clear();
+    render();
+    updatePrice();
+
+    return false;
+  }
+
+  /*
+   * Дополнительная проверка перед отправкой.
+   */
+  if(
+    selectedList.length<1||
+    selectedList.length>apps.length
+  ){
+
+    showToast(
+      "Некорректное количество приложений"
+    );
+
+    return false;
+  }
+
+  const price=
+    calculatePrice(
+      selectedList.length
+    );
+
+  const orderNumber=
+    generateOrderNumber();
+
+  const orderData={
+
+    order_number:orderNumber,
+
+    client_phone:phone,
+
+    app_ids:
+      selectedList.map(
+        app=>app.id
+      ),
+
+    apps:
+      selectedList.map(app=>({
+        id:app.id,
+        name:app.name,
+        type:app.type
+      })),
+
+    original:
+      Math.round(price.original),
+
+    discount:
+      Math.round(price.discountAmount),
+
+    free_apps:0,
+
+    total:
+      Math.round(price.total),
+
+    status:
+      "awaiting_review"
+  };
+
+  /*
+   * Финальная проверка перед INSERT.
+   */
+  if(
+    !isValidSavedOrder(orderData)
+  ){
+
+    showToast(
+      "Не удалось проверить данные заказа"
+    );
+
+    return false;
+  }
+
+  isCreatingOrder=true;
+
+  paymentDone.disabled=true;
+
+  paymentDone.textContent=
+    "Сохраняем заказ…";
+
+  try{
+
+    const {error}=
+      await supabaseClient
+        .from("orders")
+        .insert([orderData]);
+
+    if(error){
+
+      console.error(error);
+
+      const message=
+        error.message||"";
+
+      if(message.includes("RATE_LIMIT:")){
+
+        showToast(
+          "Лимит заказов достигнут. Попробуйте снова через 10 минут."
+        );
+
+      }else{
+
+        showToast(
+          "Ошибка Supabase: "+
+          (message||
+          "неизвестная ошибка")
+        );
+      }
+
+      return false;
+    }
+
+    const createdAt=Date.now();
+
+    currentOrder=orderData;
+
+    saveOrderLock(orderData);
+    saveClientOrder(
+      orderData,
+      createdAt
+    );
+
+    closePaymentModal();
+
+    selected.clear();
+
+    render();
+    updatePrice();
+
+    showOrderStatus(
+      orderData,
+      true
+    );
+
+    startStatusChecking();
+
+    updateWhatsAppLinks();
+
+    showToast(
+      "Заказ "+
+      orderNumber+
+      " создан"
+    );
+
+    return true;
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      "Ошибка соединения с сервером"
+    );
+
+    return false;
+
+  }finally{
+
+    isCreatingOrder=false;
+
+    paymentDone.disabled=false;
+
+    paymentDone.textContent=
+      "Я оплатил";
+  }
+}
+
+function showOrderStatus(order,autoScroll=false){
+
+  statusPanel.classList.add("show");
+
+  installPanel.classList.remove("show");
+  cancelledPanel.classList.remove("show");
+
+  statusTitle.textContent=
+    "⏳ Заказ принят";
+
+  statusText.textContent=
+    "Ожидайте проверки оплаты. После подтверждения оплаты приложения будут доступны для установки.";
+
+  orderNumberDisplay.textContent=
+    "Номер заказа: "+
+    order.order_number;
+
+  updateWhatsAppLinks();
+
+  if(autoScroll){
+
+    setTimeout(()=>{
+
+      statusPanel.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+      });
+
+      statusPanel.classList.remove("focused");
+
+      void statusPanel.offsetWidth;
+
+      statusPanel.classList.add("focused");
+
+      setTimeout(()=>{
+
+        statusPanel.classList.remove("focused");
+
+      },2300);
+
+    },120);
+  }
+}
+
+function renderInstallPanel(order){
+
+  statusPanel.classList.remove("show");
+
+  cancelledPanel.classList.remove("show");
+
+  installPanel.classList.add("show");
+
+  installList.innerHTML="";
+
+  const orderedApps=
+    Array.isArray(order.apps)
+      ?order.apps
+      :[];
+
+  orderedApps.forEach(orderApp=>{
+
+    const app=
+      apps.find(
+        item=>item.id===orderApp.id
+      );
+
+    if(!app)return;
+
+    const item=
+      document.createElement("div");
+
+    item.className=
+      "install-item";
+
+    const name=
+      document.createElement("div");
+
+    name.className=
+      "install-name";
+
+    name.textContent=
+      app.name;
+
+    const link=
+      document.createElement("a");
+
+    link.className=
+      "install-button";
+
+    /*
+     * Установочная ссылка берётся только
+     * из локального списка apps.
+     * Сами ссылки не изменяются.
+     */
+    link.href=
+      app.install;
+
+    link.target="_blank";
+
+    link.rel=
+      "noopener noreferrer";
+
+    link.textContent=
+      "Установить";
+
+    item.append(
+      name,
+      link
+    );
+
+    installList.appendChild(item);
+  });
+
+  if(isAppsInstalled(order)){
+
+    installedButton.disabled=true;
+
+    installedButton.textContent=
+      "✅ Приложения установлены";
+
+    activationPanel.classList.add("show");
+
+  }else{
+
+    activationPanel.classList.remove("show");
+
+    installedButton.disabled=false;
+
+    installedButton.textContent=
+      "👉 Я установил все приложения → продолжить";
+  }
+
+  updateWhatsAppLinks();
+}
+
+function renderCancelled(order){
+
+  statusPanel.classList.remove("show");
+
+  installPanel.classList.remove("show");
+
+  cancelledPanel.classList.add("show");
+
+  cancelledOrderNumber.textContent=
+    "Заказ: "+
+    order.order_number;
+
+  updateWhatsAppLinks();
+}
+
+async function checkOrderStatus(){
+
+  const order=currentOrder;
+
+  if(!order){
+    return;
+  }
+
+  if(!isValidSavedOrder(order)){
+
+    console.error(
+      "Invalid current order"
+    );
+
+    return;
+  }
+
+  try{
+
+    const {data,error}=
+      await supabaseClient.rpc(
+        "get_client_order_status",
+        {
+          p_order_number:
+            order.order_number,
+
+          p_client_phone:
+            order.client_phone
+        }
+      );
+
+    if(error){
+
+      console.error(
+        "Status error:",
+        error
+      );
+
+      return;
+    }
+
+    if(!data||!data.length)return;
+
+    const serverOrder=
+      data[0];
+
+    if(
+      !serverOrder||
+      typeof serverOrder.status!=="string"
+    ){
+      return;
+    }
+
+    const updatedOrder={
+      ...order,
+
+      status:
+        serverOrder.status,
+
+      apps:
+        Array.isArray(serverOrder.apps)&&
+        serverOrder.apps.length
+          ?serverOrder.apps
+          :order.apps
+    };
+
+    if(!isValidSavedOrder(updatedOrder)){
+
+      console.error(
+        "Invalid server order data"
+      );
+
+      return;
+    }
+
+    /*
+     * Сохраняем обновлённый заказ,
+     * но НЕ обновляем время 12-часового lock.
+     */
+    let createdAt=Date.now();
+
+    try{
+
+      const lock=
+        JSON.parse(
+          localStorage.getItem(
+            ORDER_LOCK_KEY
+          )||"null"
+        );
+
+      if(
+        lock&&
+        typeof lock.createdAt==="number"
+      ){
+        createdAt=lock.createdAt;
+      }else{
+
+        const savedTime=
+          Number(
+            localStorage.getItem(
+              CLIENT_ORDER_TIME_KEY
+            )
+          );
+
+        if(
+          Number.isFinite(savedTime)&&
+          savedTime>0
+        ){
+          createdAt=savedTime;
+        }
+      }
+
+    }catch(error){}
+
+    saveClientOrder(
+      updatedOrder,
+      createdAt
+    );
+
+    currentOrder=
+      updatedOrder;
+
+    /*
+     * Обновляем lock с прежним временем создания,
+     * чтобы проверка 12 часов не начиналась заново
+     * после каждого обновления статуса.
+     */
+    try{
+
+      localStorage.setItem(
+        ORDER_LOCK_KEY,
+        JSON.stringify({
+          createdAt,
+          order:updatedOrder
+        })
+      );
+
+    }catch(error){
+
+      console.log(
+        "Order lock update error:",
+        error
+      );
+    }
+
+    updateWhatsAppLinks();
+
+    if(
+      serverOrder.status===
+      "awaiting_review"
+    ){
+
+      showOrderStatus(
+        updatedOrder
+      );
+
+      return;
+    }
+
+    if(
+      serverOrder.status===
+      "paid"||
+      serverOrder.status===
+      "completed"
+    ){
+
+      renderInstallPanel(
+        updatedOrder
+      );
+
+      return;
+    }
+
+    if(
+      serverOrder.status===
+      "cancelled"
+    ){
+
+      renderCancelled(
+        updatedOrder
+      );
+    }
+
+  }catch(error){
+
+    console.error(
+      "Check status error:",
+      error
+    );
+  }
+}
+
+function startStatusChecking(){
+
+  if(!currentOrder){
+    return;
+  }
+
+  if(statusTimer){
+
+    clearInterval(
+      statusTimer
+    );
+  }
+
+  checkOrderStatus();
+
+  statusTimer=
+    setInterval(
+      checkOrderStatus,
+      7000
+    );
+}
+
+continueButton.addEventListener(
+  "click",
+  openPaymentModal
+);
+
+paymentClose.addEventListener(
+  "click",
+  closePaymentModal
+);
+
+paymentOverlay.addEventListener(
+  "click",
+  event=>{
+
+    if(
+      event.target===
+      paymentOverlay
+    ){
+
+      closePaymentModal();
+    }
+  }
+);
+
+confirmClose.addEventListener(
+  "click",
+  closeNewOrderConfirmation
+);
+
+confirmCancel.addEventListener(
+  "click",
+  closeNewOrderConfirmation
+);
+
+confirmYes.addEventListener(
+  "click",
+  startNewOrder
+);
+
+confirmOverlay.addEventListener(
+  "click",
+  event=>{
+
+    if(
+      event.target===
+      confirmOverlay
+    ){
+
+      closeNewOrderConfirmation();
+    }
+  }
+);
+
+newOrderStatusButton.addEventListener(
+  "click",
+  openNewOrderConfirmation
+);
+
+newOrderInstallButton.addEventListener(
+  "click",
+  openNewOrderConfirmation
+);
+
+newOrderCancelledButton.addEventListener(
+  "click",
+  openNewOrderConfirmation
+);
+
+document.addEventListener(
+  "keydown",
+  event=>{
+
+    if(event.key==="Escape"){
+
+      closePaymentModal();
+      closeNewOrderConfirmation();
+    }
+  }
+);
+
+document
+.querySelectorAll(".copy-button")
+.forEach(button=>{
+
+  button.addEventListener(
+    "click",
+    async()=>{
+
+      const value=
+        button.dataset.copy;
+
+      try{
+
+        await navigator.clipboard.writeText(
+          value
+        );
+
+      }catch(error){
+
+        const textarea=
+          document.createElement(
+            "textarea"
+          );
+
+        textarea.value=value;
+
+        textarea.style.position=
+          "fixed";
+
+        textarea.style.opacity=
+          "0";
+
+        document.body.appendChild(
+          textarea
+        );
+
+        textarea.select();
+
+        try{
+
+          document.execCommand(
+            "copy"
+          );
+
+        }catch(e){}
+
+        textarea.remove();
+      }
+
+      const old=
+        button.textContent;
+
+      button.textContent=
+        "Скопировано";
+
+      setTimeout(()=>{
+
+        button.textContent=
+          old;
+
+      },1500);
+    }
+  );
+});
+
+search.addEventListener(
+  "input",
+  ()=>{
+
+    query=search.value;
+
+    clear.style.display=
+      query
+        ?"block"
+        :"none";
+
+    render();
+  }
+);
+
+clear.addEventListener(
+  "click",
+  ()=>{
+
+    search.value="";
+    query="";
+
+    clear.style.display=
+      "none";
+
+    search.focus();
+
+    render();
+  }
+);
+
+categories.addEventListener(
+  "click",
+  event=>{
+
+    const button=
+      event.target.closest(
+        ".category"
+      );
+
+    if(!button)return;
+
+    document
+      .querySelectorAll(
+        ".category"
+      )
+      .forEach(item=>{
+
+        item.classList.remove(
+          "active"
+        );
+      });
+
+    button.classList.add(
+      "active"
+    );
+
+    currentCategory=
+      button.dataset.category;
+
+    render();
+  }
+);
+
+paymentDone.addEventListener(
+  "click",
+  createOrder
+);
+
+installedButton.addEventListener(
+  "click",
+  ()=>{
+
+    if(!currentOrder)return;
+
+    markAppsInstalled(
+      currentOrder
+    );
+
+    installedButton.disabled=
+      true;
+
+    installedButton.textContent=
+      "✅ Приложения установлены";
+
+    activationPanel.classList.add(
+      "show"
+    );
+
+    updateWhatsAppLinks();
+
+    showToast(
+      "Готово! Теперь можно перейти в WhatsApp."
+    );
+  }
+);
+
+function initTelegram(){
+
+  if(
+    window.Telegram&&
+    window.Telegram.WebApp
+  ){
+
+    try{
+
+      const tg=
+        window.Telegram.WebApp;
+
+      tg.ready();
+      tg.expand();
+
+      if(tg.setHeaderColor){
+
+        tg.setHeaderColor(
+          "#08090d"
+        );
+      }
+
+      if(tg.setBackgroundColor){
+
+        tg.setBackgroundColor(
+          "#08090d"
+        );
+      }
+
+    }catch(error){
+
+      console.log(error);
+    }
+  }
+}
+
+/*
+ * Восстанавливаем заказ ДО render().
+ * Если заказ ещё находится в 12-часовом периоде,
+ * после перезагрузки автоматически запускается
+ * проверка статуса.
+ */
+restoreOrderLock();
+
+if(currentOrder){
+
+  startStatusChecking();
+}
+
+render();
+
+updatePrice();
+
+updateWhatsAppLinks();
+
+initTelegram();
+
 </script>
-</body>
-</html>'''
 
-path = Path("/mnt/data/AppCore_logos_ready.html")
-path.write_text(html, encoding="utf-8")
-print(f"Готово: {path}")
+</body>
+</html>
