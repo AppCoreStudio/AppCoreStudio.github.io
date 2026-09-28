@@ -1,0 +1,15 @@
+/* Логотипы приложений: на всю площадь квадрата, по центру */
+.app-icon{
+  flex:none;
+  aspect-ratio:1/1;
+  border-radius:22%
+}
+.app-icon img{
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center
+}
