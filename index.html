@@ -1536,7 +1536,7 @@ let currentOrder=null;
 let isCreatingOrder=false;
 let statusTimer=null;
 let lockTimer=null;
-let toastTimer;
+let toastTimer=null;
 
 const $=id=>document.getElementById(id);
 
@@ -1664,6 +1664,7 @@ function updatePrice(){
 function render(){
 
   const searchText=query.trim().toLowerCase();
+  const hasSearch=searchText.length>0;
 
   const filtered=apps.filter(app=>{
 
@@ -1672,7 +1673,7 @@ function render(){
       app.category===currentCategory;
 
     const searchOk=
-      !searchText||
+      !hasSearch||
       app.name.toLowerCase().includes(searchText)||
       app.type.toLowerCase().includes(searchText);
 
