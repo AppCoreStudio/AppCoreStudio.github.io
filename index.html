@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -320,27 +321,53 @@ h1{
 
 .app-card.selected{
   border-color:var(--app-color);
-  box-shadow:0 0 0 1px var(--app-color),0 12px 35px rgba(0,0,0,.25)
+  box-shadow:
+    0 0 0 1px var(--app-color),
+    0 12px 35px rgba(0,0,0,.25)
 }
 
+/*
+ * Квадрат логотипа.
+ * Каждый asset должен быть квадратным.
+ * Изображение не растягивается и не деформируется.
+ */
 .app-icon{
   position:relative;
   z-index:1;
-  width:50px;
-  height:50px;
+  width:52px;
+  height:52px;
+  flex:0 0 52px;
   border-radius:15px;
   background:var(--app-gradient);
   display:flex;
   align-items:center;
   justify-content:center;
   overflow:hidden;
-  box-shadow:0 8px 20px rgba(0,0,0,.22)
+  box-shadow:
+    0 8px 20px rgba(0,0,0,.22),
+    inset 0 0 0 1px rgba(255,255,255,.06)
 }
 
+/*
+ * Официальный app-icon занимает весь квадрат.
+ * object-fit:cover используется для квадратных исходников,
+ * чтобы вокруг эмблемы не появлялись лишние поля.
+ */
 .app-icon img{
+  display:block;
   width:100%;
   height:100%;
-  object-fit:cover
+  object-fit:cover;
+  object-position:center center;
+  border-radius:inherit;
+}
+
+/*
+ * Если конкретный официальный asset содержит прозрачный фон,
+ * он остаётся полностью сохранённым.
+ */
+.app-icon img.contain{
+  object-fit:contain
 }
 
 .fallback{
@@ -432,7 +459,13 @@ h1{
   right:0;
   bottom:0;
   padding:10px 14px calc(11px + env(safe-area-inset-bottom));
-  background:linear-gradient(to top,rgba(8,9,13,1) 55%,rgba(8,9,13,.96) 76%,rgba(8,9,13,0))
+  background:
+    linear-gradient(
+      to top,
+      rgba(8,9,13,1) 55%,
+      rgba(8,9,13,.96) 76%,
+      rgba(8,9,13,0)
+    )
 }
 
 .bottom-inner{
@@ -1017,7 +1050,8 @@ h1{
 
   .app-icon{
     width:46px;
-    height:46px
+    height:46px;
+    flex-basis:46px
   }
 
   .app-name{
@@ -1495,38 +1529,287 @@ const CLIENT_ORDER_KEY="appcore_client_order";
 const CLIENT_ORDER_TIME_KEY="appcore_client_order_time";
 const INSTALLED_ORDER_KEY="appcore_installed_order";
 
-/*
- * Один клиент может оформить новый заказ
- * только через 12 часов после создания предыдущего.
- */
 const ORDER_LOCK_TIME=12*60*60*1000;
 
 const WHATSAPP_NUMBER="79289480706";
 
+/*
+ * ==========================================================
+ * APP ICONS
+ * ==========================================================
+ *
+ * Здесь используются отдельные квадратные assets.
+ *
+ * Рекомендуемый размер:
+ * 512x512 PNG/WebP
+ *
+ * Важно:
+ * - исходник должен быть квадратным;
+ * - эмблема должна занимать основную полезную площадь;
+ * - не добавляй вручную большие прозрачные поля;
+ * - пропорции оригинального логотипа не изменяются.
+ *
+ * Все файлы можно заменить своими официальными assets,
+ * не меняя остальную логику приложения.
+ */
+
+const APP_ICON_BASE="/assets/apps/";
+
 const apps=[
-{id:"sberbank",name:"Сбербанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#21a366",gradient:"linear-gradient(135deg,#25b86c,#08783e)",install:"https://installios.ru/apps/Huo4uP"},
-{id:"sber-invest",name:"СберИнвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#18a765",gradient:"linear-gradient(135deg,#2ac979,#087c46)",install:"https://installios.ru/apps/xCMK2b"},
-{id:"tbank",name:"Т-Банк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/tbank",color:"#ffd500",gradient:"linear-gradient(135deg,#ffe33e,#e7b900)",install:"https://installios.ru/apps/NQAqoO"},
-{id:"t-invest",name:"Т-Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/tbank",color:"#f3ca00",gradient:"linear-gradient(135deg,#ffe64a,#d9a900)",install:"https://installios.ru/apps/rOxSmd"},
-{id:"alfa",name:"Альфа-Банк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/alfabank",color:"#ef3124",gradient:"linear-gradient(135deg,#ff5145,#c70d09)",install:"https://installios.ru/apps/rOqtjI"},
-{id:"alfa-invest",name:"Альфа-Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/alfabank",color:"#e93027",gradient:"linear-gradient(135deg,#ff5b4f,#bb1009)",install:"https://installios.ru/apps/NqXG8Z"},
-{id:"vtb",name:"ВТБ",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#1685ff",gradient:"linear-gradient(135deg,#36a4ff,#0757d9)",install:"https://installios.ru/apps/gzPg3N"},
-{id:"vtb-invest",name:"ВТБ Мои Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#1a82ed",gradient:"linear-gradient(135deg,#3ca8ff,#0a4fc2)",install:"https://installios.ru/apps/1ttQGQ"},
-{id:"gazprom",name:"Газпромбанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/gazprombank",color:"#3b78ff",gradient:"linear-gradient(135deg,#55a1ff,#154bc9)",install:"https://installios.ru/apps/fQOdHa"},
-{id:"gazprom-invest",name:"Газпромбанк Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/gazprombank",color:"#3673ff",gradient:"linear-gradient(135deg,#58a9ff,#164ac8)",install:"https://installios.ru/apps/GKOngE"},
-{id:"rshb",name:"Россельхозбанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/rosselkhozbank",color:"#48a93f",gradient:"linear-gradient(135deg,#6bd35c,#1e7427)",install:"https://installios.ru/apps/z7363T"},
-{id:"psb",name:"ПСБ",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/psbank",color:"#e1262d",gradient:"linear-gradient(135deg,#ff4c50,#b90c14)",install:"https://installios.ru/apps/Pj12gf"},
-{id:"yandex-pay",name:"Яндекс Пэй",type:"Сервис",category:"finance",logo:"https://cdn.simpleicons.org/yandex",color:"#ff3d00",gradient:"linear-gradient(135deg,#ff7043,#e52c00)",install:"https://installios.ru/apps/zgsOLp"},
-{id:"vk",name:"VK",type:"Социальная сеть",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#0077ff",gradient:"linear-gradient(135deg,#3c9aff,#0056cf)",install:"https://installios.ru/apps/9L324z"},
-{id:"vk-video",name:"VK Видео",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#5d65ff",gradient:"linear-gradient(135deg,#7984ff,#3b42d8)",install:"https://installios.ru/apps/63wZiS"},
-{id:"vk-messenger",name:"VK Мессенджер",type:"Мессенджер",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#7b61ff",gradient:"linear-gradient(135deg,#957cff,#5540d6)",install:"https://installios.ru/apps/cZOAbl"},
-{id:"max",name:"MAX",type:"Мессенджер",category:"social",logo:"https://cdn.simpleicons.org/max",color:"#6f5cff",gradient:"linear-gradient(135deg,#927cff,#4b36d8)",install:"https://installios.ru/apps/AhqAi7"},
-{id:"avito",name:"Авито",type:"Сервис",category:"social",logo:"https://cdn.simpleicons.org/avito",color:"#00a86b",gradient:"linear-gradient(135deg,#27d18c,#00804e)",install:"https://installios.ru/apps/IhZxy5"},
-{id:"rave",name:"Rave",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/rave",color:"#ff4d91",gradient:"linear-gradient(135deg,#ff70aa,#d3226b)",install:"https://installios.ru/apps/Uij3el"},
-{id:"rutube",name:"Rutube",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/rutube",color:"#ff3b30",gradient:"linear-gradient(135deg,#ff665e,#cf160e)",install:"https://installios.ru/apps/fihoJo"},
-{id:"happ",name:"Happ",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/happ",color:"#815cff",gradient:"linear-gradient(135deg,#a083ff,#5230d9)",install:"https://installios.ru/apps/gzGnVa"},
-{id:"v2raytun",name:"v2RayTun",type:"Сервис",category:"useful",logo:"",color:"#5d65ff",gradient:"linear-gradient(135deg,#7984ff,#3b42d8)",install:"https://installios.ru/apps/XHmTTz"},
-{id:"chatgpt",name:"ChatGPT",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/openai",color:"#10a37f",gradient:"linear-gradient(135deg,#20c997,#087c60)",install:"https://installios.ru/apps/ux5YKb"}
+
+{
+  id:"sberbank",
+  name:"Сбербанк",
+  type:"Банк",
+  category:"finance",
+  logo:APP_ICON_BASE+"sberbank.png",
+  color:"#21a366",
+  gradient:"linear-gradient(135deg,#25b86c,#08783e)",
+  install:"https://installios.ru/apps/Huo4uP"
+},
+
+{
+  id:"sber-invest",
+  name:"СберИнвестиции",
+  type:"Инвестиции",
+  category:"finance",
+  logo:APP_ICON_BASE+"sber-invest.png",
+  color:"#18a765",
+  gradient:"linear-gradient(135deg,#2ac979,#087c46)",
+  install:"https://installios.ru/apps/xCMK2b"
+},
+
+{
+  id:"tbank",
+  name:"Т-Банк",
+  type:"Банк",
+  category:"finance",
+  logo:APP_ICON_BASE+"tbank.png",
+  color:"#ffd500",
+  gradient:"linear-gradient(135deg,#ffe33e,#e7b900)",
+  install:"https://installios.ru/apps/NQAqoO"
+},
+
+{
+  id:"t-invest",
+  name:"Т-Инвестиции",
+  type:"Инвестиции",
+  category:"finance",
+  logo:APP_ICON_BASE+"t-invest.png",
+  color:"#f3ca00",
+  gradient:"linear-gradient(135deg,#ffe64a,#d9a900)",
+  install:"https://installios.ru/apps/rOxSmd"
+},
+
+{
+  id:"alfa",
+  name:"Альфа-Банк",
+  type:"Банк",
+  category:"finance",
+  logo:APP_ICON_BASE+"alfa.png",
+  color:"#ef3124",
+  gradient:"linear-gradient(135deg,#ff5145,#c70d09)",
+  install:"https://installios.ru/apps/rOqtjI"
+},
+
+{
+  id:"alfa-invest",
+  name:"Альфа-Инвестиции",
+  type:"Инвестиции",
+  category:"finance",
+  logo:APP_ICON_BASE+"alfa-invest.png",
+  color:"#e93027",
+  gradient:"linear-gradient(135deg,#ff5b4f,#bb1009)",
+  install:"https://installios.ru/apps/NqXG8Z"
+},
+
+{
+  id:"vtb",
+  name:"ВТБ",
+  type:"Банк",
+  category:"finance",
+  logo:APP_ICON_BASE+"vtb.png",
+  color:"#1685ff",
+  gradient:"linear-gradient(135deg,#36a4ff,#0757d9)",
+  install:"https://installios.ru/apps/gzPg3N"
+},
+
+{
+  id:"vtb-invest",
+  name:"ВТБ Мои Инвестиции",
+  type:"Инвестиции",
+  category:"finance",
+  logo:APP_ICON_BASE+"vtb-invest.png",
+  color:"#1a82ed",
+  gradient:"linear-gradient(135deg,#3ca8ff,#0a4fc2)",
+  install:"https://installios.ru/apps/1ttQGQ"
+},
+
+{
+  id:"gazprom",
+  name:"Газпромбанк",
+  type:"Банк",
+  category:"finance",
+  logo:APP_ICON_BASE+"gazprombank.png",
+  color:"#3b78ff",
+  gradient:"linear-gradient(135deg,#55a1ff,#154bc9)",
+  install:"https://installios.ru/apps/fQOdHa"
+},
+
+{
+  id:"gazprom-invest",
+  name:"Газпромбанк Инвестиции",
+  type:"Инвестиции",
+  category:"finance",
+  logo:APP_ICON_BASE+"gazprom-invest.png",
+  color:"#3673ff",
+  gradient:"linear-gradient(135deg,#58a9ff,#164ac8)",
+  install:"https://installios.ru/apps/GKOngE"
+},
+
+{
+  id:"rshb",
+  name:"Россельхозбанк",
+  type:"Банк",
+  category:"finance",
+  logo:APP_ICON_BASE+"rshb.png",
+  color:"#48a93f",
+  gradient:"linear-gradient(135deg,#6bd35c,#1e7427)",
+  install:"https://installios.ru/apps/z7363T"
+},
+
+{
+  id:"psb",
+  name:"ПСБ",
+  type:"Банк",
+  category:"finance",
+  logo:APP_ICON_BASE+"psb.png",
+  color:"#e1262d",
+  gradient:"linear-gradient(135deg,#ff4c50,#b90c14)",
+  install:"https://installios.ru/apps/Pj12gf"
+},
+
+{
+  id:"yandex-pay",
+  name:"Яндекс Пэй",
+  type:"Сервис",
+  category:"finance",
+  logo:APP_ICON_BASE+"yandex-pay.png",
+  color:"#ff3d00",
+  gradient:"linear-gradient(135deg,#ff7043,#e52c00)",
+  install:"https://installios.ru/apps/zgsOLp"
+},
+
+{
+  id:"vk",
+  name:"VK",
+  type:"Социальная сеть",
+  category:"social",
+  logo:APP_ICON_BASE+"vk.png",
+  color:"#0077ff",
+  gradient:"linear-gradient(135deg,#3c9aff,#0056cf)",
+  install:"https://installios.ru/apps/9L324z"
+},
+
+{
+  id:"vk-video",
+  name:"VK Видео",
+  type:"Видео",
+  category:"social",
+  logo:APP_ICON_BASE+"vk-video.png",
+  color:"#5d65ff",
+  gradient:"linear-gradient(135deg,#7984ff,#3b42d8)",
+  install:"https://installios.ru/apps/63wZiS"
+},
+
+{
+  id:"vk-messenger",
+  name:"VK Мессенджер",
+  type:"Мессенджер",
+  category:"social",
+  logo:APP_ICON_BASE+"vk-messenger.png",
+  color:"#7b61ff",
+  gradient:"linear-gradient(135deg,#957cff,#5540d6)",
+  install:"https://installios.ru/apps/cZOAbl"
+},
+
+{
+  id:"max",
+  name:"MAX",
+  type:"Мессенджер",
+  category:"social",
+  logo:APP_ICON_BASE+"max.png",
+  color:"#6f5cff",
+  gradient:"linear-gradient(135deg,#927cff,#4b36d8)",
+  install:"https://installios.ru/apps/AhqAi7"
+},
+
+{
+  id:"avito",
+  name:"Авито",
+  type:"Сервис",
+  category:"social",
+  logo:APP_ICON_BASE+"avito.png",
+  color:"#00a86b",
+  gradient:"linear-gradient(135deg,#27d18c,#00804e)",
+  install:"https://installios.ru/apps/IhZxy5"
+},
+
+{
+  id:"rave",
+  name:"Rave",
+  type:"Видео",
+  category:"social",
+  logo:APP_ICON_BASE+"rave.png",
+  color:"#ff4d91",
+  gradient:"linear-gradient(135deg,#ff70aa,#d3226b)",
+  install:"https://installios.ru/apps/Uij3el"
+},
+
+{
+  id:"rutube",
+  name:"Rutube",
+  type:"Видео",
+  category:"social",
+  logo:APP_ICON_BASE+"rutube.png",
+  color:"#ff3b30",
+  gradient:"linear-gradient(135deg,#ff665e,#cf160e)",
+  install:"https://installios.ru/apps/fihoJo"
+},
+
+{
+  id:"happ",
+  name:"Happ",
+  type:"Сервис",
+  category:"useful",
+  logo:APP_ICON_BASE+"happ.png",
+  color:"#815cff",
+  gradient:"linear-gradient(135deg,#a083ff,#5230d9)",
+  install:"https://installios.ru/apps/gzGnVa"
+},
+
+{
+  id:"v2raytun",
+  name:"v2RayTun",
+  type:"Сервис",
+  category:"useful",
+  logo:APP_ICON_BASE+"v2raytun.png",
+  color:"#5d65ff",
+  gradient:"linear-gradient(135deg,#7984ff,#3b42d8)",
+  install:"https://installios.ru/apps/XHmTTz"
+},
+
+{
+  id:"chatgpt",
+  name:"ChatGPT",
+  type:"Сервис",
+  category:"useful",
+  logo:APP_ICON_BASE+"chatgpt.png",
+  color:"#10a37f",
+  gradient:"linear-gradient(135deg,#20c997,#087c60)",
+  install:"https://installios.ru/apps/ux5YKb"
+}
+
 ];
 
 let selected=new Set();
@@ -1661,6 +1944,50 @@ function updatePrice(){
   continueButton.textContent="Продолжить · "+money(price.total);
 }
 
+function createAppIcon(app){
+
+  const icon=document.createElement("div");
+  icon.className="app-icon";
+
+  const fallback=document.createElement("span");
+  fallback.className="fallback";
+  fallback.textContent=initials(app.name);
+
+  /*
+   * Fallback скрывается только после успешной
+   * загрузки реального изображения.
+   */
+  icon.appendChild(fallback);
+
+  if(app.logo){
+
+    const img=document.createElement("img");
+
+    img.src=app.logo;
+    img.alt=app.name;
+    img.loading="lazy";
+    img.decoding="async";
+
+    img.onload=()=>{
+
+      fallback.style.display="none";
+      img.style.display="block";
+
+    };
+
+    img.onerror=()=>{
+
+      img.remove();
+      fallback.style.display="flex";
+
+    };
+
+    icon.appendChild(img);
+  }
+
+  return icon;
+}
+
 function render(){
 
   const searchText=query.trim().toLowerCase();
@@ -1709,32 +2036,7 @@ function render(){
     check.className="check";
     check.textContent="✓";
 
-    const icon=document.createElement("div");
-    icon.className="app-icon";
-
-    const fallback=document.createElement("span");
-    fallback.className="fallback";
-    fallback.textContent=initials(app.name);
-
-    icon.appendChild(fallback);
-
-    if(app.logo){
-
-      const img=document.createElement("img");
-
-      img.src=app.logo;
-      img.alt="";
-
-      img.onload=()=>{
-        fallback.style.display="none";
-      };
-
-      img.onerror=()=>{
-        img.remove();
-      };
-
-      icon.appendChild(img);
-    }
+    const icon=createAppIcon(app);
 
     const name=document.createElement("div");
     name.className="app-name";
@@ -1744,7 +2046,12 @@ function render(){
     type.className="app-type";
     type.textContent=app.type;
 
-    card.append(check,icon,name,type);
+    card.append(
+      check,
+      icon,
+      name,
+      type
+    );
 
     card.addEventListener("click",()=>{
 
@@ -1803,10 +2110,6 @@ function isValidPhone(phone){
   return digits.length>=10&&digits.length<=15;
 }
 
-/*
- * Проверяем, что сохранённый заказ действительно
- * соответствует структуре нашего приложения.
- */
 function isValidSavedOrder(order){
 
   if(!order||typeof order!=="object"){
@@ -2051,11 +2354,6 @@ function getClientOrder(){
   }
 }
 
-/*
- * Дополнительное восстановление через CLIENT_ORDER_KEY.
- * Используется только если запись ещё находится
- * внутри 12-часового периода.
- */
 function getClientOrderFallback(){
 
   try{
@@ -2090,6 +2388,7 @@ function getClientOrderFallback(){
       age<0||
       age>=ORDER_LOCK_TIME
     ){
+
       localStorage.removeItem(
         CLIENT_ORDER_KEY
       );
@@ -2126,6 +2425,7 @@ function getClientOrderFallback(){
 function clearOrderStorage(){
 
   try{
+
     localStorage.removeItem(
       ORDER_LOCK_KEY
     );
@@ -2171,6 +2471,7 @@ function resetExpiredOrder(){
   activationPanel.classList.remove("show");
 
   try{
+
     localStorage.removeItem(
       ORDER_LOCK_KEY
     );
@@ -2186,6 +2487,7 @@ function resetExpiredOrder(){
     localStorage.removeItem(
       INSTALLED_ORDER_KEY
     );
+
   }catch(error){}
 
   render();
@@ -2201,10 +2503,6 @@ function restoreOrderLock(){
 
   let lock=getOrderLock();
 
-  /*
-   * Если основная запись отсутствует,
-   * пробуем восстановить заказ из резервной записи.
-   */
   if(!lock){
 
     lock=getClientOrderFallback();
@@ -2318,9 +2616,6 @@ function startNewOrder(){
   );
 }
 
-/*
- * Возвращает только безопасный список выбранных приложений.
- */
 function getSafeSelectedApps(){
 
   const count=Number(selected.size);
@@ -2622,9 +2917,6 @@ async function createOrder(){
     return false;
   }
 
-  /*
-   * Дополнительная проверка перед отправкой.
-   */
   if(
     selectedList.length<1||
     selectedList.length>apps.length
@@ -2678,9 +2970,6 @@ async function createOrder(){
       "awaiting_review"
   };
 
-  /*
-   * Финальная проверка перед INSERT.
-   */
   if(
     !isValidSavedOrder(orderData)
   ){
@@ -2723,8 +3012,10 @@ async function createOrder(){
 
         showToast(
           "Ошибка Supabase: "+
-          (message||
-          "неизвестная ошибка")
+          (
+            message||
+            "неизвестная ошибка"
+          )
         );
       }
 
@@ -2735,7 +3026,11 @@ async function createOrder(){
 
     currentOrder=orderData;
 
-    saveOrderLock(orderData);
+    saveOrderLock(
+      orderData,
+      createdAt
+    );
+
     saveClientOrder(
       orderData,
       createdAt
@@ -2786,7 +3081,10 @@ async function createOrder(){
   }
 }
 
-function showOrderStatus(order,autoScroll=false){
+function showOrderStatus(
+  order,
+  autoScroll=false
+){
 
   statusPanel.classList.add("show");
 
@@ -2875,11 +3173,6 @@ function renderInstallPanel(order){
     link.className=
       "install-button";
 
-    /*
-     * Установочная ссылка берётся только
-     * из локального списка apps.
-     * Сами ссылки не изменяются.
-     */
     link.href=
       app.install;
 
@@ -3011,10 +3304,6 @@ async function checkOrderStatus(){
       return;
     }
 
-    /*
-     * Сохраняем обновлённый заказ,
-     * но НЕ обновляем время 12-часового lock.
-     */
     let createdAt=Date.now();
 
     try{
@@ -3030,7 +3319,9 @@ async function checkOrderStatus(){
         lock&&
         typeof lock.createdAt==="number"
       ){
+
         createdAt=lock.createdAt;
+
       }else{
 
         const savedTime=
@@ -3044,6 +3335,7 @@ async function checkOrderStatus(){
           Number.isFinite(savedTime)&&
           savedTime>0
         ){
+
           createdAt=savedTime;
         }
       }
@@ -3058,11 +3350,6 @@ async function checkOrderStatus(){
     currentOrder=
       updatedOrder;
 
-    /*
-     * Обновляем lock с прежним временем создания,
-     * чтобы проверка 12 часов не начиналась заново
-     * после каждого обновления статуса.
-     */
     try{
 
       localStorage.setItem(
@@ -3430,9 +3717,6 @@ function initTelegram(){
 
 /*
  * Восстанавливаем заказ ДО render().
- * Если заказ ещё находится в 12-часовом периоде,
- * после перезагрузки автоматически запускается
- * проверка статуса.
  */
 restoreOrderLock();
 
@@ -3453,3 +3737,4 @@ initTelegram();
 
 </body>
 </html>
+```
