@@ -3452,31 +3452,40 @@ initTelegram();
 <script src="logos/logos.js"></script>
 <style>
 .install-steps{
-  margin-top:14px;
-  padding:13px;
-  border-radius:14px;
-  background:rgba(255,193,7,.08);
-  border:1px solid rgba(255,193,7,.2);
+  margin-top:16px;
+  padding:18px 16px;
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,193,7,.16),rgba(118,83,255,.12));
+  border:2px solid rgba(255,193,7,.55);
   display:flex;
   flex-direction:column;
-  gap:9px
+  gap:14px
+}
+.install-steps-title{
+  font-size:17px;
+  font-weight:850;
+  color:#ffd54a
 }
 .install-step{
   display:flex;
-  gap:9px;
-  font-size:13px;
+  align-items:center;
+  gap:13px;
+  font-size:15px;
+  font-weight:600;
   line-height:1.4;
-  color:#d5d8e0
+  color:#fff
 }
 .install-step b{
-  flex:0 0 22px;
-  height:22px;
+  flex:0 0 34px;
+  height:34px;
   border-radius:50%;
-  background:rgba(118,83,255,.3);
+  background:linear-gradient(135deg,#8a6cff,#5b3fe0);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:12px
+  font-size:16px;
+  font-weight:850;
+  box-shadow:0 6px 16px rgba(91,70,255,.35)
 }
 .install-button.opened{
   background:rgba(55,219,124,.15);
@@ -3511,7 +3520,8 @@ initTelegram();
   var steps=document.createElement("div");
   steps.className="install-steps";
   steps.innerHTML=
-    '<div class="install-step"><b>1</b><span>Нажмите «Установить» и дождитесь установки приложения</span></div>'+
+    '<div class="install-steps-title">⚠️ Как получить приложения</div>'+
+    '<div class="install-step"><b>1</b><span>Нажмите «Установить» у каждого приложения и дождитесь установки</span></div>'+
     '<div class="install-step"><b>2</b><span>Вернитесь на эту страницу (закройте вкладку установки)</span></div>'+
     '<div class="install-step"><b>3</b><span>Нажмите «Я установил» и получите активацию</span></div>';
   installList.parentNode.insertBefore(steps,installList);
@@ -3558,12 +3568,22 @@ initTelegram();
   new MutationObserver(enhance).observe(installList,{childList:true});
   enhance();
 
+  function allOpened(num){
+    var links=installList.querySelectorAll("a.install-button");
+    if(!links.length)return false;
+    var opened=getOpened(num);
+    for(var i=0;i<links.length;i++){
+      if(opened.indexOf(links[i].href)===-1)return false;
+    }
+    return true;
+  }
+
   function showReturnModal(){
     var num=orderNum();
     if(!num)return;
     if(!installPanel.classList.contains("show"))return;
     if(installedBtn.disabled)return;
-    if(!getOpened(num).length)return;
+    if(!allOpened(num))return;
     returnOverlay.classList.add("show");
   }
 
