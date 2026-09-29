@@ -2975,7 +2975,28 @@ async function createOrder(){
 
       return false;
     }
+const referralCode =
+  localStorage.getItem("referral_code");
 
+if(referralCode){
+
+  const {
+    error: referralError
+  } = await supabaseClient.rpc(
+    "register_referral",
+    {
+      p_referral_code: referralCode,
+      p_referred_user_id: phone
+    }
+  );
+
+  if(referralError){
+    console.error(
+      "Referral registration error:",
+      referralError
+    );
+  }
+}
     const createdAt=Date.now();
 
     currentOrder=orderData;
