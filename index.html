@@ -3653,6 +3653,9 @@ console.log("REFERRAL BANNER FOUND", document.getElementById("referralBanner"));
     document.getElementById("referralBanner");
 
   if(referralBanner){
+    referralBanner.style.position = "relative";
+referralBanner.style.zIndex = "100";
+referralBanner.style.pointerEvents = "auto";
     referralBanner.addEventListener("click",function(){
 alert("CLICK WORKS");
       let referralOverlay =
