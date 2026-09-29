@@ -2450,7 +2450,6 @@ function(id){
 /* =========================
    STATUS
 ========================= */
-
 async function setOrderStatus(
   id,
   status
@@ -2476,13 +2475,38 @@ async function setOrderStatus(
     return;
   }
 
+  if(status === "completed"){
+
+    const {
+      error: rewardError
+    } = await supabaseClient
+      .rpc(
+        "reward_referral_for_order",
+        {
+          p_order_id:id
+        }
+      );
+
+    if(rewardError){
+
+      console.error(rewardError);
+
+      showToast(
+        "Заказ завершён, но начисление реферала не выполнено"
+      );
+
+      await loadOrders();
+
+      return;
+    }
+  }
+
   showToast(
     "Статус заказа обновлён"
   );
 
   await loadOrders();
 }
-
 /* =========================
    DRAFT
 ========================= */
