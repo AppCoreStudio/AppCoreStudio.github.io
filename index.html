@@ -3997,18 +3997,32 @@ referralBanner.addEventListener("click",async function(){
               </div>
             </div>
 
-            <div class="referral-withdraw">
-              Минимальная сумма для вывода — 500 ₽
-            </div>
+<div class="referral-withdraw">
+  Минимальная сумма для вывода — 500 ₽
+</div>
 
-            <button
-              type="button"
-              class="referral-withdraw-btn"
-              id="referralWithdraw"
-              disabled
-            >
-              Вывести
-            </button>
+<div class="referral-payment">
+  <input
+    id="referralPhone"
+    type="tel"
+    placeholder="Номер получателя"
+  >
+
+  <input
+    id="referralBank"
+    type="text"
+    placeholder="Банк получателя"
+  >
+</div>
+
+<button
+  type="button"
+  class="referral-withdraw-btn"
+  id="referralWithdraw"
+  disabled
+>
+  Вывести
+</button>
 
           </div>
         `;
@@ -4107,13 +4121,123 @@ document.getElementById("refEarned").textContent =
 
 document.getElementById("refAvailable").textContent =
   Number(profile.balance).toLocaleString("ru-RU") + " ₽";
-
 const withdrawButton =
   document.getElementById("referralWithdraw");
+
+const referralPhoneInput =
+  document.getElementById("referralPhone");
+
+const referralBankInput =
+  document.getElementById("referralBank");
 
 withdrawButton.disabled =
   Number(profile.balance) < 500;
 
+withdrawButton.addEventListener(
+  "click",
+  async function(){
+
+    const phone =
+      referralPhoneInput.value.trim();
+
+    const bank =
+      referralBankInput.value.trim();
+
+    if(Number(profile.balance) < 500){
+      showToast(
+        "Минимальная сумма для вывода — 500 ₽"
+      );
+      return;
+    }
+
+    if(!phone){
+      showToast(
+        "Укажи номер получателя"
+      );
+      referralPhoneInput.focus();
+      return;
+    }
+
+    if(!bank){
+      showToast(
+        "Укажи банк получателя"
+      );
+      referralBankInput.focus();
+      return;
+    }
+
+    withdrawButton.disabled = true;
+    withdrawButton.textContent =
+      "Отправляем…";
+
+    try{
+
+      const {
+        data,
+        error
+      } = await supabaseClient.rpc(
+        "create_withdrawal_request",
+        {
+          p_user_id:
+            referralUserId,
+
+          p_amount:
+            Number(profile.balance),
+
+          p_payment_details:
+            "Номер получателя: " +
+            phone +
+            "; Банк: " +
+            bank
+        }
+      );
+
+      if(error){
+        console.error(error);
+        showToast(
+          "Не удалось создать заявку"
+        );
+        return;
+      }
+
+      if(!data){
+        showToast(
+          "Не удалось создать заявку. Проверь баланс."
+        );
+        return;
+      }
+
+      showToast(
+        "Заявка на вывод отправлена"
+      );
+
+      referralPhoneInput.value = "";
+      referralBankInput.value = "";
+
+      withdrawButton.textContent =
+        "Заявка отправлена";
+
+    }catch(error){
+
+      console.error(error);
+
+      showToast(
+        "Ошибка при создании заявки"
+      );
+
+    }finally{
+
+      if(withdrawButton.textContent !== "Заявка отправлена"){
+        withdrawButton.disabled =
+          Number(profile.balance) < 500;
+        withdrawButton.textContent =
+          "Вывести";
+      }
+
+    }
+
+  }
+);
 referralOverlay.classList.add("show");
           });
 
