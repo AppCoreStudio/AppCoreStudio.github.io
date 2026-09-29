@@ -3843,9 +3843,7 @@ console.log("REFERRAL BANNER FOUND", document.getElementById("referralBanner"));
 referralBanner.style.zIndex = "100";
 referralBanner.style.pointerEvents = "auto";
     referralBanner.addEventListener("click",function(){
-alert("CLICK WORKS");
-      alert("ШАГ 2");
-      let referralOverlay =
+     let referralOverlay =
         document.getElementById("referralOverlay");
 
       if(!referralOverlay){
@@ -3854,7 +3852,6 @@ alert("CLICK WORKS");
           document.createElement("div");
 
         referralOverlay.id="referralOverlay";
-alert("ШАГ 3");
         referralOverlay.innerHTML=`
           <div class="referral-modal">
 
@@ -4039,7 +4036,6 @@ alert("ШАГ 3");
         baseUrl + "?ref=ВАШ_КОД";
 
       referralOverlay.classList.add("show");
-      alert("ШАГ 4");
           });
 
   }
