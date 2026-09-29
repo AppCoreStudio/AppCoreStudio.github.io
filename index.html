@@ -3450,5 +3450,142 @@ updateWhatsAppLinks();
 initTelegram();
 </script>
 <script src="logos/logos.js"></script>
+<style>
+.install-steps{
+  margin-top:14px;
+  padding:13px;
+  border-radius:14px;
+  background:rgba(255,193,7,.08);
+  border:1px solid rgba(255,193,7,.2);
+  display:flex;
+  flex-direction:column;
+  gap:9px
+}
+.install-step{
+  display:flex;
+  gap:9px;
+  font-size:13px;
+  line-height:1.4;
+  color:#d5d8e0
+}
+.install-step b{
+  flex:0 0 22px;
+  height:22px;
+  border-radius:50%;
+  background:rgba(118,83,255,.3);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px
+}
+.install-button.opened{
+  background:rgba(55,219,124,.15);
+  color:#55e18b
+}
+</style>
+
+<div id="returnOverlay" class="confirm-overlay">
+  <div class="confirm-modal">
+    <div class="confirm-icon">📲</div>
+    <div class="confirm-title">С возвращением</div>
+    <div class="confirm-text">
+      Приложения уже установились? Нажмите «Да», чтобы перейти к активации.
+      Без активации приложения не заработают.
+    </div>
+    <div class="confirm-buttons">
+      <button id="returnLater" class="confirm-cancel" type="button">Ещё устанавливаю</button>
+      <button id="returnYes" class="confirm-yes" type="button">Да, всё установлено</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var OPENED_KEY="appcore_opened_apps";
+  var installList=document.getElementById("installList");
+  var installPanel=document.getElementById("installPanel");
+  var installedBtn=document.getElementById("installedButton");
+  var activationPanel=document.getElementById("activationPanel");
+  var returnOverlay=document.getElementById("returnOverlay");
+
+  var steps=document.createElement("div");
+  steps.className="install-steps";
+  steps.innerHTML=
+    '<div class="install-step"><b>1</b><span>Нажмите «Установить» и дождитесь установки приложения</span></div>'+
+    '<div class="install-step"><b>2</b><span>Вернитесь на эту страницу (закройте вкладку установки)</span></div>'+
+    '<div class="install-step"><b>3</b><span>Нажмите «Я установил» и получите активацию</span></div>';
+  installList.parentNode.insertBefore(steps,installList);
+
+  function orderNum(){
+    try{return currentOrder&&currentOrder.order_number||null;}catch(e){return null;}
+  }
+
+  function getOpened(num){
+    try{
+      var d=JSON.parse(localStorage.getItem(OPENED_KEY)||"null");
+      return d&&d.order===num&&Array.isArray(d.ids)?d.ids:[];
+    }catch(e){return[];}
+  }
+
+  function markOpened(num,id){
+    try{
+      var ids=getOpened(num);
+      if(ids.indexOf(id)===-1)ids.push(id);
+      localStorage.setItem(OPENED_KEY,JSON.stringify({order:num,ids:ids}));
+    }catch(e){}
+  }
+
+  function enhance(){
+    var num=orderNum();
+    if(!num)return;
+    var opened=getOpened(num);
+    installList.querySelectorAll("a.install-button").forEach(function(a){
+      if(opened.indexOf(a.href)>-1){
+        a.textContent="✓ Открыто";
+        a.classList.add("opened");
+      }
+      if(!a.dataset.bound){
+        a.dataset.bound="1";
+        a.addEventListener("click",function(){
+          markOpened(orderNum(),a.href);
+          a.textContent="✓ Открыто";
+          a.classList.add("opened");
+        });
+      }
+    });
+  }
+
+  new MutationObserver(enhance).observe(installList,{childList:true});
+  enhance();
+
+  function showReturnModal(){
+    var num=orderNum();
+    if(!num)return;
+    if(!installPanel.classList.contains("show"))return;
+    if(installedBtn.disabled)return;
+    if(!getOpened(num).length)return;
+    returnOverlay.classList.add("show");
+  }
+
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="visible")showReturnModal();
+  });
+  window.addEventListener("pageshow",function(e){
+    if(e.persisted)showReturnModal();
+  });
+
+  document.getElementById("returnLater").addEventListener("click",function(){
+    returnOverlay.classList.remove("show");
+  });
+
+  document.getElementById("returnYes").addEventListener("click",function(){
+    returnOverlay.classList.remove("show");
+    installedBtn.click();
+    setTimeout(function(){
+      activationPanel.scrollIntoView({behavior:"smooth",block:"center"});
+    },150);
+  });
+})();
+</script>
 </body>
 </html>
