@@ -1284,6 +1284,18 @@ localStorage.setItem(
   "referral_user_id",
   referralUserId
 );
+  const referralCode =
+  new URLSearchParams(window.location.search).get("ref");
+
+if(
+  referralCode &&
+  referralCode !== ""
+){
+  localStorage.setItem(
+    "referral_code",
+    referralCode
+  );
+}
 </script>
 
 <div class="container">
