@@ -1276,6 +1276,14 @@ const supabaseClient=window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+  const referralUserId =
+  localStorage.getItem("referral_user_id") ||
+  "user_" + Date.now() + "_" + Math.random().toString(36).slice(2,10);
+
+localStorage.setItem(
+  "referral_user_id",
+  referralUserId
+);
 </script>
 
 <div class="container">
