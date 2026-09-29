@@ -3850,7 +3850,7 @@ console.log("REFERRAL BANNER FOUND", document.getElementById("referralBanner"));
     referralBanner.style.position = "relative";
 referralBanner.style.zIndex = "100";
 referralBanner.style.pointerEvents = "auto";
-    referralBanner.addEventListener("click",function(){
+referralBanner.addEventListener("click",async function(){
      let referralOverlay =
         document.getElementById("referralOverlay");
 
@@ -4036,14 +4036,52 @@ referralBanner.style.pointerEvents = "auto";
 
       }
 
-      const baseUrl =
-        window.location.origin +
-        window.location.pathname;
+const {
+  data: referralProfile,
+  error: referralError
+} = await supabaseClient.rpc(
+  "get_or_create_referral_profile",
+  {
+    p_user_id: referralUserId
+  }
+);
 
-      document.getElementById("referralLink").value =
-        baseUrl + "?ref=ВАШ_КОД";
+if(referralError){
+  console.error(referralError);
+  showToast("Не удалось загрузить реферальный профиль");
+  return;
+}
 
-      referralOverlay.classList.add("show");
+const profile = referralProfile?.[0];
+
+if(!profile){
+  showToast("Не удалось получить реферальный код");
+  return;
+}
+
+const baseUrl =
+  window.location.origin +
+  window.location.pathname;
+
+document.getElementById("referralLink").value =
+  baseUrl + "?ref=" + profile.referral_code;
+
+document.getElementById("refInvited").textContent =
+  profile.invited_count;
+
+document.getElementById("refEarned").textContent =
+  Number(profile.total_earned).toLocaleString("ru-RU") + " ₽";
+
+document.getElementById("refAvailable").textContent =
+  Number(profile.balance).toLocaleString("ru-RU") + " ₽";
+
+const withdrawButton =
+  document.getElementById("referralWithdraw");
+
+withdrawButton.disabled =
+  Number(profile.balance) < 500;
+
+referralOverlay.classList.add("show");
           });
 
   }
