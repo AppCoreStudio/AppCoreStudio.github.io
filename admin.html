@@ -3086,17 +3086,13 @@ async function init(){
 document
   .getElementById("referralAdminButton")
   .addEventListener("click", async function(){
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-    .from("referral_balance")
-      .select("*")
-      .order("total_earned", {
-        ascending: false
-      });
-
+const {
+  data,
+  error
+} = await supabaseClient
+  .rpc(
+    "get_admin_referral_stats"
+  );
     if(error){
 
       console.error(error);
