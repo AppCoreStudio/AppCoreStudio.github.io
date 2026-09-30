@@ -3389,11 +3389,36 @@ withdrawalTable.innerHTML =
           <td style="padding:10px;">
             ${request.payment_details || "—"}
           </td>
+<td style="padding:10px;">
+  ${statusText}
 
-          <td style="padding:10px;">
-            ${statusText}
-          </td>
+  ${
+    request.status === "pending"
+      ? `
+        <div style="margin-top:8px;display:flex;gap:6px;">
 
+          <button
+            type="button"
+            class="btn btn-green withdrawal-complete-btn"
+            data-id="${request.id}"
+          >
+            Выплачено
+          </button>
+
+          <button
+            type="button"
+            class="btn withdrawal-reject-btn"
+            data-id="${request.id}"
+          >
+            Отклонить
+          </button>
+
+        </div>
+      `
+      : ""
+  }
+
+</td>
           <td style="padding:10px;">
             ${createdAt}
           </td>
@@ -3477,6 +3502,67 @@ withdrawalTable.innerHTML =
     ).textContent =
       totalWithdrawn.toLocaleString("ru-RU") +
       " ₽";
+document
+  .querySelectorAll(
+    ".withdrawal-complete-btn"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      async function(){
+
+        const requestId =
+          Number(
+            this.dataset.id
+          );
+
+        const {
+          data,
+          error
+        } = await supabaseClient
+          .rpc(
+            "complete_withdrawal_request",
+            {
+              p_request_id:
+                requestId
+            }
+          );
+
+        if(error){
+
+          console.error(error);
+
+          showToast(
+            "Ошибка обработки выплаты"
+          );
+
+          return;
+        }
+
+        if(!data){
+
+          showToast(
+            "Заявка уже обработана"
+          );
+
+          return;
+        }
+
+        showToast(
+          "Заявка отмечена как выплаченная"
+        );
+
+        document
+          .getElementById(
+            "referralAdminOverlay"
+          )
+          .remove();
+
+      }
+    );
+
+  });
 
     document
       .getElementById("closeReferralAdmin")
