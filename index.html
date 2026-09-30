@@ -3219,7 +3219,19 @@ function renderCancelled(order){
   installPanel.classList.remove("show");
 
   cancelledPanel.classList.add("show");
+currentOrder=null;
 
+if(statusTimer){
+  clearInterval(statusTimer);
+  statusTimer=null;
+}
+
+try{
+  localStorage.removeItem(ORDER_LOCK_KEY);
+  localStorage.removeItem(CLIENT_ORDER_KEY);
+  localStorage.removeItem(CLIENT_ORDER_TIME_KEY);
+  localStorage.removeItem(INSTALLED_ORDER_KEY);
+}catch(error){}
   cancelledOrderNumber.textContent=
     "Заказ: "+
     order.order_number;
