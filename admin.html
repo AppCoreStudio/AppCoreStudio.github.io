@@ -3253,7 +3253,57 @@ const {
               </tbody>
 
             </table>
+<h3
+  style="
+    margin:28px 0 14px;
+  "
+>
+  📋 Заявки на вывод
+</h3>
 
+<table
+  style="
+    width:100%;
+    border-collapse:collapse;
+  "
+>
+
+  <thead>
+
+    <tr>
+
+      <th style="text-align:left;padding:10px;">
+        ID
+      </th>
+
+      <th style="text-align:left;padding:10px;">
+        Пользователь
+      </th>
+
+      <th style="text-align:left;padding:10px;">
+        Сумма
+      </th>
+
+      <th style="text-align:left;padding:10px;">
+        Получатель
+      </th>
+
+      <th style="text-align:left;padding:10px;">
+        Статус
+      </th>
+
+      <th style="text-align:left;padding:10px;">
+        Дата
+      </th>
+
+    </tr>
+
+  </thead>
+
+  <tbody id="withdrawalAdminTable">
+  </tbody>
+
+</table>
           </div>
 
         </div>
@@ -3270,6 +3320,88 @@ const {
       document.getElementById(
         "referralAdminTable"
       );
+const {
+  data: withdrawalData,
+  error: withdrawalError
+} = await supabaseClient
+  .rpc(
+    "get_admin_withdrawal_requests"
+  );
+
+if(withdrawalError){
+
+  console.error(withdrawalError);
+
+  showToast(
+    "Не удалось загрузить заявки на вывод"
+  );
+
+  return;
+}
+ const withdrawalTable =
+  document.getElementById(
+    "withdrawalAdminTable"
+  );
+
+withdrawalTable.innerHTML =
+  (withdrawalData || [])
+    .map(request => {
+
+      const statusText =
+        request.status === "pending"
+          ? "Ожидает"
+          : request.status === "completed"
+          ? "Выплачено"
+          : request.status === "rejected"
+          ? "Отклонено"
+          : request.status || "—";
+
+      const createdAt =
+        request.created_at
+          ? new Date(
+              request.created_at
+            ).toLocaleString(
+              "ru-RU"
+            )
+          : "—";
+
+      return `
+        <tr
+          style="
+            border-top:1px solid rgba(255,255,255,.08);
+          "
+        >
+
+          <td style="padding:10px;">
+            ${request.id}
+          </td>
+
+          <td style="padding:10px;">
+            ${request.user_id || "—"}
+          </td>
+
+          <td style="padding:10px;">
+            ${Number(
+              request.amount || 0
+            ).toLocaleString("ru-RU")} ₽
+          </td>
+
+          <td style="padding:10px;">
+            ${request.payment_details || "—"}
+          </td>
+
+          <td style="padding:10px;">
+            ${statusText}
+          </td>
+
+          <td style="padding:10px;">
+            ${createdAt}
+          </td>
+
+        </tr>
+      `;
+    })
+    .join("");
 
     let totalEarned = 0;
     let totalWithdrawn = 0;
