@@ -797,19 +797,29 @@ filter:brightness(.9);
   font-weight:600;
   line-height:1.45
 }
-
 .payment-done{
   width:100%;
   height:48px;
   margin-top:15px;
   border:0;
   border-radius:14px;
-  background:linear-gradient(135deg,#fff,#e9e9ee);
-  color:#08090d;
+  background:linear-gradient(135deg,#4f7cff,#6b5cff);
+  color:#fff;
   font-size:14px;
-  font-weight:850
+  font-weight:850;
+  box-shadow:0 6px 18px rgba(79,124,255,.35);
+  cursor:pointer;
+  transition:transform .15s,filter .15s,box-shadow .15s
 }
 
+.payment-done:active{
+  transform:scale(.98);
+  filter:brightness(.92);
+}
+
+.payment-done:hover{
+  box-shadow:0 8px 22px rgba(79,124,255,.45);
+}
 .payment-done:disabled{
   opacity:.5
 }
