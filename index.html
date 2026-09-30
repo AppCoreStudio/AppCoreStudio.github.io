@@ -300,28 +300,43 @@ font-weight:800
   gap:10px;
   margin-top:16px
 }
-
 .referral-banner{
-  margin-top:14px;
-  padding:13px 15px;
-  border-radius:15px;
-  border:1px solid rgba(150,120,255,.22);
+  margin-top:16px;
+  margin-bottom:18px;
+  padding:20px 16px;
+  min-height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:20px;
+  border:2px solid rgba(255,255,255,.35);
   background:linear-gradient(
     135deg,
-    rgba(117,83,255,.16),
-    rgba(55,42,120,.12)
+    #7c4dff,
+    #9c5cff,
+    #ff4fd8
   );
-  color:#dcd5ff;
-  font-size:13px;
-  font-weight:800;
+  color:#fff;
+  font-size:18px;
+  font-weight:900;
   text-align:center;
   cursor:pointer;
-  transition:transform .18s,background .18s
+  box-shadow:0 8px 30px rgba(124,77,255,.45);
+  transition:transform .18s,filter .18s;
+  animation:referralPulse 2.4s ease-in-out infinite;
 }
+@keyframes referralPulse{
+  0%,100%{
+    box-shadow:0 8px 30px rgba(124,77,255,.45);
+  }
 
+  50%{
+    box-shadow:0 10px 38px rgba(255,79,216,.65);
+  }
+}
 .referral-banner:active{
   transform:scale(.98);
-  background:rgba(117,83,255,.22)
+filter:brightness(.9);
 }
 
 .app-card{
