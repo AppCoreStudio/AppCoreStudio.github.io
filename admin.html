@@ -3563,7 +3563,67 @@ document
     );
 
   });
+document
+  .querySelectorAll(
+    ".withdrawal-reject-btn"
+  )
+  .forEach(button => {
 
+    button.addEventListener(
+      "click",
+      async function(){
+
+        const requestId =
+          Number(
+            this.dataset.id
+          );
+
+        const {
+          data,
+          error
+        } = await supabaseClient
+          .rpc(
+            "reject_withdrawal_request",
+            {
+              p_request_id:
+                requestId
+            }
+          );
+
+        if(error){
+
+          console.error(error);
+
+          showToast(
+            "Ошибка отклонения заявки"
+          );
+
+          return;
+        }
+
+        if(!data){
+
+          showToast(
+            "Заявка уже обработана"
+          );
+
+          return;
+        }
+
+        showToast(
+          "Заявка отклонена, деньги возвращены"
+        );
+
+        document
+          .getElementById(
+            "referralAdminOverlay"
+          )
+          .remove();
+
+      }
+    );
+
+  });
     document
       .getElementById("closeReferralAdmin")
       .addEventListener(
