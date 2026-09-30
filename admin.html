@@ -3091,7 +3091,7 @@ document
       data,
       error
     } = await supabaseClient
-      .from("referral_profiles")
+    .from("referral_balance")
       .select("*")
       .order("total_earned", {
         ascending: false
