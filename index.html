@@ -4000,21 +4000,33 @@ referralBanner.addEventListener("click",async function(){
 <div class="referral-withdraw">
   Минимальная сумма для вывода — 500 ₽
 </div>
+<div
+  id="referralWithdrawForm"
+  style="display:none;"
+>
+  <div>Номер получателя</div>
 
-<div class="referral-payment">
   <input
     id="referralPhone"
     type="tel"
-    placeholder="Номер получателя"
+    placeholder="+7 900 123-45-67"
   >
+
+  <div>Банк получателя</div>
 
   <input
     id="referralBank"
     type="text"
-    placeholder="Банк получателя"
+    placeholder="Например, Сбербанк"
   >
-</div>
 
+  <button
+    type="button"
+    id="referralSubmit"
+  >
+    Отправить заявку
+  </button>
+</div>
 <button
   type="button"
   class="referral-withdraw-btn"
@@ -4123,7 +4135,6 @@ document.getElementById("refAvailable").textContent =
   Number(profile.balance).toLocaleString("ru-RU") + " ₽";
 const withdrawButton =
   document.getElementById("referralWithdraw");
-
 const referralPhoneInput =
   document.getElementById("referralPhone");
 
@@ -4132,8 +4143,34 @@ const referralBankInput =
 
 withdrawButton.disabled =
   Number(profile.balance) < 500;
-
 withdrawButton.addEventListener(
+  "click",
+  function(){
+
+    if(Number(profile.balance) < 500){
+      showToast(
+        "Минимальная сумма для вывода — 500 ₽"
+      );
+      return;
+    }
+
+    const form =
+      document.getElementById(
+        "referralWithdrawForm"
+      );
+
+    form.style.display = "block";
+
+    withdrawButton.style.display =
+      "none";
+
+  }
+);
+
+const referralSubmit =
+  document.getElementById("referralSubmit");
+
+referralSubmit.addEventListener(
   "click",
   async function(){
 
@@ -4142,13 +4179,6 @@ withdrawButton.addEventListener(
 
     const bank =
       referralBankInput.value.trim();
-
-    if(Number(profile.balance) < 500){
-      showToast(
-        "Минимальная сумма для вывода — 500 ₽"
-      );
-      return;
-    }
 
     if(!phone){
       showToast(
@@ -4166,8 +4196,8 @@ withdrawButton.addEventListener(
       return;
     }
 
-    withdrawButton.disabled = true;
-    withdrawButton.textContent =
+    referralSubmit.disabled = true;
+    referralSubmit.textContent =
       "Отправляем…";
 
     try{
@@ -4214,7 +4244,7 @@ withdrawButton.addEventListener(
       referralPhoneInput.value = "";
       referralBankInput.value = "";
 
-      withdrawButton.textContent =
+      referralSubmit.textContent =
         "Заявка отправлена";
 
     }catch(error){
@@ -4227,11 +4257,13 @@ withdrawButton.addEventListener(
 
     }finally{
 
-      if(withdrawButton.textContent !== "Заявка отправлена"){
-        withdrawButton.disabled =
-          Number(profile.balance) < 500;
-        withdrawButton.textContent =
-          "Вывести";
+      if(
+        referralSubmit.textContent !==
+        "Заявка отправлена"
+      ){
+        referralSubmit.disabled = false;
+        referralSubmit.textContent =
+          "Отправить заявку";
       }
 
     }
