@@ -2079,17 +2079,29 @@ async function loadClients() {
           referralClientsRawData.filter(
             row => {
 
-              const values = [
+          const referrer =
+  window.allReferralRows?.find(
+    item =>
+      item.user_id === row.referrer_user_id
+  );
 
-                row.referred_user_id,
+const values = [
 
-                row.referrer_user_id,
+  row.referred_user_id,
 
-                row.referral_code,
+  row.referrer_user_id,
 
-                row.order_id
+  referrer?.username,
 
-              ];
+  referrer?.phone,
+
+  referrer?.email,
+
+  row.referral_code,
+
+  row.order_id
+
+];
 
               return values.some(
                 value =>
@@ -2107,73 +2119,71 @@ async function loadClients() {
     );
 
   }
-  // Первичная загрузка
-  (async function init() {
+ // Первичная загрузка
+(async function init() {
 
-    try {
+  try {
 
-      if (
-        SUPABASE_ANON_KEY.includes(
-          'ВСТАВЬ_СЮДА'
-        )
-      ) {
+    if (
+      SUPABASE_ANON_KEY.includes(
+        'ВСТАВЬ_СЮДА'
+      )
+    ) {
 
-        throw new Error(
-          'В файл ещё не вставлен Supabase Publishable Key.'
-        );
-      }
+      throw new Error(
+        'В файл ещё не вставлен Supabase Publishable Key.'
+      );
+    }
 
+    await loadStats();
 
-      await loadStats();
+    await loadWithdrawalsWithCountdownData();
 
-      await loadWithdrawalsWithCountdownData();
+    await loadTop();
 
-      await loadTop();
+    await loadAll();
 
-      await loadAll();
-      
-      await loadClients();
-      
-      await loadStatistics();
+    await loadClients();
 
+    await loadStatistics();
 
-      refreshTimer =
-        setInterval(
-          async () => {
+    refreshTimer =
+      setInterval(
+        async () => {
 
-            try {
+          try {
 
-              await loadStats();
+            await loadStats();
 
-              await loadWithdrawalsWithCountdownData();
+            await loadWithdrawalsWithCountdownData();
 
-              await loadTop();
+            await loadTop();
 
-              await loadAll();
+            await loadAll();
 
-              await loadStatistics();
+            await loadClients();
 
-            } catch (error) {
+            await loadStatistics();
 
-              console.error(error);
+          } catch (error) {
 
-              showError(
-                'Ошибка автоматического обновления:\n\n' +
-                error.message
-              );
-            }
+            console.error(error);
 
-          },
-          30000
-        );
+            showError(
+              'Ошибка автоматического обновления:\n\n' +
+              error.message
+            );
+          }
 
+        },
+        30000
+      );
 
-      countdownTimer =
-        setInterval(
-          () => {
+    countdownTimer =
+      setInterval(
+        () => {
 
-            updateCountdowns();
-
+          updateCountdowns();
             /*
              * Если 5 минут только что прошли,
              * перерисовываем заявки, чтобы кнопки
