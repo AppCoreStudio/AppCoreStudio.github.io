@@ -3222,32 +3222,25 @@ withdrawBtn.addEventListener(
     "click",
     requestWithdraw
 );
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
+document.getElementById(
+    "withdrawHistoryBtn"
+).addEventListener(
+    "click",
+    loadWithdrawHistory
+);
 
-        document.getElementById(
-            "withdrawHistoryBtn"
-        ).addEventListener(
-            "click",
-            loadWithdrawHistory
-        );
+document.getElementById(
+    "closeWithdrawHistory"
+).addEventListener(
+    "click",
+    closeWithdrawHistory
+);
 
-        document.getElementById(
-            "closeWithdrawHistory"
-        ).addEventListener(
-            "click",
-            closeWithdrawHistory
-        );
-
-        document.getElementById(
-            "withdrawHistoryBackdrop"
-        ).addEventListener(
-            "click",
-            closeWithdrawHistory
-        );
-
-    }
+document.getElementById(
+    "withdrawHistoryBackdrop"
+).addEventListener(
+    "click",
+    closeWithdrawHistory
 );
 document.getElementById(
     "cancelWithdraw"
