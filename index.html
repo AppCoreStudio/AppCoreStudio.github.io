@@ -1303,22 +1303,71 @@ const supabaseClient=window.supabase.createClient(
 );
   const referralUserId =
   localStorage.getItem("referral_user_id") ||
-  "user_" + Date.now() + "_" + Math.random().toString(36).slice(2,10);
+  "user_" + Date.now() + "_" +
+  Math.random().toString(36).slice(2,10);
 
 localStorage.setItem(
   "referral_user_id",
   referralUserId
 );
-  const referralCode =
-  new URLSearchParams(window.location.search).get("ref");
+
+/*
+ * Сохраняем первого реферера.
+ * Последующий ?ref=... не перезаписывает
+ * уже сохранённый реферальный код.
+ */
+
+const REFERRAL_CODE_KEY =
+  "appcore_referral_code";
+
+const savedReferralCode =
+  localStorage.getItem(
+    REFERRAL_CODE_KEY
+  ) ||
+  localStorage.getItem(
+    "referral_code"
+  );
+
+const incomingReferralCode =
+  new URLSearchParams(
+    window.location.search
+  ).get("ref");
+
+function isValidReferralCode(code){
+
+  return (
+    typeof code === "string" &&
+    /^[A-Za-z0-9_-]{3,64}$/.test(
+      code.trim()
+    )
+  );
+}
 
 if(
-  referralCode &&
-  referralCode !== ""
+  savedReferralCode &&
+  isValidReferralCode(savedReferralCode)
 ){
+
+  localStorage.setItem(
+    REFERRAL_CODE_KEY,
+    savedReferralCode.trim()
+  );
+
+}else if(
+  incomingReferralCode &&
+  isValidReferralCode(
+    incomingReferralCode
+  )
+){
+
+  localStorage.setItem(
+    REFERRAL_CODE_KEY,
+    incomingReferralCode.trim()
+  );
+
   localStorage.setItem(
     "referral_code",
-    referralCode
+    incomingReferralCode.trim()
   );
 }
 </script>
