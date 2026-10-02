@@ -1,1899 +1,3430 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Реферальная админка — AppCore</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    :root {
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --text: #172033;
-      --muted: #7b8498;
-      --border: #e7eaf0;
-      --blue: #2563eb;
-      --blue-soft: #eff6ff;
-      --green: #16a34a;
-      --green-soft: #ecfdf3;
-      --yellow: #d97706;
-      --yellow-soft: #fff7ed;
-      --red: #dc2626;
-      --red-soft: #fef2f2;
-      --shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
-      --radius: 18px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .page {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      margin-bottom: 24px;
-    }
-
-    .header-left h1 {
-      margin: 0;
-      font-size: 28px;
-      line-height: 1.2;
-    }
-
-    .header-left p {
-      margin: 7px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .refresh-btn {
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text);
-      border-radius: 12px;
-      padding: 10px 15px;
-      font-weight: 600;
-      transition: .2s;
-    }
-
-    .refresh-btn:hover {
-      border-color: #cbd5e1;
-      transform: translateY(-1px);
-    }
-
-    .refresh-btn.loading {
-      opacity: .65;
-      pointer-events: none;
-    }
-
-    /* Stats */
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 19px;
-      box-shadow: var(--shadow);
-      min-height: 118px;
-    }
-
-    .stat-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .03em;
-    }
-
-    .stat-value {
-      margin-top: 14px;
-      font-size: 28px;
-      line-height: 1;
-      font-weight: 800;
-      letter-spacing: -.02em;
-    }
-
-    .stat-sub {
-      margin-top: 9px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    /* Navigation */
-
-    .nav {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .nav-btn {
-      border: 1px solid var(--border);
-      background: #fff;
-      border-radius: 14px;
-      padding: 14px 12px;
-      color: var(--text);
-      font-weight: 700;
-      transition: .2s;
-    }
-
-    .nav-btn:hover {
-      border-color: #cbd5e1;
-      transform: translateY(-1px);
-    }
-
-    .nav-btn.active {
-      border-color: var(--blue);
-      background: var(--blue-soft);
-      color: var(--blue);
-    }
-
-    /* Panels */
-
-    .panel {
-      display: none;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .panel.active {
-      display: block;
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      padding: 20px 22px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .panel-title {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .panel-description {
-      margin: 5px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .panel-body {
-      padding: 0;
-    }
-
-    /* Withdrawal cards */
-
-    .withdrawal-list {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .withdrawal-item {
-      padding: 20px 22px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .withdrawal-item:last-child {
-      border-bottom: 0;
-    }
-
-    .withdrawal-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-    }
-
-    .withdrawal-user {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #eef2ff;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    .withdrawal-name {
-      font-weight: 800;
-      font-size: 15px;
-    }
-
-    .withdrawal-id {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 11px;
-      word-break: break-all;
-    }
-
-    .withdrawal-amount {
-      font-size: 23px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .details-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .detail {
-      background: #f8fafc;
-      border-radius: 12px;
-      padding: 11px 12px;
-    }
-
-    .detail-label {
-      color: var(--muted);
-      font-size: 11px;
-      margin-bottom: 5px;
-    }
-
-    .detail-value {
-      font-size: 13px;
-      font-weight: 700;
-      word-break: break-word;
-    }
-
-    .withdrawal-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      margin-top: 18px;
-    }
-
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      border-radius: 999px;
-      padding: 7px 11px;
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .status.waiting {
-      background: var(--yellow-soft);
-      color: var(--yellow);
-    }
-
-    .status.ready {
-      background: var(--green-soft);
-      color: var(--green);
-    }
-
-    .status.completed {
-      background: var(--blue-soft);
-      color: var(--blue);
-    }
-
-    .status.rejected {
-      background: var(--red-soft);
-      color: var(--red);
-    }
-
-    .withdrawal-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .action-btn {
-      border: 0;
-      border-radius: 11px;
-      padding: 10px 14px;
-      font-weight: 800;
-      font-size: 13px;
-    }
-
-    .pay-btn {
-      background: var(--green);
-      color: #fff;
-    }
-
-    .reject-btn {
-      background: var(--red-soft);
-      color: var(--red);
-    }
-
-    .action-btn:disabled {
-      opacity: .45;
-      cursor: not-allowed;
-    }
-
-    /* Tables */
-
-    .table-wrap {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 800px;
-    }
-
-    th,
-    td {
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    th {
-      background: #f8fafc;
-      color: var(--muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-    }
-
-    tr:last-child td {
-      border-bottom: 0;
-    }
-
-    td strong {
-      font-weight: 800;
-    }
-
-    .rank {
-      width: 42px;
-      height: 42px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 12px;
-      background: #f1f5f9;
-      font-weight: 900;
-    }
-
-    .money {
-      font-weight: 800;
-    }
-
-    .positive {
-      color: var(--green);
-    }
-
-    /* Statistics */
-
-    .analytics-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      padding: 20px;
-    }
-
-    .analytics-card {
-      background: #f8fafc;
-      border-radius: 15px;
-      padding: 17px;
-    }
-
-    .analytics-label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .analytics-value {
-      margin-top: 9px;
-      font-size: 24px;
-      font-weight: 900;
-    }
-
-    /* Empty / loading */
-
-    .empty {
-      padding: 45px 20px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    .empty-icon {
-      font-size: 34px;
-      margin-bottom: 10px;
-    }
-
-    .loading {
-      padding: 45px 20px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    .error {
-      margin: 16px 20px;
-      padding: 14px;
-      border-radius: 12px;
-      background: var(--red-soft);
-      color: var(--red);
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    /* Toast */
-
-    .toast {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      max-width: 380px;
-      padding: 13px 16px;
-      border-radius: 13px;
-      background: #172033;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      box-shadow: 0 15px 40px rgba(0,0,0,.18);
-      opacity: 0;
-      transform: translateY(12px);
-      pointer-events: none;
-      transition: .25s;
-      z-index: 1000;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Responsive */
-
-    @media (max-width: 1000px) {
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .details-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .analytics-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 700px) {
-      .page {
-        padding: 14px;
-      }
-
-      .header {
-        align-items: flex-start;
-      }
-
-      .header-left h1 {
-        font-size: 23px;
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 9px;
-      }
-
-      .stat-card {
-        min-height: 105px;
-        padding: 14px;
-      }
-
-      .stat-value {
-        font-size: 23px;
-      }
-
-      .nav {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .withdrawal-top {
-        flex-direction: column;
-      }
-
-      .withdrawal-footer {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .details-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .analytics-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .header-actions {
-        flex-shrink: 0;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .refresh-btn span {
-        display: none;
-      }
-
-      .details-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<meta name="theme-color" content="#08090d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<title>AppCore Referral</title>
+
+<style>
+:root{
+    --bg:#08090d;
+    --card:#11131a;
+    --card2:#151821;
+    --border:#252936;
+    --text:#f5f7fb;
+    --muted:#9298a8;
+    --accent:#7c5cff;
+    --accent2:#5f43e8;
+    --success:#35c98a;
+    --danger:#ff5f6d;
+    --input:#0d0f15;
+}
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.app{
+    width:100%;
+    max-width:520px;
+    min-height:100vh;
+    margin:0 auto;
+    padding:20px 16px 40px;
+}
+
+.logo{
+    text-align:center;
+    font-size:28px;
+    font-weight:800;
+    letter-spacing:-1px;
+    margin-top:18px;
+}
+
+.logo span{
+    color:var(--accent);
+}
+
+.subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    margin-top:7px;
+}
+
+.card{
+    background:linear-gradient(180deg,#12141b,#0f1117);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:20px;
+    margin-top:24px;
+    box-shadow:0 15px 45px rgba(0,0,0,.22);
+}
+
+h1{
+    font-size:23px;
+    margin:0 0 7px;
+    letter-spacing:-.4px;
+}
+
+h2{
+    font-size:18px;
+    margin:0;
+}
+
+.description{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:20px;
+}
+
+.field{
+    margin-bottom:14px;
+}
+
+label{
+    display:block;
+    color:#c6cad4;
+    font-size:13px;
+    margin:0 0 7px 2px;
+}
+
+input,
+select{
+    width:100%;
+    height:50px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--input);
+    color:var(--text);
+    outline:none;
+    padding:0 14px;
+    transition:.2s;
+}
+
+select{
+    appearance:none;
+    -webkit-appearance:none;
+}
+
+input:focus,
+select:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(124,92,255,.12);
+}
+
+input::placeholder{
+    color:#626877;
+}
+
+.primary{
+    width:100%;
+    height:50px;
+    border:0;
+    border-radius:14px;
+    color:#fff;
+    font-weight:700;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 10px 25px rgba(95,67,232,.22);
+    transition:.15s;
+}
+
+.primary:active{
+    transform:scale(.985);
+}
+
+.primary:disabled{
+    opacity:.45;
+    cursor:default;
+    box-shadow:none;
+}
+
+.secondary{
+    width:100%;
+    height:48px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    color:var(--text);
+    background:var(--card2);
+    font-weight:600;
+}
+
+.link-btn{
+    border:0;
+    background:none;
+    color:#a996ff;
+    padding:0;
+    font-weight:600;
+}
+
+.switch{
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    margin-top:18px;
+}
+
+.message{
+    display:none;
+    margin-bottom:15px;
+    padding:12px 13px;
+    border-radius:12px;
+    font-size:13px;
+    line-height:1.4;
+}
+
+.message.error{
+    display:block;
+    background:rgba(255,95,109,.1);
+    border:1px solid rgba(255,95,109,.2);
+    color:#ff9aa3;
+}
+
+.message.success{
+    display:block;
+    background:rgba(53,201,138,.1);
+    border:1px solid rgba(53,201,138,.2);
+    color:#7de5b9;
+}
+
+.hidden{
+    display:none !important;
+}
+
+/* Dashboard */
+
+.header-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.user-name{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.logout{
+    border:1px solid var(--border);
+    background:#11131a;
+    color:#bfc4d0;
+    border-radius:11px;
+    padding:9px 12px;
+    font-size:12px;
+}
+
+.balance-card{
+    margin-top:18px;
+    padding:22px;
+    border-radius:22px;
+    background:
+        radial-gradient(circle at 90% 10%,rgba(124,92,255,.24),transparent 40%),
+        linear-gradient(145deg,#171526,#101219);
+    border:1px solid #2c2941;
+}
+
+.balance-label{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.balance{
+    font-size:38px;
+    font-weight:800;
+    letter-spacing:-1.5px;
+    margin-top:5px;
+}
+
+.balance-rub{
+    font-size:20px;
+    color:#aaa1d9;
+}
+
+.progress-wrap{
+    margin-top:18px;
+}
+
+.progress-info{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:7px;
+}
+
+.progress{
+    height:8px;
+    background:#272936;
+    border-radius:99px;
+    overflow:hidden;
+}
+
+.progress-bar{
+    height:100%;
+    width:0%;
+    border-radius:99px;
+    background:linear-gradient(90deg,var(--accent),#9a83ff);
+    transition:.4s;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:14px;
+}
+
+.stat{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:15px;
+}
+
+.stat-value{
+    font-size:21px;
+    font-weight:750;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:4px;
+}
+
+.referral-card{
+    margin-top:14px;
+}
+
+.referral-link-box{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+}
+
+.referral-link{
+    flex:1;
+    min-width:0;
+    height:46px;
+    background:#0b0d12;
+    border:1px solid var(--border);
+    border-radius:12px;
+    color:#bfc4d0;
+    padding:0 12px;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    font-size:12px;
+}
+
+.copy{
+    height:46px;
+    border:1px solid var(--border);
+    background:#171923;
+    color:#fff;
+    border-radius:12px;
+    padding:0 15px;
+    font-weight:600;
+}
+
+.small-note{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+    margin-top:10px;
+}
+
+/* Withdrawal */
+
+.withdraw-card{
+    margin-top:14px;
+}
+
+.withdraw-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.withdraw-available{
+    color:#a996ff;
+    font-size:12px;
+    font-weight:600;
+}
+
+.withdraw-info{
+    margin-top:12px;
+    padding:14px;
+    border-radius:15px;
+    background:#0d0f15;
+    border:1px solid var(--border);
+}
+
+.withdraw-info-title{
+    font-size:13px;
+    font-weight:700;
+}
+
+.withdraw-info-text{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+    margin-top:4px;
+}
+
+.withdraw-form{
+    margin-top:16px;
+}
+
+.withdraw-form .field:last-child{
+    margin-bottom:0;
+}
+
+.bank-wrap{
+    position:relative;
+}
+
+.bank-wrap:after{
+    content:"⌄";
+    position:absolute;
+    right:16px;
+    top:14px;
+    color:#858b9a;
+    pointer-events:none;
+    font-size:18px;
+}
+
+/* Custom bank */
+
+.custom-bank-wrap{
+    display:none;
+}
+
+.custom-bank-wrap.show{
+    display:block;
+}
+
+.withdraw-actions{
+    margin-top:17px;
+}
+
+.withdraw-actions .primary{
+    height:52px;
+}
+
+.saved-details{
+    display:none;
+    margin-top:12px;
+    padding:12px 13px;
+    border-radius:13px;
+    background:rgba(53,201,138,.07);
+    border:1px solid rgba(53,201,138,.16);
+    color:#9be7c7;
+    font-size:12px;
+    line-height:1.5;
+}
+
+.saved-details.show{
+    display:block;
+}
+
+.withdraw-status{
+    margin-top:13px;
+    padding:13px;
+    border-radius:14px;
+    background:#10121a;
+    border:1px solid var(--border);
+}
+.withdraw-history-sheet{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:flex;
+    align-items:flex-end;
+}
+
+.withdraw-history-sheet.hidden{
+    display:none;
+}
+
+.withdraw-history-backdrop{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    backdrop-filter:blur(4px);
+}
+
+.withdraw-history-panel{
+    position:relative;
+    width:100%;
+    max-height:75vh;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-bottom:0;
+    border-radius:22px 22px 0 0;
+    padding:10px 16px 24px;
+    overflow:hidden;
+    animation:withdrawSheetUp .22s ease-out;
+}
+
+.withdraw-history-handle{
+    width:42px;
+    height:4px;
+    border-radius:999px;
+    background:#444956;
+    margin:2px auto 14px;
+}
+
+.withdraw-history-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.withdraw-history-header h2{
+    margin:0;
+    font-size:18px;
+}
+
+.withdraw-history-close{
+    border:0;
+    background:var(--card2);
+    color:var(--text);
+    border-radius:10px;
+    padding:8px 12px;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.withdraw-history-list{
+    max-height:calc(75vh - 85px);
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.withdraw-history-item{
+    padding:13px;
+    border-radius:14px;
+    background:#10121a;
+    border:1px solid var(--border);
+}
+
+.withdraw-history-item-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.withdraw-history-status{
+    font-size:13px;
+    font-weight:700;
+}
+
+.withdraw-history-amount{
+    font-size:15px;
+    font-weight:700;
+}
+
+.withdraw-history-date{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:12px;
+}
+
+.withdraw-history-empty{
+    padding:30px 15px;
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+}
+
+@keyframes withdrawSheetUp{
+    from{
+        transform:translateY(100%);
+    }
+    to{
+        transform:translateY(0);
+    }
+}
+.withdraw-status.pending{
+    color:#f5c542;
+    background:rgba(245,197,66,.12);
+    border-color:rgba(245,197,66,.22);
+}
+
+.withdraw-status.paid{
+    color:#35d07f;
+    background:rgba(53,208,127,.12);
+    border-color:rgba(53,208,127,.22);
+}
+
+.withdraw-status.rejected{
+    color:#ff5c68;
+    background:rgba(255,92,104,.12);
+    border-color:rgba(255,92,104,.22);
+}
+.withdraw-status-title{
+    font-size:13px;
+    font-weight:700;
+}
+
+.withdraw-status-text{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:4px;
+    line-height:1.45;
+}
+
+.support{
+    text-align:center;
+    color:#6e7482;
+    font-size:11px;
+    margin-top:25px;
+}
+
+/* Loading */
+
+.loader{
+    width:20px;
+    height:20px;
+    border:2px solid rgba(255,255,255,.2);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    margin:auto;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+.loading-screen{
+    position:fixed;
+    inset:0;
+    background:var(--bg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+}
+
+/* Modal */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(7px);
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    z-index:200;
+    padding:12px;
+}
+
+.modal-box{
+    width:100%;
+    max-width:520px;
+    background:#12141b;
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:20px;
+    margin-bottom:0;
+}
+
+.modal-title{
+    font-size:19px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.modal-text{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.5;
+    margin-bottom:17px;
+}
+
+.modal-summary{
+    background:#0d0f15;
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:14px;
+    margin-bottom:16px;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    padding:5px 0;
+    font-size:13px;
+}
+
+.summary-row span:first-child{
+    color:var(--muted);
+}
+
+.summary-row span:last-child{
+    color:#f5f7fb;
+    text-align:right;
+}
+
+.modal-buttons{
+    display:flex;
+    gap:9px;
+}
+
+.modal-buttons button{
+    flex:1;
+}
+</style>
 </head>
 
 <body>
 
-<div class="page">
+<div id="loadingScreen" class="loading-screen">
+    <div class="loader"></div>
+</div>
 
-  <header class="header">
-    <div class="header-left">
-      <h1>💸 Реферальная админка</h1>
-      <p>Управление рефералами, выплатами и статистикой</p>
+<div class="app">
+
+    <div class="logo">App<span>Core</span></div>
+    <div class="subtitle">Реферальная программа</div>
+
+    <!-- AUTH -->
+    <section id="authSection">
+
+        <!-- LOGIN -->
+        <div id="loginCard" class="card">
+
+            <h1>Вход</h1>
+
+            <div class="description">
+                Войдите в личный кабинет реферальной программы.
+            </div>
+
+            <div id="loginMessage" class="message"></div>
+
+            <div class="field">
+                <label>Номер телефона</label>
+                <input
+                    id="loginPhone"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="+7 900 000-00-00"
+                >
+            </div>
+
+            <div class="field">
+                <label>Пароль</label>
+                <input
+                    id="loginPassword"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="Введите пароль"
+                >
+            </div>
+
+            <button id="loginBtn" class="primary">
+                Войти
+            </button>
+
+            <div class="switch">
+                Нет аккаунта?
+                <button id="showRegister" class="link-btn">
+                    Зарегистрироваться
+                </button>
+            </div>
+
+        </div>
+
+        <!-- REGISTER -->
+        <div id="registerCard" class="card hidden">
+
+            <h1>Регистрация</h1>
+
+            <div class="description">
+                Создайте аккаунт и получите личную реферальную ссылку.
+            </div>
+
+            <div id="registerMessage" class="message"></div>
+
+            <div class="field">
+                <label>Номер телефона</label>
+                <input
+                    id="registerPhone"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="+7 900 000-00-00"
+                >
+            </div>
+
+            <div class="field">
+                <label>Имя пользователя</label>
+                <input
+                    id="registerUsername"
+                    type="text"
+                    autocomplete="username"
+                    maxlength="30"
+                    placeholder="Например: murat"
+                >
+            </div>
+
+            <div class="field">
+                <label>Пароль</label>
+                <input
+                    id="registerPassword"
+                    type="password"
+                    autocomplete="new-password"
+                    placeholder="Минимум 6 символов"
+                >
+            </div>
+
+            <div class="field">
+                <label>Повторите пароль</label>
+                <input
+                    id="registerPassword2"
+                    type="password"
+                    autocomplete="new-password"
+                    placeholder="Повторите пароль"
+                >
+            </div>
+
+            <button id="registerBtn" class="primary">
+                Создать аккаунт
+            </button>
+
+            <div class="switch">
+                Уже есть аккаунт?
+                <button id="showLogin" class="link-btn">
+                    Войти
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboardSection" class="hidden">
+
+        <div class="card" style="margin-top:24px">
+
+            <div class="header-row">
+
+                <div>
+                    <h2>Личный кабинет</h2>
+                    <div id="dashboardUsername" class="user-name"></div>
+                </div>
+
+                <button id="logoutBtn" class="logout">
+                    Выйти
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="balance-card">
+
+            <div class="balance-label">
+                Текущий баланс
+            </div>
+
+            <div class="balance">
+                <span id="balanceValue">0</span>
+                <span class="balance-rub">₽</span>
+            </div>
+
+            <div class="progress-wrap">
+
+                <div class="progress-info">
+                    <span>До минимальной выплаты</span>
+                    <span id="progressText">0 / 500 ₽</span>
+                </div>
+
+                <div class="progress">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="stats">
+
+            <div class="stat">
+                <div id="earnedValue" class="stat-value">0 ₽</div>
+                <div class="stat-label">Заработано</div>
+            </div>
+
+            <div class="stat">
+                <div id="withdrawnValue" class="stat-value">0 ₽</div>
+                <div class="stat-label">Выведено</div>
+            </div>
+
+            <div class="stat">
+                <div id="clicksValue" class="stat-value">0</div>
+                <div class="stat-label">Переходов</div>
+            </div>
+
+            <div class="stat">
+                <div id="registrationsValue" class="stat-value">0</div>
+                <div class="stat-label">Регистраций</div>
+            </div>
+
+            <div class="stat" style="grid-column:1/-1">
+                <div id="paidValue" class="stat-value">0</div>
+                <div class="stat-label">Завершили заказ</div>
+            </div>
+
+        </div>
+
+        <div class="card referral-card">
+
+            <h2>Ваша реферальная ссылка</h2>
+
+            <div class="referral-link-box">
+
+                <div
+                    id="referralLink"
+                    class="referral-link"
+                ></div>
+
+                <button id="copyBtn" class="copy">
+                    Копировать
+                </button>
+
+            </div>
+
+           <div class="small-note">
+    Приглашайте друзей и зарабатывайте вместе с AppCore.
+    За каждого приглашённого клиента с завершённым заказом вы получаете 150 ₽.
+    Приглашайте больше — зарабатывайте больше.
+</div>
+
+        </div>
+
+        <!-- WITHDRAW -->
+        <div class="card withdraw-card">
+
+<div class="withdraw-head">
+    <div>
+        <h2>Вывод средств</h2>
+
+        <div id="withdrawAvailable" class="withdraw-available">
+            0 ₽ доступно
+        </div>
     </div>
-
-    <div class="header-actions">
-      <button class="refresh-btn" id="refreshBtn" onclick="loadAll()">
-        🔄 <span>Обновить</span>
-      </button>
-    </div>
-  </header>
-
-
-  <!-- =========================
-       STATS
-  ========================== -->
-
-  <section class="stats-grid">
-
-    <div class="stat-card">
-      <div class="stat-label">👥 РЕФЕРАЛЫ</div>
-      <div class="stat-value" id="statReferrals">—</div>
-      <div class="stat-sub">Всего зарегистрировано</div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-label">👤 КЛИЕНТЫ</div>
-      <div class="stat-value" id="statClients">—</div>
-      <div class="stat-sub">Клиенты с начислением</div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-label">💰 ЗАРАБОТАНО</div>
-      <div class="stat-value" id="statEarned">—</div>
-      <div class="stat-sub">Всего начислено</div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-label">💸 ВЫПЛАЧЕНО</div>
-      <div class="stat-value" id="statPaid">—</div>
-      <div class="stat-sub">Фактически выплачено</div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-label">🟡 ЗАЯВКИ</div>
-      <div class="stat-value" id="statRequests">—</div>
-      <div class="stat-sub">Заявок на выплату</div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-label">🟢 ГОТОВЫ</div>
-      <div class="stat-value" id="statReady">—</div>
-      <div class="stat-sub">Можно обработать</div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-label">⏳ ОЖИДАЮТ</div>
-      <div class="stat-value" id="statWaiting">—</div>
-      <div class="stat-sub">Первые 5 минут</div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-label">💵 БАЛАНСЫ</div>
-      <div class="stat-value" id="statBalances">—</div>
-      <div class="stat-sub">Доступные балансы</div>
-    </div>
-
-  </section>
-
-
-  <!-- =========================
-       NAVIGATION
-  ========================== -->
-
-  <nav class="nav">
 
     <button
-      class="nav-btn active"
-      data-panel="withdrawals"
-      onclick="switchPanel('withdrawals', this)"
+        type="button"
+        id="withdrawHistoryBtn"
+        class="secondary"
     >
-      💸 Заявки на выплату
+        История выплат
     </button>
+</div>
 
-    <button
-      class="nav-btn"
-      data-panel="top"
-      onclick="switchPanel('top', this)"
-    >
-      🏆 Топ рефералов
-    </button>
+            <div class="withdraw-info">
 
-    <button
-      class="nav-btn"
-      data-panel="all"
-      onclick="switchPanel('all', this)"
-    >
-      👥 Все рефералы
-    </button>
+                <div class="withdraw-info-title">
+                    Минимальная сумма — 500 ₽
+                </div>
 
-    <button
-      class="nav-btn"
-      data-panel="statistics"
-      onclick="switchPanel('statistics', this)"
-    >
-      📊 Статистика
-    </button>
+                <div
+                    id="withdrawInfoText"
+                    class="withdraw-info-text"
+                >
+                    Накопите 500 ₽, чтобы оформить выплату.
+                </div>
 
-  </nav>
+            </div>
 
+            <div id="withdrawMessage" class="message"></div>
 
-  <!-- =========================
-       WITHDRAWALS
-  ========================== -->
+            <div class="withdraw-form">
 
-  <section class="panel active" id="panel-withdrawals">
+                <div class="field">
+                    <label>Сумма вывода</label>
 
-    <div class="panel-header">
-      <div>
-        <h2 class="panel-title">💸 Заявки на выплату</h2>
-        <p class="panel-description">
-          Заявки доступны к обработке через 5 минут после создания.
-        </p>
-      </div>
-    </div>
+                    <input
+                        id="withdrawAmount"
+                        type="number"
+                        inputmode="numeric"
+                        min="500"
+                        step="50"
+                        placeholder="Например, 500"
+                    >
+                </div>
 
-    <div class="panel-body" id="withdrawalsContent">
-      <div class="loading">Загрузка заявок…</div>
-    </div>
+                <div class="field">
+                    <label>Номер телефона</label>
 
-  </section>
+                    <input
+                        id="payoutPhone"
+                        type="tel"
+                        inputmode="tel"
+                        autocomplete="tel"
+                        placeholder="+7 900 000-00-00"
+                    >
+                </div>
 
+                <div class="field">
+                    <label>Банк получателя</label>
 
-  <!-- =========================
-       TOP 10
-  ========================== -->
+                    <div class="bank-wrap">
 
-  <section class="panel" id="panel-top">
+                        <select id="payoutBank">
 
-    <div class="panel-header">
-      <div>
-        <h2 class="panel-title">🏆 Топ рефералов</h2>
-        <p class="panel-description">
-          Рейтинг по общей сумме заработанных вознаграждений.
-        </p>
-      </div>
-    </div>
+                            <option
+                                value=""
+                                disabled
+                                selected
+                            >
+                                Выберите банк
+                            </option>
 
-    <div class="panel-body" id="topContent">
-      <div class="loading">Загрузка…</div>
-    </div>
+                            <option value="Сбербанк">
+                                Сбербанк
+                            </option>
 
-  </section>
+                            <option value="Т-Банк">
+                                Т-Банк
+                            </option>
 
+                            <option value="Альфа-Банк">
+                                Альфа-Банк
+                            </option>
 
-  <!-- =========================
-       ALL REFERRALS
-  ========================== -->
+                            <option value="ВТБ">
+                                ВТБ
+                            </option>
 
-  <section class="panel" id="panel-all">
+                            <option value="ПСБ">
+                                ПСБ
+                            </option>
 
-    <div class="panel-header">
-      <div>
-        <h2 class="panel-title">👥 Все рефералы</h2>
-        <p class="panel-description">
-          Полный список реферальных профилей.
-        </p>
-      </div>
-    </div>
+                            <option value="Газпромбанк">
+                                Газпромбанк
+                            </option>
 
-    <div class="panel-body" id="allContent">
-      <div class="loading">Загрузка…</div>
-    </div>
+                            <option value="Россельхозбанк">
+                                Россельхозбанк
+                            </option>
 
-  </section>
+                            <option value="Другой банк">
+                                Другой банк
+                            </option>
 
+                        </select>
 
-  <!-- =========================
-       STATISTICS
-  ========================== -->
+                    </div>
+                </div>
 
-  <section class="panel" id="panel-statistics">
+                <div
+                    id="customBankWrap"
+                    class="field custom-bank-wrap"
+                >
 
-    <div class="panel-header">
-      <div>
-        <h2 class="panel-title">📊 Статистика</h2>
-        <p class="panel-description">
-          Общие показатели реферальной системы.
-        </p>
-      </div>
-    </div>
+                    <label>Название банка</label>
 
-    <div class="panel-body" id="statisticsContent">
-      <div class="loading">Загрузка…</div>
-    </div>
+                    <input
+                        id="customBankName"
+                        type="text"
+                        autocomplete="organization"
+                        maxlength="100"
+                        placeholder="Введите название банка"
+                    >
 
-  </section>
+                </div>
+
+                <div class="field">
+
+                    <label>Имя получателя</label>
+
+                    <input
+                        id="payoutFirstName"
+                        type="text"
+                        autocomplete="given-name"
+                        maxlength="50"
+                        placeholder="Введите имя"
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label>Фамилия получателя</label>
+
+                    <input
+                        id="payoutLastName"
+                        type="text"
+                        autocomplete="family-name"
+                        maxlength="50"
+                        placeholder="Введите фамилию"
+                    >
+
+                </div>
+
+                <div
+                    id="savedDetails"
+                    class="saved-details"
+                ></div>
+
+                <div class="withdraw-actions">
+
+                    <button
+                        id="withdrawBtn"
+                        class="primary"
+                        disabled
+                    >
+                        Вывести средства
+                    </button>
+
+                </div>
+<div id="withdrawStatus" class="withdraw-status hidden">
+    <div id="withdrawStatusTitle" class="withdraw-status-title"></div>
+    <div id="withdrawStatusText" class="withdraw-status-text"></div>
+</div>
+            </div>
+
+        </div>
+
+        <div class="support">
+            AppCore Referral
+        </div>
+
+    </section>
 
 </div>
 
+<!-- WITHDRAW MODAL -->
+<div id="withdrawModal" class="modal hidden">
 
-<div class="toast" id="toast"></div>
+    <div class="modal-box">
 
+        <div class="modal-title">
+            Подтвердите вывод
+        </div>
+
+        <div class="modal-text">
+            Проверьте реквизиты получателя перед отправкой заявки.
+        </div>
+
+        <div class="modal-summary">
+
+            <div class="summary-row">
+                <span>Сумма</span>
+                <span id="summaryAmount">0 ₽</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Телефон</span>
+                <span id="summaryPhone">—</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Банк</span>
+                <span id="summaryBank">—</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Получатель</span>
+                <span id="summaryName">—</span>
+            </div>
+
+        </div>
+
+        <div class="modal-buttons">
+
+            <button
+                id="cancelWithdraw"
+                class="secondary"
+            >
+                Отмена
+            </button>
+
+            <button
+                id="confirmWithdraw"
+                class="primary"
+            >
+                Отправить
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 <script>
-  /* =========================================================
-     SUPABASE
-  ========================================================= */
+/* =========================================================
+   APPCORE REFERRAL
+   ========================================================= */
 
-  const SUPABASE_URL = 'https://dkgipfotfjntlhabakns.supabase.co';
+const SUPABASE_URL =
+    "https://dkgipfotfjntlhabakns.supabase.co";
 
-  /*
-    ВАЖНО:
-    Здесь должен быть тот же anon/public key,
-    который уже используется на клиентской части AppCore.
-  */
- const SUPABASE_ANON_KEY = 'ВСТАВЬ_СЮДА_СВОЙ_SUPABASE_ANON_KEYconst SUPABASE_ANON_KEY = 'sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6'Y;
+const SUPABASE_KEY =
+    "sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+const SESSION_KEY =
+    "appcore_referral_session";
 
+const REFERRAL_KEY =
+    "appcore_referral_code";
 
-  /* =========================================================
-     STATE
-  ========================================================= */
+const VISITOR_KEY =
+    "appcore_referral_visitor";
 
-  let withdrawals = [];
-  let topReferrals = [];
-  let allReferrals = [];
-  let statistics = null;
+const TOKEN_COOKIE =
+    "appcore_referral_token";
 
-  let refreshTimer = null;
-  let countdownTimer = null;
+const TOKEN_MAX_AGE =
+    60 * 60 * 24 * 30;
 
+const MIN_WITHDRAW = 500;
 
-  /* =========================================================
-     HELPERS
-  ========================================================= */
 
-  function money(value) {
-    const number = Number(value || 0);
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
 
-    return number.toLocaleString('ru-RU', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }) + ' ₽';
-  }
+const loadingScreen =
+    document.getElementById("loadingScreen");
 
+const authSection =
+    document.getElementById("authSection");
 
-  function number(value) {
-    return Number(value || 0).toLocaleString('ru-RU');
-  }
+const dashboardSection =
+    document.getElementById("dashboardSection");
 
+const loginCard =
+    document.getElementById("loginCard");
 
-  function escapeHtml(value) {
-    if (value === null || value === undefined) {
-      return '';
-    }
+const registerCard =
+    document.getElementById("registerCard");
 
-    return String(value)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
+const loginMessage =
+    document.getElementById("loginMessage");
 
+const registerMessage =
+    document.getElementById("registerMessage");
 
-  function formatDate(value) {
-    if (!value) {
-      return '—';
-    }
+const withdrawMessage =
+    document.getElementById("withdrawMessage");
 
-    const date = new Date(value);
+const withdrawBtn =
+    document.getElementById("withdrawBtn");
 
-    if (Number.isNaN(date.getTime())) {
-      return '—';
-    }
+let currentSession = null;
+let pendingWithdraw = null;
 
-    return date.toLocaleString('ru-RU', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  }
 
+/* =========================================================
+   SUPABASE RPC
+   ========================================================= */
 
-  function getInitial(name) {
-    const value = String(name || '').trim();
+async function rpc(
+    functionName,
+    body,
+    timeoutMs = 12000
+){
 
-    if (!value) {
-      return '👤';
-    }
+    const controller =
+        new AbortController();
 
-    return escapeHtml(value.charAt(0).toUpperCase());
-  }
-
-
-  function showToast(message) {
-    const toast = document.getElementById('toast');
-
-    toast.textContent = message;
-    toast.classList.add('show');
-
-    clearTimeout(showToast.timer);
-
-    showToast.timer = setTimeout(() => {
-      toast.classList.remove('show');
-    }, 3000);
-  }
-
-
-  /* =========================================================
-     NAVIGATION
-  ========================================================= */
-
-  function switchPanel(panelName, button) {
-
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.classList.remove('active');
-    });
-
-    if (button) {
-      button.classList.add('active');
-    }
-
-    document.querySelectorAll('.panel').forEach(panel => {
-      panel.classList.remove('active');
-    });
-
-    const panel = document.getElementById('panel-' + panelName);
-
-    if (panel) {
-      panel.classList.add('active');
-    }
-  }
-
-
-  /* =========================================================
-     LOAD STATS
-  ========================================================= */
-
-  async function loadStats() {
-
-    const { data, error } = await supabaseClient
-      .rpc('get_referral_admin_stats');
-
-    if (error) {
-      console.error('Stats error:', error);
-      throw error;
-    }
-
-    const stats = data && data[0] ? data[0] : {};
-
-    document.getElementById('statReferrals').textContent =
-      number(stats.referrals_count);
-
-    document.getElementById('statClients').textContent =
-      number(stats.clients_count);
-
-    document.getElementById('statEarned').textContent =
-      money(stats.total_earned);
-
-    document.getElementById('statPaid').textContent =
-      money(stats.total_paid);
-
-    document.getElementById('statRequests').textContent =
-      number(stats.withdrawal_requests);
-
-    document.getElementById('statReady').textContent =
-      number(stats.ready_requests);
-
-    document.getElementById('statWaiting').textContent =
-      number(stats.waiting_requests);
-
-    document.getElementById('statBalances').textContent =
-      money(stats.total_balances);
-  }
-
-
-  /* =========================================================
-     LOAD WITHDRAWALS
-  ========================================================= */
-
-  async function loadWithdrawals() {
-
-    const { data, error } = await supabaseClient
-      .rpc('get_admin_referral_withdrawals');
-
-    if (error) {
-      console.error('Withdrawals error:', error);
-      throw error;
-    }
-
-    withdrawals = data || [];
-
-    renderWithdrawals();
-  }
-
-
-  function isReady(item) {
-
-    if (item.status !== 'pending') {
-      return false;
-    }
-
-    if (!item.created_at) {
-      return false;
-    }
-
-    return new Date(item.created_at).getTime() <=
-      Date.now() - (5 * 60 * 1000);
-  }
-
-
-  function getRemainingSeconds(item) {
-
-    if (!item.created_at) {
-      return 0;
-    }
-
-    const readyAt =
-      new Date(item.created_at).getTime() +
-      (5 * 60 * 1000);
-
-    return Math.max(
-      0,
-      Math.ceil((readyAt - Date.now()) / 1000)
-    );
-  }
-
-
-  function formatTimer(seconds) {
-
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-
-    return String(minutes).padStart(2, '0') +
-      ':' +
-      String(secs).padStart(2, '0');
-  }
-
-
-  function renderWithdrawals() {
-
-    const container =
-      document.getElementById('withdrawalsContent');
-
-    if (!withdrawals.length) {
-
-      container.innerHTML = `
-        <div class="empty">
-          <div class="empty-icon">💸</div>
-          <div>Заявок на выплату пока нет</div>
-        </div>
-      `;
-
-      return;
-    }
-
-
-    container.innerHTML = `
-      <div class="withdrawal-list">
-        ${withdrawals.map(renderWithdrawal).join('')}
-      </div>
-    `;
-  }
-
-
-  function renderWithdrawal(item) {
-
-    const payment = parsePaymentDetails(item.payment_details);
-
-    const ready = isReady(item);
-
-    let statusHtml = '';
-    let actionsHtml = '';
-
-    if (item.status === 'completed') {
-
-      statusHtml = `
-        <span class="status completed">
-          ✓ Выплачено
-        </span>
-      `;
-
-    } else if (item.status === 'rejected') {
-
-      statusHtml = `
-        <span class="status rejected">
-          ✕ Отклонено
-        </span>
-      `;
-
-    } else if (ready) {
-
-      statusHtml = `
-        <span class="status ready">
-          🟢 Готова к выплате
-        </span>
-      `;
-
-      actionsHtml = `
-        <div class="withdrawal-actions">
-
-          <button
-            class="action-btn pay-btn"
-            onclick="completeWithdrawal(${Number(item.id)})"
-          >
-            💸 Выплатить
-          </button>
-
-          <button
-            class="action-btn reject-btn"
-            onclick="rejectWithdrawal(${Number(item.id)})"
-          >
-            ✕ Отклонить
-          </button>
-
-        </div>
-      `;
-
-    } else {
-
-      const seconds = getRemainingSeconds(item);
-
-      statusHtml = `
-        <span
-          class="status waiting"
-          data-timer-id="${Number(item.id)}"
-        >
-          ⏳ Ожидание
-          <span class="timer-value">
-            ${formatTimer(seconds)}
-          </span>
-        </span>
-      `;
-
-      actionsHtml = `
-        <div class="withdrawal-actions">
-
-          <button
-            class="action-btn pay-btn"
-            disabled
-          >
-            💸 Выплатить
-          </button>
-
-          <button
-            class="action-btn reject-btn"
-            disabled
-          >
-            ✕ Отклонить
-          </button>
-
-        </div>
-      `;
-    }
-
-
-    const username =
-      payment.first_name ||
-      payment.last_name ||
-      item.user_id ||
-      'Пользователь';
-
-
-    return `
-      <article class="withdrawal-item">
-
-        <div class="withdrawal-top">
-
-          <div class="withdrawal-user">
-
-            <div class="avatar">
-              ${getInitial(username)}
-            </div>
-
-            <div>
-              <div class="withdrawal-name">
-                ${escapeHtml(
-                  [payment.first_name, payment.last_name]
-                    .filter(Boolean)
-                    .join(' ') ||
-                  item.user_id ||
-                  'Пользователь'
-                )}
-              </div>
-
-              <div class="withdrawal-id">
-                ID: ${escapeHtml(item.user_id)}
-              </div>
-            </div>
-
-          </div>
-
-          <div class="withdrawal-amount">
-            ${money(item.amount)}
-          </div>
-
-        </div>
-
-
-        <div class="details-grid">
-
-          <div class="detail">
-            <div class="detail-label">Телефон</div>
-            <div class="detail-value">
-              ${escapeHtml(payment.phone || '—')}
-            </div>
-          </div>
-
-          <div class="detail">
-            <div class="detail-label">Банк</div>
-            <div class="detail-value">
-              ${escapeHtml(payment.bank_name || '—')}
-            </div>
-          </div>
-
-          <div class="detail">
-            <div class="detail-label">Создана</div>
-            <div class="detail-value">
-              ${formatDate(item.created_at)}
-            </div>
-          </div>
-
-          <div class="detail">
-            <div class="detail-label">Готова после</div>
-            <div class="detail-value">
-              ${formatDate(item.ready_at)}
-            </div>
-          </div>
-
-        </div>
-
-
-        <div class="withdrawal-footer">
-
-          ${statusHtml}
-
-          ${actionsHtml}
-
-        </div>
-
-      </article>
-    `;
-  }
-
-
-  function parsePaymentDetails(value) {
-
-    if (!value) {
-      return {};
-    }
-
-    if (typeof value === 'object') {
-      return value;
-    }
-
-    try {
-      return JSON.parse(value);
-    } catch (error) {
-      console.warn(
-        'Could not parse payment_details:',
-        value
-      );
-
-      return {};
-    }
-  }
-
-
-  /* =========================================================
-     COMPLETE WITHDRAWAL
-  ========================================================= */
-
-  async function completeWithdrawal(id) {
-
-    const request =
-      withdrawals.find(item => Number(item.id) === Number(id));
-
-    if (!request) {
-      showToast('Заявка не найдена');
-      return;
-    }
-
-    if (!isReady(request)) {
-      showToast('Заявка ещё не готова к выплате');
-      return;
-    }
-
-    const confirmed = confirm(
-      `Выплатить ${money(request.amount)}?\n\n` +
-      `После подтверждения заявка будет отмечена как выплаченная.`
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-
-    try {
-
-      const { data, error } = await supabaseClient
-        .rpc(
-          'complete_referral_withdrawal_request',
-          {
-            p_request_id: Number(id)
-          }
+    const timeout =
+        setTimeout(
+            () => controller.abort(),
+            timeoutMs
         );
 
-      if (error) {
-        throw error;
-      }
-
-      if (!data) {
-        showToast(
-          'Выплата не выполнена. Возможно, заявка уже обработана.'
-        );
-
-        await loadAll();
-
-        return;
-      }
-
-      showToast('Выплата успешно отмечена');
-
-      await loadAll();
-
-    } catch (error) {
-
-      console.error(error);
-
-      showToast(
-        'Ошибка при обработке выплаты: ' +
-        (error.message || 'неизвестная ошибка')
-      );
-    }
-  }
-
-
-  /* =========================================================
-     REJECT WITHDRAWAL
-  ========================================================= */
-
-  async function rejectWithdrawal(id) {
-
-    const request =
-      withdrawals.find(item => Number(item.id) === Number(id));
-
-    if (!request) {
-      showToast('Заявка не найдена');
-      return;
-    }
-
-    if (!isReady(request)) {
-      showToast('Заявка ещё не готова к обработке');
-      return;
-    }
-
-    const confirmed = confirm(
-      `Отклонить заявку на ${money(request.amount)}?\n\n` +
-      `Сумма будет возвращена на баланс реферала.`
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-
-    try {
-
-      const { data, error } = await supabaseClient
-        .rpc(
-          'reject_referral_withdrawal_request',
-          {
-            p_request_id: Number(id)
-          }
-        );
-
-      if (error) {
-        throw error;
-      }
-
-      if (!data) {
-        showToast(
-          'Заявка не отклонена. Возможно, она уже обработана.'
-        );
-
-        await loadAll();
-
-        return;
-      }
-
-      showToast(
-        'Заявка отклонена. Баланс возвращён.'
-      );
-
-      await loadAll();
-
-    } catch (error) {
-
-      console.error(error);
-
-      showToast(
-        'Ошибка при отклонении: ' +
-        (error.message || 'неизвестная ошибка')
-      );
-    }
-  }
-
-
-  /* =========================================================
-     LOAD TOP 10
-  ========================================================= */
-
-  async function loadTop() {
-
-    const { data, error } = await supabaseClient
-      .rpc('get_referral_admin_top10');
-
-    if (error) {
-      console.error('Top error:', error);
-      throw error;
-    }
-
-    topReferrals = data || [];
-
-    renderTop();
-  }
-
-
-  function renderTop() {
-
-    const container =
-      document.getElementById('topContent');
-
-    if (!topReferrals.length) {
-
-      container.innerHTML = `
-        <div class="empty">
-          <div class="empty-icon">🏆</div>
-          <div>Рефералов пока нет</div>
-        </div>
-      `;
-
-      return;
-    }
-
-
-    container.innerHTML = `
-      <div class="table-wrap">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>Место</th>
-              <th>Реферал</th>
-              <th>Код</th>
-              <th>Клиенты</th>
-              <th>Заработано</th>
-              <th>Баланс</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${topReferrals.map(item => `
-              <tr>
-
-                <td>
-                  <span class="rank">
-                    ${escapeHtml(item.rank)}
-                  </span>
-                </td>
-
-                <td>
-                  <strong>
-                    ${escapeHtml(
-                      item.username ||
-                      item.user_id
-                    )}
-                  </strong>
-                </td>
-
-                <td>
-                  ${escapeHtml(item.referral_code || '—')}
-                </td>
-
-                <td>
-                  ${number(item.clients)}
-                </td>
-
-                <td class="money">
-                  ${money(item.total_earned)}
-                </td>
-
-                <td class="money positive">
-                  ${money(item.balance)}
-                </td>
-
-              </tr>
-            `).join('')}
-
-          </tbody>
-
-        </table>
-
-      </div>
-    `;
-  }
-
-
-  /* =========================================================
-     LOAD ALL REFERRALS
-  ========================================================= */
-
-  async function loadAllReferrals() {
-
-    const { data, error } = await supabaseClient
-      .rpc('get_referral_admin_all_referrals');
-
-    if (error) {
-      console.error('All referrals error:', error);
-      throw error;
-    }
-
-    allReferrals = data || [];
-
-    renderAllReferrals();
-  }
-
-
-  function renderAllReferrals() {
-
-    const container =
-      document.getElementById('allContent');
-
-    if (!allReferrals.length) {
-
-      container.innerHTML = `
-        <div class="empty">
-          <div class="empty-icon">👥</div>
-          <div>Рефералов пока нет</div>
-        </div>
-      `;
-
-      return;
-    }
-
-
-    container.innerHTML = `
-      <div class="table-wrap">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>Реферал</th>
-              <th>Телефон</th>
-              <th>Код</th>
-              <th>Клиенты</th>
-              <th>Заработано</th>
-              <th>Выплачено</th>
-              <th>Баланс</th>
-              <th>Регистрация</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${allReferrals.map(item => `
-              <tr>
-
-                <td>
-                  <strong>
-                    ${escapeHtml(
-                      item.username ||
-                      item.user_id
-                    )}
-                  </strong>
-                </td>
-
-                <td>
-                  ${escapeHtml(item.phone || '—')}
-                </td>
-
-                <td>
-                  ${escapeHtml(item.referral_code || '—')}
-                </td>
-
-                <td>
-                  ${number(item.clients)}
-                </td>
-
-                <td class="money">
-                  ${money(item.total_earned)}
-                </td>
-
-                <td class="money">
-                  ${money(item.total_withdrawn)}
-                </td>
-
-                <td class="money positive">
-                  ${money(item.balance)}
-                </td>
-
-                <td>
-                  ${formatDate(item.created_at)}
-                </td>
-
-              </tr>
-            `).join('')}
-
-          </tbody>
-
-        </table>
-
-      </div>
-    `;
-  }
-
-
-  /* =========================================================
-     LOAD STATISTICS
-  ========================================================= */
-
-  async function loadStatistics() {
-
-    const { data, error } = await supabaseClient
-      .rpc('get_referral_admin_statistics');
-
-    if (error) {
-      console.error('Statistics error:', error);
-      throw error;
-    }
-
-    statistics = data && data[0]
-      ? data[0]
-      : {};
-
-    renderStatistics();
-  }
-
-
-  function renderStatistics() {
-
-    const container =
-      document.getElementById('statisticsContent');
-
-    container.innerHTML = `
-
-      <div class="analytics-grid">
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Всего рефералов
-          </div>
-          <div class="analytics-value">
-            ${number(statistics.total_referrals)}
-          </div>
-        </div>
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Клиенты с начислением
-          </div>
-          <div class="analytics-value">
-            ${number(statistics.total_clients)}
-          </div>
-        </div>
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Всего заработано
-          </div>
-          <div class="analytics-value">
-            ${money(statistics.total_earned)}
-          </div>
-        </div>
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Всего выплачено
-          </div>
-          <div class="analytics-value">
-            ${money(statistics.total_paid)}
-          </div>
-        </div>
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Сумма активных заявок
-          </div>
-          <div class="analytics-value">
-            ${money(statistics.total_pending)}
-          </div>
-        </div>
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Отклонено
-          </div>
-          <div class="analytics-value">
-            ${money(statistics.total_rejected)}
-          </div>
-        </div>
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Общий доступный баланс
-          </div>
-          <div class="analytics-value">
-            ${money(statistics.total_balance)}
-          </div>
-        </div>
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Средний заработок реферала
-          </div>
-          <div class="analytics-value">
-            ${money(statistics.average_earned)}
-          </div>
-        </div>
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Среднее количество клиентов
-          </div>
-          <div class="analytics-value">
-            ${Number(
-              statistics.average_clients || 0
-            ).toLocaleString('ru-RU', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })}
-          </div>
-        </div>
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Выплаченных заявок
-          </div>
-          <div class="analytics-value">
-            ${number(statistics.paid_requests_count)}
-          </div>
-        </div>
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Отклонённых заявок
-          </div>
-          <div class="analytics-value">
-            ${number(statistics.rejected_requests_count)}
-          </div>
-        </div>
-
-        <div class="analytics-card">
-          <div class="analytics-label">
-            Ожидающих заявок
-          </div>
-          <div class="analytics-value">
-            ${number(statistics.pending_requests_count)}
-          </div>
-        </div>
-
-      </div>
-    `;
-  }
-
-
-  /* =========================================================
-     LOAD EVERYTHING
-  ========================================================= */
-
-  async function loadAll() {
-
-    const refreshBtn =
-      document.getElementById('refreshBtn');
-
-    refreshBtn.classList.add('loading');
-
-    try {
-
-      await Promise.all([
-        loadStats(),
-        loadWithdrawals(),
-        loadTop(),
-        loadAllReferrals(),
-        loadStatistics()
-      ]);
-
-    } catch (error) {
-
-      console.error('Referral admin loading error:', error);
-
-      showToast(
-        'Ошибка загрузки данных. Проверь Supabase и RPC.'
-      );
-
-    } finally {
-
-      refreshBtn.classList.remove('loading');
-
-    }
-  }
-
-
-  /* =========================================================
-     AUTO REFRESH
-  ========================================================= */
-
-  function startAutoRefresh() {
-
-    clearInterval(refreshTimer);
-
-    refreshTimer = setInterval(() => {
-      loadAll();
-    }, 30000);
-  }
-
-
-  /* =========================================================
-     WITHDRAWAL COUNTDOWN
-  ========================================================= */
-
-  function startCountdown() {
-
-    clearInterval(countdownTimer);
-
-    countdownTimer = setInterval(() => {
-
-      let needsReload = false;
-
-      document
-        .querySelectorAll('[data-timer-id]')
-        .forEach(element => {
-
-          const id =
-            Number(element.dataset.timerId);
-
-          const item =
-            withdrawals.find(
-              row => Number(row.id) === id
+    try{
+
+        const response =
+            await fetch(
+                SUPABASE_URL +
+                "/rest/v1/rpc/" +
+                functionName,
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":"application/json",
+                        "apikey":SUPABASE_KEY,
+                        "Authorization":
+                            "Bearer " + SUPABASE_KEY
+                    },
+
+                    body:JSON.stringify(body || {}),
+
+                    signal:controller.signal
+                }
             );
 
-          if (!item) {
+        const text =
+            await response.text();
+
+        let data = null;
+
+        try{
+
+            data =
+                text
+                    ? JSON.parse(text)
+                    : null;
+
+        }catch{
+
+            data = text;
+        }
+
+        if(!response.ok){
+
+            let message =
+                "Произошла ошибка.";
+
+            if(
+                data &&
+                typeof data === "object"
+            ){
+
+                message =
+                    data.message ||
+                    data.error_description ||
+                    data.hint ||
+                    data.error ||
+                    message;
+            }
+
+            const error =
+                new Error(message);
+
+            error.httpStatus =
+                response.status;
+
+            throw error;
+        }
+
+        return data;
+
+    }catch(error){
+
+        if(
+            error &&
+            error.name === "AbortError"
+        ){
+
+            const timeoutError =
+                new Error(
+                    "Сервер отвечает слишком долго. Проверьте интернет и попробуйте снова."
+                );
+
+            timeoutError.code =
+                "TIMEOUT";
+
+            throw timeoutError;
+        }
+
+        throw error;
+
+    }finally{
+
+        clearTimeout(timeout);
+    }
+}
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function showMessage(
+    element,
+    text,
+    type="error"
+){
+
+    element.className =
+        "message " + type;
+
+    element.textContent =
+        text;
+}
+
+function clearMessage(element){
+
+    element.className =
+        "message";
+
+    element.textContent =
+        "";
+}
+
+function normalizePhone(phone){
+
+    return String(phone || "")
+        .trim()
+        .replace(/[^\d+]/g,"");
+}
+
+
+/* =========================================================
+   SESSION STORAGE
+   ========================================================= */
+
+function setTokenCookie(token){
+
+    try{
+
+        document.cookie =
+            TOKEN_COOKIE +
+            "=" +
+            encodeURIComponent(token) +
+            "; Max-Age=" +
+            TOKEN_MAX_AGE +
+            "; Path=/" +
+            "; SameSite=Lax" +
+            "; Secure";
+
+    }catch(error){
+
+        console.log(
+            "Cookie save:",
+            error.message
+        );
+    }
+}
+
+function getTokenCookie(){
+
+    try{
+
+        const prefix =
+            TOKEN_COOKIE + "=";
+
+        const parts =
+            document.cookie
+                .split("; ");
+
+        for(const part of parts){
+
+            if(
+                part.indexOf(prefix) === 0
+            ){
+
+                return decodeURIComponent(
+                    part.slice(prefix.length)
+                );
+            }
+        }
+
+    }catch(error){
+
+        console.log(
+            "Cookie read:",
+            error.message
+        );
+    }
+
+    return null;
+}
+
+function clearTokenCookie(){
+
+    try{
+
+        document.cookie =
+            TOKEN_COOKIE +
+            "=; Max-Age=0; Path=/; SameSite=Lax; Secure";
+
+    }catch(error){
+
+        console.log(
+            "Cookie clear:",
+            error.message
+        );
+    }
+}
+
+function getStoredToken(){
+
+    let token = null;
+
+    try{
+
+        token =
+            localStorage.getItem(
+                SESSION_KEY
+            );
+
+    }catch(error){
+
+        console.log(
+            "LocalStorage read:",
+            error.message
+        );
+    }
+
+    if(token){
+        return token;
+    }
+
+    return getTokenCookie();
+}
+
+function saveToken(token){
+
+    if(!token){
+        return;
+    }
+
+    try{
+
+        localStorage.setItem(
+            SESSION_KEY,
+            token
+        );
+
+    }catch(error){
+
+        console.log(
+            "LocalStorage save:",
+            error.message
+        );
+    }
+
+    setTokenCookie(token);
+}
+
+function clearToken(){
+
+    try{
+
+        localStorage.removeItem(
+            SESSION_KEY
+        );
+
+    }catch(error){
+
+        console.log(
+            "LocalStorage clear:",
+            error.message
+        );
+    }
+
+    clearTokenCookie();
+}
+
+function getVisitorId(){
+
+    let id = null;
+
+    try{
+
+        id =
+            localStorage.getItem(
+                VISITOR_KEY
+            );
+
+    }catch(error){
+
+        console.log(
+            "Visitor storage read:",
+            error.message
+        );
+    }
+
+    if(!id){
+
+        if(
+            window.crypto &&
+            typeof crypto.randomUUID === "function"
+        ){
+
+            id =
+                crypto.randomUUID();
+
+        }else{
+
+            id =
+                "visitor-" +
+                Date.now() +
+                "-" +
+                Math.random()
+                    .toString(36)
+                    .slice(2);
+        }
+
+        try{
+
+            localStorage.setItem(
+                VISITOR_KEY,
+                id
+            );
+
+        }catch(error){
+
+            console.log(
+                "Visitor storage save:",
+                error.message
+            );
+        }
+    }
+
+    return id;
+}
+
+function getReferralCodeFromUrl(){
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const code =
+        params.get("ref");
+
+    if(!code){
+        return null;
+    }
+
+    return code
+        .trim()
+        .toUpperCase();
+}
+
+function formatMoney(value){
+
+    const number =
+        Number(value || 0);
+
+    return number.toLocaleString(
+        "ru-RU"
+    );
+}
+
+
+/* =========================================================
+   REFERRAL CLICK
+   ========================================================= */
+
+async function processReferralClick(){
+
+    const urlCode =
+        getReferralCodeFromUrl();
+
+    if(urlCode){
+
+        try{
+
+            if(
+                !localStorage.getItem(
+                    REFERRAL_KEY
+                )
+            ){
+
+                localStorage.setItem(
+                    REFERRAL_KEY,
+                    urlCode
+                );
+            }
+
+        }catch(error){
+
+            console.log(
+                "Referral code save:",
+                error.message
+            );
+        }
+    }
+
+    let code = null;
+
+    try{
+
+        code =
+            localStorage.getItem(
+                REFERRAL_KEY
+            );
+
+    }catch(error){
+
+        console.log(
+            "Referral code read:",
+            error.message
+        );
+    }
+
+    if(!code){
+        return;
+    }
+
+    try{
+
+        await rpc(
+            "track_referral_click",
+            {
+                p_referral_code:code,
+                p_visitor_id:getVisitorId()
+            },
+            5000
+        );
+
+    }catch(error){
+
+        console.log(
+            "Referral click:",
+            error.message
+        );
+    }
+}
+
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+
+function showLogin(){
+
+    registerCard.classList.add(
+        "hidden"
+    );
+
+    loginCard.classList.remove(
+        "hidden"
+    );
+
+    clearMessage(
+        registerMessage
+    );
+}
+
+function showRegister(){
+
+    loginCard.classList.add(
+        "hidden"
+    );
+
+    registerCard.classList.remove(
+        "hidden"
+    );
+
+    clearMessage(
+        loginMessage
+    );
+}
+
+
+/* =========================================================
+   REGISTER
+   ========================================================= */
+
+async function register(){
+
+    clearMessage(
+        registerMessage
+    );
+
+    const phone =
+        normalizePhone(
+            document.getElementById(
+                "registerPhone"
+            ).value
+        );
+
+    const username =
+        document.getElementById(
+            "registerUsername"
+        ).value.trim();
+
+    const password =
+        document.getElementById(
+            "registerPassword"
+        ).value;
+
+    const password2 =
+        document.getElementById(
+            "registerPassword2"
+        ).value;
+
+    if(!phone){
+
+        showMessage(
+            registerMessage,
+            "Введите номер телефона."
+        );
+
+        return;
+    }
+
+    if(username.length < 3){
+
+        showMessage(
+            registerMessage,
+            "Имя пользователя должно содержать минимум 3 символа."
+        );
+
+        return;
+    }
+
+    if(password.length < 6){
+
+        showMessage(
+            registerMessage,
+            "Пароль должен содержать минимум 6 символов."
+        );
+
+        return;
+    }
+
+    if(password !== password2){
+
+        showMessage(
+            registerMessage,
+            "Пароли не совпадают."
+        );
+
+        return;
+    }
+
+    const button =
+        document.getElementById(
+            "registerBtn"
+        );
+
+    button.disabled = true;
+    button.textContent =
+        "Создание...";
+
+    try{
+
+        let referralCode = null;
+
+        try{
+
+            referralCode =
+                localStorage.getItem(
+                    REFERRAL_KEY
+                );
+
+        }catch(error){
+
+            console.log(
+                "Referral code:",
+                error.message
+            );
+        }
+
+        const result =
+            await rpc(
+                "referral_register",
+                {
+                    p_phone:phone,
+                    p_username:username,
+                    p_password:password,
+                    p_referral_code:
+                        referralCode || null
+                }
+            );
+
+        if(
+            !result ||
+            !result.success
+        ){
+
+            throw new Error(
+                result?.error ||
+                "Не удалось создать аккаунт."
+            );
+        }
+
+        saveToken(
+            result.token
+        );
+
+        try{
+
+            localStorage.removeItem(
+                REFERRAL_KEY
+            );
+
+        }catch(error){
+
+            console.log(
+                "Referral code clear:",
+                error.message
+            );
+        }
+
+        await loadDashboard(
+            result.token
+        );
+
+    }catch(error){
+
+        showMessage(
+            registerMessage,
+            error.message ||
+            "Ошибка регистрации."
+        );
+
+    }finally{
+
+        button.disabled = false;
+        button.textContent =
+            "Создать аккаунт";
+    }
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+async function login(){
+
+    clearMessage(
+        loginMessage
+    );
+
+    const phone =
+        normalizePhone(
+            document.getElementById(
+                "loginPhone"
+            ).value
+        );
+
+    const password =
+        document.getElementById(
+            "loginPassword"
+        ).value;
+
+    if(!phone){
+
+        showMessage(
+            loginMessage,
+            "Введите номер телефона."
+        );
+
+        return;
+    }
+
+    if(!password){
+
+        showMessage(
+            loginMessage,
+            "Введите пароль."
+        );
+
+        return;
+    }
+
+    const button =
+        document.getElementById(
+            "loginBtn"
+        );
+
+    button.disabled = true;
+    button.textContent =
+        "Вход...";
+
+    try{
+
+        const result =
+            await rpc(
+                "referral_login",
+                {
+                    p_phone:phone,
+                    p_password:password
+                }
+            );
+
+        if(
+            !result ||
+            !result.success
+        ){
+
+            throw new Error(
+                result?.error ||
+                "Не удалось выполнить вход."
+            );
+        }
+
+        saveToken(
+            result.token
+        );
+
+        await loadDashboard(
+            result.token
+        );
+
+    }catch(error){
+
+        showMessage(
+            loginMessage,
+            error.message ||
+            "Неверный номер телефона или пароль."
+        );
+
+    }finally{
+
+        button.disabled = false;
+        button.textContent =
+            "Войти";
+    }
+}
+
+
+/* =========================================================
+   SESSION
+   ========================================================= */
+
+async function getSession(token){
+
+    return await rpc(
+        "referral_get_session",
+        {
+            p_token:token
+        },
+        12000
+    );
+}
+
+
+/* =========================================================
+   WITHDRAW UI
+   ========================================================= */
+
+function updateWithdrawState(balance){
+
+    const available =
+        Number(balance || 0);
+
+    document.getElementById(
+        "withdrawAvailable"
+    ).textContent =
+        formatMoney(available) +
+        " ₽ доступно";
+
+    const info =
+        document.getElementById(
+            "withdrawInfoText"
+        );
+
+    if(available < MIN_WITHDRAW){
+
+        const remaining =
+            MIN_WITHDRAW - available;
+
+        info.textContent =
+            "До минимальной суммы вывода не хватает " +
+            formatMoney(remaining) +
+            " ₽.";
+
+        withdrawBtn.disabled = true;
+
+    }else{
+
+        info.textContent =
+            "Вы можете вывести от 500 ₽ до " +
+            formatMoney(available) +
+            " ₽.";
+
+        withdrawBtn.disabled = false;
+    }
+
+    const amountInput =
+        document.getElementById(
+            "withdrawAmount"
+        );
+
+    amountInput.max =
+        available;
+
+    if(available < MIN_WITHDRAW){
+
+        amountInput.value = "";
+    }
+}
+
+function loadSavedPayoutDetails(){
+
+    let saved = null;
+
+    try{
+
+        saved =
+            localStorage.getItem(
+                "appcore_payout_details"
+            );
+
+    }catch(error){
+
+        console.log(
+            "Payout storage:",
+            error.message
+        );
+
+        return;
+    }
+
+    if(!saved){
+        return;
+    }
+
+    try{
+
+        const data =
+            JSON.parse(saved);
+
+        if(data.phone){
+
+            document.getElementById(
+                "payoutPhone"
+            ).value =
+                data.phone;
+        }
+
+        if(data.bank_name){
+
+            const bankSelect =
+                document.getElementById(
+                    "payoutBank"
+                );
+
+            const customBankWrap =
+                document.getElementById(
+                    "customBankWrap"
+                );
+
+            const customBankName =
+                document.getElementById(
+                    "customBankName"
+                );
+
+            const knownBank =
+                Array.from(
+                    bankSelect.options
+                ).some(
+                    option =>
+                        option.value === data.bank_name &&
+                        option.value !== "Другой банк"
+                );
+
+            if(knownBank){
+
+                bankSelect.value =
+                    data.bank_name;
+
+                customBankWrap.classList.remove(
+                    "show"
+                );
+
+                customBankName.value = "";
+
+            }else{
+
+                bankSelect.value =
+                    "Другой банк";
+
+                customBankName.value =
+                    data.bank_name;
+
+                customBankWrap.classList.add(
+                    "show"
+                );
+            }
+        }
+
+        if(data.first_name){
+
+            document.getElementById(
+                "payoutFirstName"
+            ).value =
+                data.first_name;
+        }
+
+        if(data.last_name){
+
+            document.getElementById(
+                "payoutLastName"
+            ).value =
+                data.last_name;
+        }
+
+        document.getElementById(
+            "savedDetails"
+        ).classList.add(
+            "show"
+        );
+
+        document.getElementById(
+            "savedDetails"
+        ).textContent =
+            "Сохранённые реквизиты загружены. " +
+            "При необходимости измените их перед выплатой.";
+
+    }catch{
+
+        try{
+
+            localStorage.removeItem(
+                "appcore_payout_details"
+            );
+
+        }catch{}
+    }
+}
+
+function getPayoutForm(){
+
+    const amount =
+        Number(
+            document.getElementById(
+                "withdrawAmount"
+            ).value
+        );
+
+    const phone =
+        normalizePhone(
+            document.getElementById(
+                "payoutPhone"
+            ).value
+        );
+
+    const bankSelect =
+        document.getElementById(
+            "payoutBank"
+        );
+
+    const selectedBank =
+        bankSelect.value.trim();
+
+    const customBankName =
+        document.getElementById(
+            "customBankName"
+        ).value.trim();
+
+    const bankName =
+        selectedBank === "Другой банк"
+            ? customBankName
+            : selectedBank;
+
+    const firstName =
+        document.getElementById(
+            "payoutFirstName"
+        ).value.trim();
+
+    const lastName =
+        document.getElementById(
+            "payoutLastName"
+        ).value.trim();
+
+    return {
+        amount,
+        phone,
+        bankName,
+        selectedBank,
+        firstName,
+        lastName
+    };
+}
+
+function validatePayoutForm(data,balance){
+
+    if(!Number.isFinite(data.amount)){
+
+        return "Введите сумму вывода.";
+    }
+
+    if(data.amount < MIN_WITHDRAW){
+
+        return "Минимальная сумма вывода — 500 ₽.";
+    }
+
+    if(data.amount > balance){
+
+        return "Сумма вывода больше доступного баланса.";
+    }
+
+    if(data.amount % 1 !== 0){
+
+        return "Сумма вывода должна быть целым числом.";
+    }
+
+    if(data.phone.length < 10){
+
+        return "Укажите корректный номер телефона.";
+    }
+
+    if(
+        data.selectedBank === "Другой банк" &&
+        data.bankName.length < 2
+    ){
+
+        return "Введите название банка получателя.";
+    }
+
+    if(
+        data.selectedBank !== "Другой банк" &&
+        !data.selectedBank
+    ){
+
+        return "Выберите банк получателя.";
+    }
+
+    if(data.firstName.length < 2){
+
+        return "Укажите имя получателя.";
+    }
+
+    if(data.lastName.length < 2){
+
+        return "Укажите фамилию получателя.";
+    }
+
+    return null;
+}
+
+function maskPhone(phone){
+
+    const value =
+        String(phone || "");
+
+    if(value.length < 7){
+        return value;
+    }
+
+    return (
+        value.slice(0,4) +
+        " *** ** " +
+        value.slice(-2)
+      );
+}
+
+function renderWithdrawStatus(status, amount){
+
+    const box =
+        document.getElementById("withdrawStatus");
+
+    const title =
+        document.getElementById("withdrawStatusTitle");
+
+    const text =
+        document.getElementById("withdrawStatusText");
+
+    box.classList.remove(
+        "hidden",
+        "pending",
+        "paid",
+        "rejected"
+    );
+
+    if(status === "pending"){
+
+        box.classList.add("pending");
+
+        title.textContent =
+            "🟡 На проверке";
+
+        text.textContent =
+            "Заявка на выплату " +
+            formatMoney(amount) +
+            " ₽ находится на проверке.";
+
+        return;
+    }
+
+    if(status === "paid"){
+
+        box.classList.add("paid");
+
+        title.textContent =
+            "🟢 Выплачено";
+
+        text.textContent =
+            "Выплата " +
+            formatMoney(amount) +
+            " ₽ успешно произведена.";
+
+        return;
+    }
+
+    if(status === "rejected"){
+
+        box.classList.add("rejected");
+
+        title.textContent =
+            "🔴 Отклонено";
+
+        text.textContent =
+            "Заявка на выплату " +
+            formatMoney(amount) +
+            " ₽ была отклонена.";
+
+        return;
+    }
+
+    box.classList.add("hidden");
+}
+async function loadLatestWithdrawStatus(userId){
+
+    if(!userId){
+        return;
+    }
+
+    try{
+
+        const result =
+            await rpc(
+                "get_referral_withdrawals",
+                {
+                    p_user_id:userId
+                }
+            );
+
+        if(
+            !Array.isArray(result) ||
+            result.length === 0
+        ){
             return;
-          }
+        }
 
-          const seconds =
-            getRemainingSeconds(item);
+        const latest =
+            result[0];
 
-          if (seconds <= 0) {
-            needsReload = true;
+        renderWithdrawStatus(
+            latest.status,
+            latest.amount
+        );
+
+    }catch(error){
+
+        console.log(
+            "Withdraw status:",
+            error.message
+        );
+    }
+}
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+function renderDashboard(data){
+
+    currentSession = data;
+
+    document.getElementById(
+        "dashboardUsername"
+    ).textContent =
+        "@" + (data.username || "");
+
+    const balance =
+        Number(data.balance || 0);
+
+    const earned =
+        Number(data.total_earned || 0);
+
+    const withdrawn =
+        Number(data.total_withdrawn || 0);
+
+    const clicks =
+        Number(data.clicks_count || 0);
+
+    const registrations =
+        Number(data.registrations_count || 0);
+
+    const paid =
+        Number(data.paid_referrals_count || 0);
+
+    document.getElementById(
+        "balanceValue"
+    ).textContent =
+        formatMoney(balance);
+
+    document.getElementById(
+        "earnedValue"
+    ).textContent =
+        formatMoney(earned) +
+        " ₽";
+
+    document.getElementById(
+        "withdrawnValue"
+    ).textContent =
+        formatMoney(withdrawn) +
+        " ₽";
+
+    document.getElementById(
+        "clicksValue"
+    ).textContent =
+        formatMoney(clicks);
+
+    document.getElementById(
+        "registrationsValue"
+    ).textContent =
+        formatMoney(registrations);
+
+    document.getElementById(
+        "paidValue"
+    ).textContent =
+        formatMoney(paid);
+
+    const progress =
+        Math.min(
+            100,
+            (balance / MIN_WITHDRAW) * 100
+        );
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+        progress + "%";
+
+    document.getElementById(
+        "progressText"
+    ).textContent =
+        formatMoney(
+            Math.min(
+                balance,
+                MIN_WITHDRAW
+            )
+        ) +
+        " / 500 ₽";
+
+    const referralLink =
+        "https://appcorestudio.github.io/?ref=" +
+        encodeURIComponent(
+            data.referral_code
+        );
+
+    document.getElementById(
+        "referralLink"
+    ).textContent =
+        referralLink;
+
+updateWithdrawState(
+    balance
+);
+
+loadSavedPayoutDetails();
+
+loadLatestWithdrawStatus(
+    data.user_id
+);
+}
+
+/* =========================================================
+   LOAD DASHBOARD
+   ========================================================= */
+
+async function loadDashboard(token){
+
+    if(!token){
+
+        loadingScreen.classList.add(
+            "hidden"
+        );
+
+        authSection.classList.remove(
+            "hidden"
+        );
+
+        showLogin();
+
+        return false;
+    }
+
+    try{
+
+        const data =
+            await getSession(token);
+
+        if(
+            !data ||
+            !data.success
+        ){
+
+            const error =
+                new Error(
+                    "Сессия недействительна."
+                );
+
+            error.sessionInvalid = true;
+
+            throw error;
+        }
+
+        /*
+         * Продлеваем резервный cookie ещё на 30 дней
+         * при каждом успешном открытии кабинета.
+         */
+        saveToken(token);
+
+        renderDashboard(data);
+
+        authSection.classList.add(
+            "hidden"
+        );
+
+        dashboardSection.classList.remove(
+            "hidden"
+        );
+
+        return true;
+
+    }catch(error){
+
+        /*
+         * Очень важно:
+         *
+         * Ошибка сети, timeout или временная ошибка
+         * Supabase НЕ должны удалять токен.
+         *
+         * Токен удаляем только если сервер действительно
+         * сообщил, что сессия недействительна.
+         */
+
+        const message =
+            String(
+                error?.message || ""
+            ).toLowerCase();
+
+        const isInvalidSession =
+            error?.sessionInvalid === true ||
+            error?.httpStatus === 401 ||
+            (
+                error?.httpStatus === 400 &&
+                (
+                    message.includes("сессия") ||
+                    message.includes("session") ||
+                    message.includes("token")
+                )
+            );
+
+        if(isInvalidSession){
+
+            clearToken();
+
+            dashboardSection.classList.add(
+                "hidden"
+            );
+
+            authSection.classList.remove(
+                "hidden"
+            );
+
+            showLogin();
+
+            showMessage(
+                loginMessage,
+                "Сессия закончилась. Войдите снова."
+            );
+
+        }else{
+
+            /*
+             * При проблеме сети оставляем токен.
+             * Пользователь сможет обновить страницу,
+             * и система снова попробует восстановить вход.
+             */
+
+            dashboardSection.classList.add(
+                "hidden"
+            );
+
+            authSection.classList.remove(
+                "hidden"
+            );
+
+            showLogin();
+
+            showMessage(
+                loginMessage,
+                "Не удалось загрузить кабинет. Проверьте интернет и обновите страницу."
+            );
+        }
+
+        console.log(
+            "Dashboard:",
+            error.message
+        );
+
+        return false;
+
+    }finally{
+
+        loadingScreen.classList.add(
+            "hidden"
+        );
+    }
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+async function logout(){
+
+    const token =
+        getStoredToken();
+
+    if(token){
+
+        try{
+
+            await rpc(
+                "referral_logout",
+                {
+                    p_token:token
+                },
+                8000
+            );
+
+        }catch(error){
+
+            console.log(
+                "Logout:",
+                error.message
+            );
+        }
+    }
+
+    clearToken();
+
+    dashboardSection.classList.add(
+        "hidden"
+    );
+
+    authSection.classList.remove(
+        "hidden"
+    );
+
+    showLogin();
+
+    document.getElementById(
+        "loginPassword"
+    ).value = "";
+}
+
+
+/* =========================================================
+   COPY LINK
+   ========================================================= */
+
+async function copyReferralLink(){
+
+    const text =
+        document.getElementById(
+            "referralLink"
+        ).textContent;
+
+    try{
+
+        await navigator.clipboard.writeText(
+            text
+        );
+
+        const button =
+            document.getElementById(
+                "copyBtn"
+            );
+
+        const oldText =
+            button.textContent;
+
+        button.textContent =
+            "Скопировано";
+
+        setTimeout(() => {
+
+            button.textContent =
+                oldText;
+
+        },1500);
+
+    }catch{
+
+        alert(
+            "Не удалось скопировать ссылку."
+        );
+    }
+}
+
+
+/* =========================================================
+   WITHDRAW
+   ========================================================= */
+
+function showWithdrawModal(data){
+
+    pendingWithdraw =
+        data;
+
+    document.getElementById(
+        "summaryAmount"
+    ).textContent =
+        formatMoney(data.amount) +
+        " ₽";
+
+    document.getElementById(
+        "summaryPhone"
+    ).textContent =
+        maskPhone(data.phone);
+
+    document.getElementById(
+        "summaryBank"
+    ).textContent =
+        data.bankName;
+
+    document.getElementById(
+        "summaryName"
+    ).textContent =
+        data.firstName +
+        " " +
+        data.lastName;
+
+    document.getElementById(
+        "withdrawModal"
+    ).classList.remove(
+        "hidden"
+    );
+}
+
+function closeWithdrawModal(){
+
+    pendingWithdraw = null;
+
+    document.getElementById(
+        "withdrawModal"
+    ).classList.add(
+        "hidden"
+    );
+}
+
+async function requestWithdraw(){
+
+    clearMessage(
+        withdrawMessage
+    );
+
+    const token =
+        getStoredToken();
+
+    if(!token){
+
+        showMessage(
+            withdrawMessage,
+            "Сессия закончилась. Войдите снова."
+        );
+
+        return;
+    }
+
+    try{
+
+        const session =
+            await getSession(token);
+
+        if(
+            !session ||
+            !session.success
+        ){
+
+            throw new Error(
+                "Сессия недействительна."
+            );
+        }
+
+        const balance =
+            Number(
+                session.balance || 0
+            );
+
+        const data =
+            getPayoutForm();
+
+        const validationError =
+            validatePayoutForm(
+                data,
+                balance
+            );
+
+        if(validationError){
+
+            showMessage(
+                withdrawMessage,
+                validationError
+            );
+
             return;
-          }
+        }
 
-          const timer =
-            element.querySelector('.timer-value');
+        showWithdrawModal(
+            data
+        );
 
-          if (timer) {
-            timer.textContent =
-              formatTimer(seconds);
-          }
+    }catch(error){
+
+        showMessage(
+            withdrawMessage,
+            error.message ||
+            "Не удалось проверить баланс."
+        );
+    }
+}
+
+async function confirmWithdraw(){
+
+    if(!pendingWithdraw){
+        return;
+    }
+
+    const button =
+        document.getElementById(
+            "confirmWithdraw"
+        );
+
+    button.disabled = true;
+    button.textContent =
+        "Отправка...";
+
+    try{
+
+        const token =
+            getStoredToken();
+
+        if(!token){
+
+            throw new Error(
+                "Сессия закончилась. Войдите снова."
+            );
+        }
+
+        const session =
+            await getSession(token);
+
+        if(
+            !session ||
+            !session.success
+        ){
+
+            throw new Error(
+                "Сессия недействительна."
+            );
+        }
+
+        const result =
+            await rpc(
+                "submit_referral_withdrawal",
+                {
+                    p_user_id:
+                        session.user_id,
+
+                    p_amount:
+                        pendingWithdraw.amount,
+
+                    p_phone:
+                        pendingWithdraw.phone,
+
+                    p_bank_name:
+                        pendingWithdraw.bankName,
+
+                    p_first_name:
+                        pendingWithdraw.firstName,
+
+                    p_last_name:
+                        pendingWithdraw.lastName
+                }
+            );
+
+        if(
+            !result ||
+            !result.success
+        ){
+
+            throw new Error(
+                result?.error ||
+                "Не удалось создать заявку."
+            );
+        }
+
+        try{
+
+            localStorage.setItem(
+                "appcore_payout_details",
+                JSON.stringify({
+                    phone:
+                        pendingWithdraw.phone,
+
+                    bank_name:
+                        pendingWithdraw.bankName,
+
+                    first_name:
+                        pendingWithdraw.firstName,
+
+                    last_name:
+                        pendingWithdraw.lastName
+                })
+            );
+
+        }catch(error){
+
+            console.log(
+                "Payout details save:",
+                error.message
+            );
+        }
+
+        closeWithdrawModal();
+
+        showMessage(
+            withdrawMessage,
+            "Заявка на выплату отправлена.",
+            "success"
+        );
+
+        document.getElementById(
+            "withdrawAmount"
+        ).value = "";
+
+        await loadDashboard(
+            token
+        );
+
+    }catch(error){
+
+        showMessage(
+            withdrawMessage,
+            error.message ||
+            "Не удалось создать заявку."
+        );
+
+    }finally{
+
+        button.disabled = false;
+        button.textContent =
+            "Отправить";
+    }
+}
+async function loadWithdrawHistory(){
+
+    const sheet =
+        document.getElementById("withdrawHistorySheet");
+
+    const list =
+        document.getElementById("withdrawHistoryList");
+
+    if(!currentSession || !currentSession.user_id){
+    return;
+}
+
+    sheet.classList.remove("hidden");
+
+    list.innerHTML =
+        '<div class="withdraw-history-empty">Загрузка...</div>';
+
+    try{
+
+        const result =
+            await rpc(
+                "get_referral_withdrawals",
+                {
+                    p_user_id:currentSession.user_id
+                }
+            );
+
+        if(
+            !Array.isArray(result) ||
+            result.length === 0
+        ){
+
+            list.innerHTML =
+                '<div class="withdraw-history-empty">' +
+                'История выплат пока пуста.' +
+                '</div>';
+
+            return;
+        }
+
+        list.innerHTML =
+            result.map(function(item){
+
+                let statusText = "";
+                let statusClass = "";
+
+                if(item.status === "pending"){
+                    statusText = "🟡 На проверке";
+                    statusClass = "pending";
+                }
+
+                else if(item.status === "paid"){
+                    statusText = "🟢 Выплачено";
+                    statusClass = "paid";
+                }
+
+                else if(item.status === "rejected"){
+                    statusText = "🔴 Отклонено";
+                    statusClass = "rejected";
+                }
+
+                else{
+                    statusText =
+                        item.status ||
+                        "Неизвестно";
+                }
+
+                const date =
+                    item.created_at
+                        ? new Date(item.created_at)
+                            .toLocaleString("ru-RU")
+                        : "";
+
+                return `
+                    <div class="withdraw-history-item">
+
+                        <div class="withdraw-history-item-top">
+
+                            <div
+                                class="withdraw-history-status ${statusClass}"
+                            >
+                                ${statusText}
+                            </div>
+
+                            <div class="withdraw-history-amount">
+                                ${formatMoney(item.amount)} ₽
+                            </div>
+
+                        </div>
+
+                        <div class="withdraw-history-date">
+                            ${date}
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("");
+
+    }catch(error){
+
+        console.log(
+            "Withdraw history:",
+            error.message
+        );
+
+        list.innerHTML =
+            '<div class="withdraw-history-empty">' +
+            'Не удалось загрузить историю выплат.' +
+            '</div>';
+    }
+}
+
+function closeWithdrawHistory(){
+
+    document
+        .getElementById("withdrawHistorySheet")
+        .classList.add("hidden");
+}
+
+/* =========================================================
+   EVENTS
+   ========================================================= */
+
+document.getElementById(
+    "showRegister"
+).addEventListener(
+    "click",
+    showRegister
+);
+
+document.getElementById(
+    "showLogin"
+).addEventListener(
+    "click",
+    showLogin
+);
+
+document.getElementById(
+    "registerBtn"
+).addEventListener(
+    "click",
+    register
+);
+
+document.getElementById(
+    "loginBtn"
+).addEventListener(
+    "click",
+    login
+);
+
+document.getElementById(
+    "logoutBtn"
+).addEventListener(
+    "click",
+    logout
+);
+
+document.getElementById(
+    "copyBtn"
+).addEventListener(
+    "click",
+    copyReferralLink
+);
+
+withdrawBtn.addEventListener(
+    "click",
+    requestWithdraw
+);
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        document.getElementById(
+            "withdrawHistoryBtn"
+        ).addEventListener(
+            "click",
+            loadWithdrawHistory
+        );
+
+        document.getElementById(
+            "closeWithdrawHistory"
+        ).addEventListener(
+            "click",
+            closeWithdrawHistory
+        );
+
+        document.getElementById(
+            "withdrawHistoryBackdrop"
+        ).addEventListener(
+            "click",
+            closeWithdrawHistory
+        );
+
+    }
+);
+document.getElementById(
+    "cancelWithdraw"
+).addEventListener(
+    "click",
+    closeWithdrawModal
+);
+
+document.getElementById(
+    "confirmWithdraw"
+).addEventListener(
+    "click",
+    confirmWithdraw
+);
+
+
+/* =========================================================
+   BANK SELECT
+   ========================================================= */
+
+document.getElementById(
+    "payoutBank"
+).addEventListener(
+    "change",
+    function(){
+
+        const customBankWrap =
+            document.getElementById(
+                "customBankWrap"
+            );
+
+        const customBankName =
+            document.getElementById(
+                "customBankName"
+            );
+
+        if(this.value === "Другой банк"){
+
+            customBankWrap.classList.add(
+                "show"
+            );
+
+            /*
+             * focus() специально отсутствует.
+             * На iPhone Safari он мог закрывать
+             * клавиатуру после выбора пункта.
+             */
+
+        }else{
+
+            customBankWrap.classList.remove(
+                "show"
+            );
+
+            customBankName.value = "";
+        }
+    }
+);
+
+
+/* =========================================================
+   ENTER KEY
+   ========================================================= */
+
+document.getElementById(
+    "loginPassword"
+).addEventListener(
+    "keydown",
+    event => {
+
+        if(event.key === "Enter"){
+            login();
+        }
+
+    }
+);
+
+document.getElementById(
+    "registerPassword2"
+).addEventListener(
+    "keydown",
+    event => {
+
+        if(event.key === "Enter"){
+            register();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+(async function(){
+
+    /*
+     * ВАЖНО:
+     *
+     * Отслеживание реферального перехода запускается
+     * в фоне и НЕ блокирует восстановление сессии.
+     */
+    processReferralClick()
+        .catch(error => {
+
+            console.log(
+                "Referral background:",
+                error.message
+            );
 
         });
 
 
-      if (needsReload) {
-        loadAll();
-      }
+    /*
+     * Сначала сразу проверяем сохранённую сессию.
+     */
+    const token =
+        getStoredToken();
 
-    }, 1000);
-  }
+    if(token){
 
+        await loadDashboard(
+            token
+        );
 
-  /* =========================================================
-     INIT
-  ========================================================= */
+    }else{
 
-  document.addEventListener(
-    'DOMContentLoaded',
-    async () => {
+        loadingScreen.classList.add(
+            "hidden"
+        );
 
-      await loadAll();
+        authSection.classList.remove(
+            "hidden"
+        );
 
-      startAutoRefresh();
-
-      startCountdown();
-
+        showLogin();
     }
-  );
-</script>
 
+})();
+</script>
+<div
+    id="withdrawHistorySheet"
+    class="withdraw-history-sheet hidden"
+>
+
+    <div
+        class="withdraw-history-backdrop"
+        id="withdrawHistoryBackdrop"
+    ></div>
+
+    <div class="withdraw-history-panel">
+
+        <div class="withdraw-history-handle"></div>
+
+        <div class="withdraw-history-header">
+
+            <h2>История выплат</h2>
+
+            <button
+                type="button"
+                id="closeWithdrawHistory"
+                class="withdraw-history-close"
+            >
+                Закрыть
+            </button>
+
+        </div>
+
+        <div
+            id="withdrawHistoryList"
+            class="withdraw-history-list"
+        ></div>
+
+    </div>
+
+</div>
 </body>
 </html>
