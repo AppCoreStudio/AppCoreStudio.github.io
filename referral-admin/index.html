@@ -1171,8 +1171,206 @@ function renderClients(rows) {
   content.innerHTML =
     html;
 }
+async function loadAll() {
 
+  const content =
+    document.getElementById(
+      'allContent'
+    );
 
+  if (!content) return;
+
+  content.innerHTML =
+    '<div class="loading">Загрузка...</div>';
+
+  const rows =
+    await rpc(
+      'get_referral_admin_all_referrals'
+    );
+
+  window.allReferralRows =
+    rows || [];
+
+  if (!rows || rows.length === 0) {
+
+    content.innerHTML =
+      '<div class="empty">Рефералов пока нет</div>';
+
+    return;
+  }
+
+  let html = `
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Реферал</th>
+            <th>Телефон</th>
+            <th>Email</th>
+            <th>Код</th>
+            <th>Клиенты</th>
+            <th>Заработано</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+  `;
+
+  rows.forEach(row => {
+
+    html += `
+
+      <tr>
+
+        <td>
+          ${escapeHtml(
+            row.username ||
+            row.user_id ||
+            '—'
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            row.phone || '—'
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            row.email || '—'
+          )}
+        </td>
+
+        <td>
+          <code>
+            ${escapeHtml(
+              row.referral_code || '—'
+            )}
+          </code>
+        </td>
+
+        <td>
+          ${row.clients_count || 0}
+        </td>
+
+        <td>
+          <strong>
+            ${money(row.total_earned)}
+          </strong>
+        </td>
+
+      </tr>
+
+    `;
+  });
+
+  html += `
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+  content.innerHTML = html;
+}
+async function loadTop() {
+
+  const content =
+    document.getElementById(
+      'topContent'
+    );
+
+  if (!content) return;
+
+  content.innerHTML =
+    '<div class="loading">Загрузка...</div>';
+
+  const rows =
+    await rpc(
+      'get_referral_admin_top10'
+    );
+
+  if (!rows || rows.length === 0) {
+
+    content.innerHTML =
+      '<div class="empty">Данных пока нет</div>';
+
+    return;
+  }
+
+  let html = `
+    <div class="top-list">
+  `;
+
+  rows.forEach((row, index) => {
+
+    html += `
+      <div class="top-item">
+
+        <div class="top-position">
+          ${index + 1}
+        </div>
+
+        <div class="top-user">
+
+          <div class="top-username">
+            ${escapeHtml(
+              row.username ||
+              row.user_id ||
+              '—'
+            )}
+          </div>
+
+          <div class="top-user-id">
+            ${escapeHtml(
+              row.user_id || '—'
+            )}
+          </div>
+
+        </div>
+
+        <div class="top-clients">
+
+          <div class="top-label">
+            Клиенты
+          </div>
+
+          <strong>
+            ${row.clients_count || 0}
+          </strong>
+
+        </div>
+
+        <div class="top-earned">
+
+          <div class="top-label">
+            Заработано
+          </div>
+
+          <strong>
+            ${money(row.total_earned)}
+          </strong>
+
+        </div>
+
+      </div>
+    `;
+  });
+
+  html += `
+    </div>
+  `;
+
+  content.innerHTML = html;
+}
 async function loadClients() {
 
   const content =
