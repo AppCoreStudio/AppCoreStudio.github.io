@@ -468,6 +468,122 @@ input::placeholder{
     background:#10121a;
     border:1px solid var(--border);
 }
+.withdraw-history-sheet{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:flex;
+    align-items:flex-end;
+}
+
+.withdraw-history-sheet.hidden{
+    display:none;
+}
+
+.withdraw-history-backdrop{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    backdrop-filter:blur(4px);
+}
+
+.withdraw-history-panel{
+    position:relative;
+    width:100%;
+    max-height:75vh;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-bottom:0;
+    border-radius:22px 22px 0 0;
+    padding:10px 16px 24px;
+    overflow:hidden;
+    animation:withdrawSheetUp .22s ease-out;
+}
+
+.withdraw-history-handle{
+    width:42px;
+    height:4px;
+    border-radius:999px;
+    background:#444956;
+    margin:2px auto 14px;
+}
+
+.withdraw-history-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.withdraw-history-header h2{
+    margin:0;
+    font-size:18px;
+}
+
+.withdraw-history-close{
+    border:0;
+    background:var(--card2);
+    color:var(--text);
+    border-radius:10px;
+    padding:8px 12px;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.withdraw-history-list{
+    max-height:calc(75vh - 85px);
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.withdraw-history-item{
+    padding:13px;
+    border-radius:14px;
+    background:#10121a;
+    border:1px solid var(--border);
+}
+
+.withdraw-history-item-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.withdraw-history-status{
+    font-size:13px;
+    font-weight:700;
+}
+
+.withdraw-history-amount{
+    font-size:15px;
+    font-weight:700;
+}
+
+.withdraw-history-date{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:12px;
+}
+
+.withdraw-history-empty{
+    padding:30px 15px;
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+}
+
+@keyframes withdrawSheetUp{
+    from{
+        transform:translateY(100%);
+    }
+    to{
+        transform:translateY(0);
+    }
+}
 .withdraw-status.pending{
     color:#f5c542;
     background:rgba(245,197,66,.12);
@@ -833,16 +949,23 @@ input::placeholder{
         <!-- WITHDRAW -->
         <div class="card withdraw-card">
 
-            <div class="withdraw-head">
-                <h2>Вывод средств</h2>
+<div class="withdraw-head">
+    <div>
+        <h2>Вывод средств</h2>
 
-                <div
-                    id="withdrawAvailable"
-                    class="withdraw-available"
-                >
-                    0 ₽ доступно
-                </div>
-            </div>
+        <div id="withdrawAvailable" class="withdraw-available">
+            0 ₽ доступно
+        </div>
+    </div>
+
+    <button
+        type="button"
+        id="withdrawHistoryBtn"
+        class="secondary"
+    >
+        История выплат
+    </button>
+</div>
 
             <div class="withdraw-info">
 
@@ -3122,6 +3245,41 @@ document.getElementById(
 
 })();
 </script>
+<div
+    id="withdrawHistorySheet"
+    class="withdraw-history-sheet hidden"
+>
 
+    <div
+        class="withdraw-history-backdrop"
+        id="withdrawHistoryBackdrop"
+    ></div>
+
+    <div class="withdraw-history-panel">
+
+        <div class="withdraw-history-handle"></div>
+
+        <div class="withdraw-history-header">
+
+            <h2>История выплат</h2>
+
+            <button
+                type="button"
+                id="closeWithdrawHistory"
+                class="withdraw-history-close"
+            >
+                Закрыть
+            </button>
+
+        </div>
+
+        <div
+            id="withdrawHistoryList"
+            class="withdraw-history-list"
+        ></div>
+
+    </div>
+
+</div>
 </body>
 </html>
