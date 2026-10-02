@@ -1202,32 +1202,446 @@
     content.innerHTML = html;
   }
 
-  async function loadClients() {
+function toggleClientOrders(index) {
+  const details =
+    document.getElementById(
+      'client-orders-' + index
+    );
 
-    const content =
-      document.getElementById('clientsContent');
+  if (!details) return;
+
+  details.classList.toggle('open');
+}
+
+
+function renderClients(rows) {
+
+  const content =
+    document.getElementById(
+      'clientsContent'
+    );
+
+
+  if (!rows || rows.length === 0) {
 
     content.innerHTML =
-      '<div class="loading">Загрузка...</div>';
+      '<div class="empty">Клиентов пока нет</div>';
 
-    const rows =
-      await rpc(
-        'get_referral_admin_client_orders'
-      );
+    return;
+  }
 
-    referralClientsRawData = rows || [];
 
-    if (!rows || rows.length === 0) {
+  const clients = {};
 
-      content.innerHTML =
-        '<div class="empty">Клиентов пока нет</div>';
 
-      return;
+  rows.forEach(row => {
+
+    const clientId =
+      row.referred_user_id;
+
+
+    if (!clients[clientId]) {
+
+      clients[clientId] = {
+
+        referred_user_id:
+          clientId,
+
+        referrer_user_id:
+          row.referrer_user_id,
+
+        referral_code:
+          row.referral_code,
+
+        orders: [],
+
+        total_orders: 0,
+
+        total_turnover: 0,
+
+        total_reward: 0,
+
+        last_order_at: null
+
+      };
     }
 
-    content.innerHTML =
-      '<div class="empty">Данные клиентов загружены</div>';
-  }
+
+    const client =
+      clients[clientId];
+
+
+    client.orders.push(row);
+
+    client.total_orders += 1;
+
+    client.total_turnover +=
+      Number(row.order_total || 0);
+
+    client.total_reward +=
+      Number(row.reward_amount || 0);
+
+
+    if (
+      !client.last_order_at ||
+      new Date(row.order_created_at) >
+        new Date(client.last_order_at)
+    ) {
+
+      client.last_order_at =
+        row.order_created_at;
+    }
+
+  });
+
+
+  const clientList =
+    Object.values(clients);
+
+
+  const totalTurnover =
+    clientList.reduce(
+      (sum, client) =>
+        sum + client.total_turnover,
+      0
+    );
+
+
+  const totalReward =
+    clientList.reduce(
+      (sum, client) =>
+        sum + client.total_reward,
+      0
+    );
+
+
+  let html = `
+
+    <div class="client-summary">
+
+      <div class="mini-stat">
+        <div class="label">
+          Клиентов
+        </div>
+
+        <div class="value">
+          ${clientList.length}
+        </div>
+      </div>
+
+
+      <div class="mini-stat">
+        <div class="label">
+          Заказов
+        </div>
+
+        <div class="value">
+          ${rows.length}
+        </div>
+      </div>
+
+
+      <div class="mini-stat">
+        <div class="label">
+          Оборот
+        </div>
+
+        <div class="value">
+          ${money(totalTurnover)}
+        </div>
+      </div>
+
+
+      <div class="mini-stat">
+        <div class="label">
+          Вознаграждение
+        </div>
+
+        <div class="value">
+          ${money(totalReward)}
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="client-list">
+  `;
+
+
+  clientList.forEach(
+    (client, index) => {
+
+      const referrer =
+        window.allReferralRows?.find(
+          row =>
+            row.user_id ===
+            client.referrer_user_id
+        );
+
+
+      const referrerName =
+        referrer?.username ||
+        client.referrer_user_id ||
+        '—';
+
+
+      html += `
+
+        <div class="client-card">
+
+          <div class="client-card-header">
+
+            <div>
+
+              <div class="client-title">
+                👤
+                ${escapeHtml(
+                  client.referred_user_id
+                )}
+              </div>
+
+
+              <div class="client-meta">
+                Реферал:
+                <strong>
+                  ${escapeHtml(
+                    referrerName
+                  )}
+                </strong>
+              </div>
+
+
+              <div class="client-meta">
+                Код:
+                <code>
+                  ${escapeHtml(
+                    client.referral_code ||
+                    '—'
+                  )}
+                </code>
+              </div>
+
+            </div>
+
+
+            <div class="client-actions">
+
+              <div class="client-stat">
+
+                <span>
+                  Заказов
+                </span>
+
+                <strong>
+                  ${client.total_orders}
+                </strong>
+
+              </div>
+
+
+              <div class="client-stat">
+
+                <span>
+                  Оборот
+                </span>
+
+                <strong>
+                  ${money(
+                    client.total_turnover
+                  )}
+                </strong>
+
+              </div>
+
+
+              <div class="client-stat">
+
+                <span>
+                  Заработано
+                </span>
+
+                <strong>
+                  ${money(
+                    client.total_reward
+                  )}
+                </strong>
+
+              </div>
+
+
+              <button
+                class="btn"
+                onclick="toggleClientOrders(${index})"
+              >
+                📦 Заказы
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div
+            id="client-orders-${index}"
+            class="client-orders"
+          >
+
+            <div class="table-wrap">
+
+              <table>
+
+                <thead>
+
+                  <tr>
+                    <th>Заказ</th>
+                    <th>Сумма</th>
+                    <th>Статус</th>
+                    <th>Вознаграждение</th>
+                    <th>Дата заказа</th>
+                    <th>Дата начисления</th>
+                  </tr>
+
+                </thead>
+
+
+                <tbody>
+      `;
+
+
+      client.orders.forEach(order => {
+
+        let statusHtml = '—';
+
+
+        if (
+          order.order_status ===
+          'completed'
+        ) {
+
+          statusHtml = `
+            <span class="status completed">
+              ✅ Завершён
+            </span>
+          `;
+
+        } else {
+
+          statusHtml =
+            escapeHtml(
+              order.order_status ||
+              '—'
+            );
+        }
+
+
+        html += `
+
+          <tr>
+
+            <td>
+              <code>
+                ${escapeHtml(
+                  order.order_id ||
+                  '—'
+                )}
+              </code>
+            </td>
+
+
+            <td>
+              <strong>
+                ${money(
+                  order.order_total
+                )}
+              </strong>
+            </td>
+
+
+            <td>
+              ${statusHtml}
+            </td>
+
+
+            <td>
+              ${money(
+                order.reward_amount
+              )}
+            </td>
+
+
+            <td>
+              ${dateTime(
+                order.order_created_at
+              )}
+            </td>
+
+
+            <td>
+              ${dateTime(
+                order.reward_created_at
+              )}
+            </td>
+
+          </tr>
+
+        `;
+      });
+
+
+      html += `
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+    }
+  );
+
+
+  html += `
+    </div>
+  `;
+
+
+  content.innerHTML =
+    html;
+}
+
+
+async function loadClients() {
+
+  const content =
+    document.getElementById(
+      'clientsContent'
+    );
+
+
+  content.innerHTML =
+    '<div class="loading">Загрузка...</div>';
+
+
+  const rows =
+    await rpc(
+      'get_referral_admin_client_orders'
+    );
+
+
+  referralClientsRawData =
+    rows || [];
+
+
+  renderClients(
+    referralClientsRawData
+  );
+}
   async function loadStatistics() {
 
     const content =
