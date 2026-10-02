@@ -2048,7 +2048,62 @@ async function loadClients() {
       );
     });
 
+  const clientsSearch =
+    document.getElementById('clientsSearch');
 
+  if (clientsSearch) {
+
+    clientsSearch.addEventListener(
+      'input',
+      () => {
+
+        const query =
+          clientsSearch.value
+            .trim()
+            .toLowerCase();
+
+        if (!query) {
+
+          renderClients(
+            referralClientsRawData
+          );
+
+          return;
+        }
+
+
+        const filtered =
+          referralClientsRawData.filter(
+            row => {
+
+              const values = [
+
+                row.referred_user_id,
+
+                row.referrer_user_id,
+
+                row.referral_code,
+
+                row.order_id
+
+              ];
+
+              return values.some(
+                value =>
+                  String(value || '')
+                    .toLowerCase()
+                    .includes(query)
+              );
+
+            }
+          );
+
+
+        renderClients(filtered);
+      }
+    );
+
+  }
   // Первичная загрузка
   (async function init() {
 
