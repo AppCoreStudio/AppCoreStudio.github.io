@@ -1815,7 +1815,50 @@ async function completeRequest(id) {
   }
 
 }
+async function rejectRequest(id) {
 
+  if (!confirm('Отклонить эту заявку?')) {
+    return;
+  }
+
+  try {
+
+    const result =
+      await rpc(
+        'reject_referral_withdrawal_request',
+        {
+          p_request_id: id
+        }
+      );
+
+    console.log(
+      'Результат отклонения:',
+      result
+    );
+
+    await loadStats();
+
+    await loadWithdrawalsWithCountdownData();
+
+    await loadStatistics();
+
+    alert('Заявка успешно отклонена.');
+
+  } catch (error) {
+
+    console.error(
+      'Ошибка отклонения:',
+      error
+    );
+
+    alert(
+      'Ошибка отклонения:\n\n' +
+      error.message
+    );
+
+  }
+
+}
   async function loadWithdrawalsWithCountdownData() {
 
     const rows =
