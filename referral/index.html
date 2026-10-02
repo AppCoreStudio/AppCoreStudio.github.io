@@ -3060,9 +3060,9 @@ async function loadWithdrawHistory(){
     const list =
         document.getElementById("withdrawHistoryList");
 
-    if(!session || !session.user_id){
-        return;
-    }
+    if(!currentSession || !currentSession.user_id){
+    return;
+}
 
     sheet.classList.remove("hidden");
 
@@ -3075,7 +3075,7 @@ async function loadWithdrawHistory(){
             await rpc(
                 "get_referral_withdrawals",
                 {
-                    p_user_id:session.user_id
+                    p_user_id:currentSession.user_id
                 }
             );
 
