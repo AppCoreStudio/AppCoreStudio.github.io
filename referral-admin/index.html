@@ -2023,39 +2023,27 @@ content.innerHTML = html;
         }
 
 
-        const filtered =
-          referralClientsRawData.filter(
-            row => {
+ const filtered =
+  referralClientsRawData.filter(
+    row => {
 
-          const referrer =
-  window.allReferralRows?.find(
-    item =>
-      item.user_id === row.referrer_user_id
+      const values = [
+        row.referred_user_id,
+        row.referrer_user_id,
+        row.referral_code,
+        row.order_id
+      ];
+
+      return values.some(
+        value =>
+          String(value ?? '')
+            .trim()
+            .toLowerCase()
+            .includes(query)
+      );
+
+    }
   );
-
-const values = [
-  row.referred_user_id,
-  row.referrer_user_id,
-  referrer?.username,
-  referrer?.phone,
-  referrer?.email,
-  row.referral_code,
-  row.order_id
-];
-
-const normalizedQuery =
-  query.trim().toLowerCase();
-
-return values.some(
-  value =>
-    String(value ?? '')
-      .trim()
-      .toLowerCase()
-      .includes(normalizedQuery)
-);
-
-            }
-          );
 
 
         renderClients(filtered);
