@@ -1796,12 +1796,15 @@ async function loadClients() {
 
       clearError();
 
-      await loadStats();
-      await loadWithdrawals();
-      await loadTop();
-      await loadAll();
-      await loadStatistics();
-    } catch (error) {
+    await loadStats();
+    await loadWithdrawals();
+    await loadTop();
+    await loadAll();
+    await loadClients();
+    await loadStatistics();
+
+  } catch (error) {
+
 
       console.error(error);
 
