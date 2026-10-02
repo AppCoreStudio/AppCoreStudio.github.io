@@ -2782,6 +2782,8 @@ async function startOrdersRealtime(){
 
           await loadOrders();
 
+          await updateReferralNotificationBadge();
+          
         }
       )
       .subscribe(
