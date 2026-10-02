@@ -2220,7 +2220,73 @@ function maskPhone(phone){
         value.slice(0,4) +
         " *** ** " +
         value.slice(-2)
+      );
+}
+
+function renderWithdrawStatus(status, amount){
+
+    const box =
+        document.getElementById("withdrawStatus");
+
+    const title =
+        document.getElementById("withdrawStatusTitle");
+
+    const text =
+        document.getElementById("withdrawStatusText");
+
+    box.classList.remove(
+        "hidden",
+        "pending",
+        "paid",
+        "rejected"
     );
+
+    if(status === "pending"){
+
+        box.classList.add("pending");
+
+        title.textContent =
+            "🟡 На проверке";
+
+        text.textContent =
+            "Заявка на выплату " +
+            formatMoney(amount) +
+            " ₽ находится на проверке.";
+
+        return;
+    }
+
+    if(status === "paid"){
+
+        box.classList.add("paid");
+
+        title.textContent =
+            "🟢 Выплачено";
+
+        text.textContent =
+            "Выплата " +
+            formatMoney(amount) +
+            " ₽ успешно произведена.";
+
+        return;
+    }
+
+    if(status === "rejected"){
+
+        box.classList.add("rejected");
+
+        title.textContent =
+            "🔴 Отклонено";
+
+        text.textContent =
+            "Заявка на выплату " +
+            formatMoney(amount) +
+            " ₽ была отклонена.";
+
+        return;
+    }
+
+    box.classList.add("hidden");
 }
 
 
