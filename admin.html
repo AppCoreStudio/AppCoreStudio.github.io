@@ -3080,6 +3080,13 @@ async function showDashboard(){
 
   await startOrdersRealtime();
 }
+
+async function updateReferralNotificationBadge(){
+
+  // весь код выше
+
+}
+
 async function init(){
 
   const {
@@ -3094,7 +3101,7 @@ async function init(){
   if(session){
 
     await showDashboard();
-    
+    await updateReferralNotificationBadge();
   }else{
     
     loginScreen.style.display =
