@@ -427,7 +427,7 @@ input::placeholder{
     font-size:18px;
 }
 
-/* Новый ввод названия банка */
+/* Custom bank */
 
 .custom-bank-wrap{
     display:none;
@@ -875,9 +875,15 @@ input::placeholder{
                     <label>Банк получателя</label>
 
                     <div class="bank-wrap">
+
                         <select id="payoutBank">
 
-                            <option value="">
+                            <!-- Только подсказка. Выбрать её повторно нельзя. -->
+                            <option
+                                value=""
+                                disabled
+                                selected
+                            >
                                 Выберите банк
                             </option>
 
@@ -914,6 +920,7 @@ input::placeholder{
                             </option>
 
                         </select>
+
                     </div>
                 </div>
 
@@ -922,6 +929,7 @@ input::placeholder{
                     id="customBankWrap"
                     class="field custom-bank-wrap"
                 >
+
                     <label>Название банка</label>
 
                     <input
@@ -931,9 +939,11 @@ input::placeholder{
                         maxlength="100"
                         placeholder="Введите название банка"
                     >
+
                 </div>
 
                 <div class="field">
+
                     <label>Имя получателя</label>
 
                     <input
@@ -943,9 +953,11 @@ input::placeholder{
                         maxlength="50"
                         placeholder="Введите имя"
                     >
+
                 </div>
 
                 <div class="field">
+
                     <label>Фамилия получателя</label>
 
                     <input
@@ -955,6 +967,7 @@ input::placeholder{
                         maxlength="50"
                         placeholder="Введите фамилию"
                     >
+
                 </div>
 
                 <div
@@ -1134,11 +1147,14 @@ async function rpc(functionName, body){
     let data = null;
 
     try{
+
         data =
             text
                 ? JSON.parse(text)
                 : null;
+
     }catch{
+
         data = text;
     }
 
@@ -1671,12 +1687,6 @@ function updateWithdrawState(balance){
 }
 
 function loadSavedPayoutDetails(){
-
-    /*
-     * Пока реквизиты хранятся в браузере только
-     * после успешной заявки. Серверная запись также
-     * создаётся функцией submit_referral_withdrawal.
-     */
 
     const saved =
         localStorage.getItem(
@@ -2377,11 +2387,6 @@ async function confirmWithdraw(){
             "withdrawAmount"
         ).value = "";
 
-        /*
-         * Обновляем кабинет с сервера,
-         * чтобы баланс сразу изменился.
-         */
-
         await loadDashboard(
             token
         );
@@ -2495,7 +2500,12 @@ document.getElementById(
                 "show"
             );
 
-            customBankName.focus();
+            /*
+             * ВАЖНО:
+             * focus() здесь специально отсутствует.
+             * На iPhone Safari он мог закрывать
+             * клавиатуру после выбора пункта.
+             */
 
         }else{
 
