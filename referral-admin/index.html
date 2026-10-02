@@ -11,7 +11,6 @@
     * {
       box-sizing: border-box;
     }
-
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -2033,10 +2032,7 @@ content.innerHTML = html;
         row.referral_code,
         row.order_id
       ];
-alert(
-  'REFERRER: ' +
-  row.referrer_user_id
-);
+
       return values.some(
         value =>
           String(value ?? '')
@@ -2049,7 +2045,19 @@ alert(
   );
 
 
-        renderClients(filtered);
+       if (
+  query ===
+  '29794875-2776-444a-b947-155995fb78c2'
+) {
+
+  alert(
+    'Найдено строк: ' +
+    filtered.length
+  );
+
+}
+
+renderClients(filtered);
       }
     );
 
