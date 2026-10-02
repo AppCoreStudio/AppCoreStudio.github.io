@@ -1566,7 +1566,10 @@ async function loadClients() {
 
   referralClientsRawData =
     rows || [];
-
+console.log(
+  'Данные клиентов:',
+  referralClientsRawData
+);
 
   renderClients(
     referralClientsRawData
