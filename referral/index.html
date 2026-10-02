@@ -878,7 +878,6 @@ input::placeholder{
 
                         <select id="payoutBank">
 
-                            <!-- Только подсказка. Выбрать её повторно нельзя. -->
                             <option
                                 value=""
                                 disabled
@@ -924,7 +923,6 @@ input::placeholder{
                     </div>
                 </div>
 
-                <!-- CUSTOM BANK -->
                 <div
                     id="customBankWrap"
                     class="field custom-bank-wrap"
@@ -1078,6 +1076,12 @@ const REFERRAL_KEY =
 const VISITOR_KEY =
     "appcore_referral_visitor";
 
+const TOKEN_COOKIE =
+    "appcore_referral_token";
+
+const TOKEN_MAX_AGE =
+    60 * 60 * 24 * 30;
+
 const MIN_WITHDRAW = 500;
 
 
@@ -1120,66 +1124,114 @@ let pendingWithdraw = null;
    SUPABASE RPC
    ========================================================= */
 
-async function rpc(functionName, body){
+async function rpc(
+    functionName,
+    body,
+    timeoutMs = 12000
+){
 
-    const response =
-        await fetch(
-            SUPABASE_URL +
-            "/rest/v1/rpc/" +
-            functionName,
-            {
-                method:"POST",
+    const controller =
+        new AbortController();
 
-                headers:{
-                    "Content-Type":"application/json",
-                    "apikey":SUPABASE_KEY,
-                    "Authorization":
-                        "Bearer " + SUPABASE_KEY
-                },
-
-                body:JSON.stringify(body || {})
-            }
+    const timeout =
+        setTimeout(
+            () => controller.abort(),
+            timeoutMs
         );
-
-    const text =
-        await response.text();
-
-    let data = null;
 
     try{
 
-        data =
-            text
-                ? JSON.parse(text)
-                : null;
+        const response =
+            await fetch(
+                SUPABASE_URL +
+                "/rest/v1/rpc/" +
+                functionName,
+                {
+                    method:"POST",
 
-    }catch{
+                    headers:{
+                        "Content-Type":"application/json",
+                        "apikey":SUPABASE_KEY,
+                        "Authorization":
+                            "Bearer " + SUPABASE_KEY
+                    },
 
-        data = text;
-    }
+                    body:JSON.stringify(body || {}),
 
-    if(!response.ok){
+                    signal:controller.signal
+                }
+            );
 
-        let message =
-            "Произошла ошибка.";
+        const text =
+            await response.text();
 
-        if(
-            data &&
-            typeof data === "object"
-        ){
+        let data = null;
 
-            message =
-                data.message ||
-                data.error_description ||
-                data.hint ||
-                data.error ||
-                message;
+        try{
+
+            data =
+                text
+                    ? JSON.parse(text)
+                    : null;
+
+        }catch{
+
+            data = text;
         }
 
-        throw new Error(message);
-    }
+        if(!response.ok){
 
-    return data;
+            let message =
+                "Произошла ошибка.";
+
+            if(
+                data &&
+                typeof data === "object"
+            ){
+
+                message =
+                    data.message ||
+                    data.error_description ||
+                    data.hint ||
+                    data.error ||
+                    message;
+            }
+
+            const error =
+                new Error(message);
+
+            error.httpStatus =
+                response.status;
+
+            throw error;
+        }
+
+        return data;
+
+    }catch(error){
+
+        if(
+            error &&
+            error.name === "AbortError"
+        ){
+
+            const timeoutError =
+                new Error(
+                    "Сервер отвечает слишком долго. Проверьте интернет и попробуйте снова."
+                );
+
+            timeoutError.code =
+                "TIMEOUT";
+
+            throw timeoutError;
+        }
+
+        throw error;
+
+    }finally{
+
+        clearTimeout(timeout);
+    }
 }
 
 
@@ -1216,44 +1268,208 @@ function normalizePhone(phone){
         .replace(/[^\d+]/g,"");
 }
 
+
+/* =========================================================
+   SESSION STORAGE
+   ========================================================= */
+
+function setTokenCookie(token){
+
+    try{
+
+        document.cookie =
+            TOKEN_COOKIE +
+            "=" +
+            encodeURIComponent(token) +
+            "; Max-Age=" +
+            TOKEN_MAX_AGE +
+            "; Path=/" +
+            "; SameSite=Lax" +
+            "; Secure";
+
+    }catch(error){
+
+        console.log(
+            "Cookie save:",
+            error.message
+        );
+    }
+}
+
+function getTokenCookie(){
+
+    try{
+
+        const prefix =
+            TOKEN_COOKIE + "=";
+
+        const parts =
+            document.cookie
+                .split("; ");
+
+        for(const part of parts){
+
+            if(
+                part.indexOf(prefix) === 0
+            ){
+
+                return decodeURIComponent(
+                    part.slice(prefix.length)
+                );
+            }
+        }
+
+    }catch(error){
+
+        console.log(
+            "Cookie read:",
+            error.message
+        );
+    }
+
+    return null;
+}
+
+function clearTokenCookie(){
+
+    try{
+
+        document.cookie =
+            TOKEN_COOKIE +
+            "=; Max-Age=0; Path=/; SameSite=Lax; Secure";
+
+    }catch(error){
+
+        console.log(
+            "Cookie clear:",
+            error.message
+        );
+    }
+}
+
 function getStoredToken(){
 
-    return localStorage.getItem(
-        SESSION_KEY
-    );
+    let token = null;
+
+    try{
+
+        token =
+            localStorage.getItem(
+                SESSION_KEY
+            );
+
+    }catch(error){
+
+        console.log(
+            "LocalStorage read:",
+            error.message
+        );
+    }
+
+    if(token){
+        return token;
+    }
+
+    return getTokenCookie();
 }
 
 function saveToken(token){
 
-    localStorage.setItem(
-        SESSION_KEY,
-        token
-    );
+    if(!token){
+        return;
+    }
+
+    try{
+
+        localStorage.setItem(
+            SESSION_KEY,
+            token
+        );
+
+    }catch(error){
+
+        console.log(
+            "LocalStorage save:",
+            error.message
+        );
+    }
+
+    setTokenCookie(token);
 }
 
 function clearToken(){
 
-    localStorage.removeItem(
-        SESSION_KEY
-    );
+    try{
+
+        localStorage.removeItem(
+            SESSION_KEY
+        );
+
+    }catch(error){
+
+        console.log(
+            "LocalStorage clear:",
+            error.message
+        );
+    }
+
+    clearTokenCookie();
 }
 
 function getVisitorId(){
 
-    let id =
-        localStorage.getItem(
-            VISITOR_KEY
+    let id = null;
+
+    try{
+
+        id =
+            localStorage.getItem(
+                VISITOR_KEY
+            );
+
+    }catch(error){
+
+        console.log(
+            "Visitor storage read:",
+            error.message
         );
+    }
 
     if(!id){
 
-        id =
-            crypto.randomUUID();
+        if(
+            window.crypto &&
+            typeof crypto.randomUUID === "function"
+        ){
 
-        localStorage.setItem(
-            VISITOR_KEY,
-            id
-        );
+            id =
+                crypto.randomUUID();
+
+        }else{
+
+            id =
+                "visitor-" +
+                Date.now() +
+                "-" +
+                Math.random()
+                    .toString(36)
+                    .slice(2);
+        }
+
+        try{
+
+            localStorage.setItem(
+                VISITOR_KEY,
+                id
+            );
+
+        }catch(error){
+
+            console.log(
+                "Visitor storage save:",
+                error.message
+            );
+        }
     }
 
     return id;
@@ -1300,23 +1516,45 @@ async function processReferralClick(){
 
     if(urlCode){
 
-        if(
-            !localStorage.getItem(
-                REFERRAL_KEY
-            )
-        ){
+        try{
 
-            localStorage.setItem(
-                REFERRAL_KEY,
-                urlCode
+            if(
+                !localStorage.getItem(
+                    REFERRAL_KEY
+                )
+            ){
+
+                localStorage.setItem(
+                    REFERRAL_KEY,
+                    urlCode
+                );
+            }
+
+        }catch(error){
+
+            console.log(
+                "Referral code save:",
+                error.message
             );
         }
     }
 
-    const code =
-        localStorage.getItem(
-            REFERRAL_KEY
+    let code = null;
+
+    try{
+
+        code =
+            localStorage.getItem(
+                REFERRAL_KEY
+            );
+
+    }catch(error){
+
+        console.log(
+            "Referral code read:",
+            error.message
         );
+    }
 
     if(!code){
         return;
@@ -1329,7 +1567,8 @@ async function processReferralClick(){
             {
                 p_referral_code:code,
                 p_visitor_id:getVisitorId()
-            }
+            },
+            5000
         );
 
     }catch(error){
@@ -1460,10 +1699,22 @@ async function register(){
 
     try{
 
-        const referralCode =
-            localStorage.getItem(
-                REFERRAL_KEY
+        let referralCode = null;
+
+        try{
+
+            referralCode =
+                localStorage.getItem(
+                    REFERRAL_KEY
+                );
+
+        }catch(error){
+
+            console.log(
+                "Referral code:",
+                error.message
             );
+        }
 
         const result =
             await rpc(
@@ -1492,9 +1743,19 @@ async function register(){
             result.token
         );
 
-        localStorage.removeItem(
-            REFERRAL_KEY
-        );
+        try{
+
+            localStorage.removeItem(
+                REFERRAL_KEY
+            );
+
+        }catch(error){
+
+            console.log(
+                "Referral code clear:",
+                error.message
+            );
+        }
 
         await loadDashboard(
             result.token
@@ -1625,7 +1886,8 @@ async function getSession(token){
         "referral_get_session",
         {
             p_token:token
-        }
+        },
+        12000
     );
 }
 
@@ -1688,10 +1950,24 @@ function updateWithdrawState(balance){
 
 function loadSavedPayoutDetails(){
 
-    const saved =
-        localStorage.getItem(
-            "appcore_payout_details"
+    let saved = null;
+
+    try{
+
+        saved =
+            localStorage.getItem(
+                "appcore_payout_details"
+            );
+
+    }catch(error){
+
+        console.log(
+            "Payout storage:",
+            error.message
         );
+
+        return;
+    }
 
     if(!saved){
         return;
@@ -1791,9 +2067,13 @@ function loadSavedPayoutDetails(){
 
     }catch{
 
-        localStorage.removeItem(
-            "appcore_payout_details"
-        );
+        try{
+
+            localStorage.removeItem(
+                "appcore_payout_details"
+            );
+
+        }catch{}
     }
 }
 
@@ -2009,9 +2289,11 @@ function renderDashboard(data){
         ) +
         " / 500 ₽";
 
-   const referralLink =
-    "https://appcorestudio.github.io/?ref=" +
-    encodeURIComponent(data.referral_code);
+    const referralLink =
+        "https://appcorestudio.github.io/?ref=" +
+        encodeURIComponent(
+            data.referral_code
+        );
 
     document.getElementById(
         "referralLink"
@@ -2025,7 +2307,27 @@ function renderDashboard(data){
     loadSavedPayoutDetails();
 }
 
+
+/* =========================================================
+   LOAD DASHBOARD
+   ========================================================= */
+
 async function loadDashboard(token){
+
+    if(!token){
+
+        loadingScreen.classList.add(
+            "hidden"
+        );
+
+        authSection.classList.remove(
+            "hidden"
+        );
+
+        showLogin();
+
+        return false;
+    }
 
     try{
 
@@ -2037,10 +2339,21 @@ async function loadDashboard(token){
             !data.success
         ){
 
-            throw new Error(
-                "Сессия недействительна."
-            );
+            const error =
+                new Error(
+                    "Сессия недействительна."
+                );
+
+            error.sessionInvalid = true;
+
+            throw error;
         }
+
+        /*
+         * Продлеваем резервный cookie ещё на 30 дней
+         * при каждом успешном открытии кабинета.
+         */
+        saveToken(token);
 
         renderDashboard(data);
 
@@ -2052,19 +2365,86 @@ async function loadDashboard(token){
             "hidden"
         );
 
+        return true;
+
     }catch(error){
 
-        clearToken();
+        /*
+         * Очень важно:
+         *
+         * Ошибка сети, timeout или временная ошибка
+         * Supabase НЕ должны удалять токен.
+         *
+         * Токен удаляем только если сервер действительно
+         * сообщил, что сессия недействительна.
+         */
 
-        dashboardSection.classList.add(
-            "hidden"
+        const message =
+            String(
+                error?.message || ""
+            ).toLowerCase();
+
+        const isInvalidSession =
+            error?.sessionInvalid === true ||
+            error?.httpStatus === 401 ||
+            (
+                error?.httpStatus === 400 &&
+                (
+                    message.includes("сессия") ||
+                    message.includes("session") ||
+                    message.includes("token")
+                )
+            );
+
+        if(isInvalidSession){
+
+            clearToken();
+
+            dashboardSection.classList.add(
+                "hidden"
+            );
+
+            authSection.classList.remove(
+                "hidden"
+            );
+
+            showLogin();
+
+            showMessage(
+                loginMessage,
+                "Сессия закончилась. Войдите снова."
+            );
+
+        }else{
+
+            /*
+             * При проблеме сети оставляем токен.
+             * Пользователь сможет обновить страницу,
+             * и система снова попробует восстановить вход.
+             */
+
+            dashboardSection.classList.add(
+                "hidden"
+            );
+
+            authSection.classList.remove(
+                "hidden"
+            );
+
+            showLogin();
+
+            showMessage(
+                loginMessage,
+                "Не удалось загрузить кабинет. Проверьте интернет и обновите страницу."
+            );
+        }
+
+        console.log(
+            "Dashboard:",
+            error.message
         );
 
-        authSection.classList.remove(
-            "hidden"
-        );
-
-        showLogin();
+        return false;
 
     }finally{
 
@@ -2092,7 +2472,8 @@ async function logout(){
                 "referral_logout",
                 {
                     p_token:token
-                }
+                },
+                8000
             );
 
         }catch(error){
@@ -2308,6 +2689,13 @@ async function confirmWithdraw(){
         const token =
             getStoredToken();
 
+        if(!token){
+
+            throw new Error(
+                "Сессия закончилась. Войдите снова."
+            );
+        }
+
         const session =
             await getSession(token);
 
@@ -2356,22 +2744,32 @@ async function confirmWithdraw(){
             );
         }
 
-        localStorage.setItem(
-            "appcore_payout_details",
-            JSON.stringify({
-                phone:
-                    pendingWithdraw.phone,
+        try{
 
-                bank_name:
-                    pendingWithdraw.bankName,
+            localStorage.setItem(
+                "appcore_payout_details",
+                JSON.stringify({
+                    phone:
+                        pendingWithdraw.phone,
 
-                first_name:
-                    pendingWithdraw.firstName,
+                    bank_name:
+                        pendingWithdraw.bankName,
 
-                last_name:
-                    pendingWithdraw.lastName
-            })
-        );
+                    first_name:
+                        pendingWithdraw.firstName,
+
+                    last_name:
+                        pendingWithdraw.lastName
+                })
+            );
+
+        }catch(error){
+
+            console.log(
+                "Payout details save:",
+                error.message
+            );
+        }
 
         closeWithdrawModal();
 
@@ -2499,8 +2897,7 @@ document.getElementById(
             );
 
             /*
-             * ВАЖНО:
-             * focus() здесь специально отсутствует.
+             * focus() специально отсутствует.
              * На iPhone Safari он мог закрывать
              * клавиатуру после выбора пункта.
              */
@@ -2554,14 +2951,34 @@ document.getElementById(
 
 (async function(){
 
-    await processReferralClick();
+    /*
+     * ВАЖНО:
+     *
+     * Отслеживание реферального перехода запускается
+     * в фоне и НЕ блокирует восстановление сессии.
+     */
+    processReferralClick()
+        .catch(error => {
 
+            console.log(
+                "Referral background:",
+                error.message
+            );
+
+        });
+
+
+    /*
+     * Сначала сразу проверяем сохранённую сессию.
+     */
     const token =
         getStoredToken();
 
     if(token){
 
-        await loadDashboard(token);
+        await loadDashboard(
+            token
+        );
 
     }else{
 
