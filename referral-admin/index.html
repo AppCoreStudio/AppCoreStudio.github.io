@@ -233,9 +233,114 @@
       margin-bottom: 7px;
     }
 
-    .mini-stat .value {
+        .mini-stat .value {
       font-size: 22px;
       font-weight: 800;
+    }
+
+    /* КЛИЕНТЫ */
+
+    .client-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .client-summary-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 15px;
+      background: #fafafa;
+    }
+
+    .client-summary-card .label {
+      color: #6b7280;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .client-summary-card .value {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .client-row {
+      cursor: pointer;
+    }
+
+    .client-row:hover {
+      background: #f9fafb;
+    }
+
+    .client-orders {
+      display: none;
+      background: #f9fafb;
+    }
+
+    .client-orders.open {
+      display: table-row;
+    }
+
+    .client-orders-inner {
+      padding: 16px;
+    }
+
+    .order-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 13px;
+      margin-bottom: 9px;
+    }
+
+    .order-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .order-card-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      align-items: center;
+    }
+
+    .order-label {
+      color: #6b7280;
+      font-size: 11px;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+    }
+
+    .order-value {
+      font-weight: 700;
+    }
+
+    .client-id {
+      font-family: monospace;
+      font-size: 12px;
+      word-break: break-all;
+    }
+
+    .btn-details {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .search-box {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 11px 13px;
+      font-size: 14px;
+      margin-bottom: 15px;
+      outline: none;
+    }
+
+    .search-box:focus {
+      border-color: #6366f1;
     }
 
     @media (max-width: 900px) {
@@ -356,7 +461,9 @@
     <button data-panel="all">
       👥 Все рефералы
     </button>
-
+       <button data-panel="clients">
+      🧾 Клиенты
+    </button>
     <button data-panel="statistics">
       📊 Статистика
     </button>
@@ -399,7 +506,27 @@
     </div>
 
   </section>
+<!-- КЛИЕНТЫ -->
+<section id="clients" class="panel">
 
+  <h2>🧾 Клиенты</h2>
+
+  <div class="refresh-info">
+    Привлечённые клиенты и все завершённые заказы, по которым начислено вознаграждение
+  </div>
+
+  <input
+    id="clientsSearch"
+    class="search-box"
+    type="text"
+    placeholder="Поиск по телефону, ID клиента, рефералу или коду..."
+  >
+
+  <div id="clientsContent" class="loading">
+    Загрузка...
+  </div>
+
+</section>
   <!-- СТАТИСТИКА -->
   <section id="statistics" class="panel">
 
@@ -432,7 +559,7 @@
       SUPABASE_ANON_KEY
     );
 
-
+  let referralClientsRawData = [];
   let refreshTimer = null;
   let countdownTimer = null;
 
@@ -1075,7 +1202,32 @@
     content.innerHTML = html;
   }
 
+  async function loadClients() {
 
+    const content =
+      document.getElementById('clientsContent');
+
+    content.innerHTML =
+      '<div class="loading">Загрузка...</div>';
+
+    const rows =
+      await rpc(
+        'get_referral_admin_client_orders'
+      );
+
+    referralClientsRawData = rows || [];
+
+    if (!rows || rows.length === 0) {
+
+      content.innerHTML =
+        '<div class="empty">Клиентов пока нет</div>';
+
+      return;
+    }
+
+    content.innerHTML =
+      '<div class="empty">Данные клиентов загружены</div>';
+  }
   async function loadStatistics() {
 
     const content =
@@ -1235,7 +1387,6 @@
       await loadTop();
       await loadAll();
       await loadStatistics();
-
     } catch (error) {
 
       console.error(error);
@@ -1508,7 +1659,9 @@
       await loadTop();
 
       await loadAll();
-
+      
+      await loadClients();
+      
       await loadStatistics();
 
 
