@@ -2031,29 +2031,25 @@ content.innerHTML = html;
   );
 
 const values = [
-
   row.referred_user_id,
-
   row.referrer_user_id,
-
   referrer?.username,
-
   referrer?.phone,
-
   referrer?.email,
-
   row.referral_code,
-
   row.order_id
-
 ];
 
-              return values.some(
-                value =>
-                  String(value || '')
-                    .toLowerCase()
-                    .includes(query)
-              );
+const normalizedQuery =
+  query.trim().toLowerCase();
+
+return values.some(
+  value =>
+    String(value ?? '')
+      .trim()
+      .toLowerCase()
+      .includes(normalizedQuery)
+);
 
             }
           );
