@@ -2033,7 +2033,10 @@ content.innerHTML = html;
         row.referral_code,
         row.order_id
       ];
-
+alert(
+  'REFERRER: ' +
+  row.referrer_user_id
+);
       return values.some(
         value =>
           String(value ?? '')
