@@ -1771,7 +1771,50 @@ await loadTop();
           countdownText(row);
       });
   }
+async function completeRequest(id) {
 
+  if (!confirm('Выплатить эту заявку?')) {
+    return;
+  }
+
+  try {
+
+    const result =
+      await rpc(
+        'complete_referral_withdrawal_request',
+        {
+          p_request_id: id
+        }
+      );
+
+    console.log(
+      'Результат выплаты:',
+      result
+    );
+
+    await loadStats();
+
+    await loadWithdrawalsWithCountdownData();
+
+    await loadStatistics();
+
+    alert('Заявка успешно выплачена.');
+
+  } catch (error) {
+
+    console.error(
+      'Ошибка выплаты:',
+      error
+    );
+
+    alert(
+      'Ошибка выплаты:\n\n' +
+      error.message
+    );
+
+  }
+
+}
 
   async function loadWithdrawalsWithCountdownData() {
 
