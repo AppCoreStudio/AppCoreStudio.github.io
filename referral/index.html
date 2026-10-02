@@ -1,0 +1,2438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<meta name="theme-color" content="#08090d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<title>AppCore Referral</title>
+
+<style>
+:root{
+    --bg:#08090d;
+    --card:#11131a;
+    --card2:#151821;
+    --border:#252936;
+    --text:#f5f7fb;
+    --muted:#9298a8;
+    --accent:#7c5cff;
+    --accent2:#5f43e8;
+    --success:#35c98a;
+    --danger:#ff5f6d;
+    --input:#0d0f15;
+}
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.app{
+    width:100%;
+    max-width:520px;
+    min-height:100vh;
+    margin:0 auto;
+    padding:20px 16px 40px;
+}
+
+.logo{
+    text-align:center;
+    font-size:28px;
+    font-weight:800;
+    letter-spacing:-1px;
+    margin-top:18px;
+}
+
+.logo span{
+    color:var(--accent);
+}
+
+.subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    margin-top:7px;
+}
+
+.card{
+    background:linear-gradient(180deg,#12141b,#0f1117);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:20px;
+    margin-top:24px;
+    box-shadow:0 15px 45px rgba(0,0,0,.22);
+}
+
+h1{
+    font-size:23px;
+    margin:0 0 7px;
+    letter-spacing:-.4px;
+}
+
+h2{
+    font-size:18px;
+    margin:0;
+}
+
+.description{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:20px;
+}
+
+.field{
+    margin-bottom:14px;
+}
+
+label{
+    display:block;
+    color:#c6cad4;
+    font-size:13px;
+    margin:0 0 7px 2px;
+}
+
+input,
+select{
+    width:100%;
+    height:50px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--input);
+    color:var(--text);
+    outline:none;
+    padding:0 14px;
+    transition:.2s;
+}
+
+select{
+    appearance:none;
+    -webkit-appearance:none;
+}
+
+input:focus,
+select:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(124,92,255,.12);
+}
+
+input::placeholder{
+    color:#626877;
+}
+
+.primary{
+    width:100%;
+    height:50px;
+    border:0;
+    border-radius:14px;
+    color:#fff;
+    font-weight:700;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 10px 25px rgba(95,67,232,.22);
+    transition:.15s;
+}
+
+.primary:active{
+    transform:scale(.985);
+}
+
+.primary:disabled{
+    opacity:.45;
+    cursor:default;
+    box-shadow:none;
+}
+
+.secondary{
+    width:100%;
+    height:48px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    color:var(--text);
+    background:var(--card2);
+    font-weight:600;
+}
+
+.link-btn{
+    border:0;
+    background:none;
+    color:#a996ff;
+    padding:0;
+    font-weight:600;
+}
+
+.switch{
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    margin-top:18px;
+}
+
+.message{
+    display:none;
+    margin-bottom:15px;
+    padding:12px 13px;
+    border-radius:12px;
+    font-size:13px;
+    line-height:1.4;
+}
+
+.message.error{
+    display:block;
+    background:rgba(255,95,109,.1);
+    border:1px solid rgba(255,95,109,.2);
+    color:#ff9aa3;
+}
+
+.message.success{
+    display:block;
+    background:rgba(53,201,138,.1);
+    border:1px solid rgba(53,201,138,.2);
+    color:#7de5b9;
+}
+
+.hidden{
+    display:none !important;
+}
+
+/* Dashboard */
+
+.header-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.user-name{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.logout{
+    border:1px solid var(--border);
+    background:#11131a;
+    color:#bfc4d0;
+    border-radius:11px;
+    padding:9px 12px;
+    font-size:12px;
+}
+
+.balance-card{
+    margin-top:18px;
+    padding:22px;
+    border-radius:22px;
+    background:
+        radial-gradient(circle at 90% 10%,rgba(124,92,255,.24),transparent 40%),
+        linear-gradient(145deg,#171526,#101219);
+    border:1px solid #2c2941;
+}
+
+.balance-label{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.balance{
+    font-size:38px;
+    font-weight:800;
+    letter-spacing:-1.5px;
+    margin-top:5px;
+}
+
+.balance-rub{
+    font-size:20px;
+    color:#aaa1d9;
+}
+
+.progress-wrap{
+    margin-top:18px;
+}
+
+.progress-info{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:7px;
+}
+
+.progress{
+    height:8px;
+    background:#272936;
+    border-radius:99px;
+    overflow:hidden;
+}
+
+.progress-bar{
+    height:100%;
+    width:0%;
+    border-radius:99px;
+    background:linear-gradient(90deg,var(--accent),#9a83ff);
+    transition:.4s;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:14px;
+}
+
+.stat{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:15px;
+}
+
+.stat-value{
+    font-size:21px;
+    font-weight:750;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:4px;
+}
+
+.referral-card{
+    margin-top:14px;
+}
+
+.referral-link-box{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+}
+
+.referral-link{
+    flex:1;
+    min-width:0;
+    height:46px;
+    background:#0b0d12;
+    border:1px solid var(--border);
+    border-radius:12px;
+    color:#bfc4d0;
+    padding:0 12px;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    font-size:12px;
+}
+
+.copy{
+    height:46px;
+    border:1px solid var(--border);
+    background:#171923;
+    color:#fff;
+    border-radius:12px;
+    padding:0 15px;
+    font-weight:600;
+}
+
+.small-note{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+    margin-top:10px;
+}
+
+/* Withdrawal */
+
+.withdraw-card{
+    margin-top:14px;
+}
+
+.withdraw-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.withdraw-available{
+    color:#a996ff;
+    font-size:12px;
+    font-weight:600;
+}
+
+.withdraw-info{
+    margin-top:12px;
+    padding:14px;
+    border-radius:15px;
+    background:#0d0f15;
+    border:1px solid var(--border);
+}
+
+.withdraw-info-title{
+    font-size:13px;
+    font-weight:700;
+}
+
+.withdraw-info-text{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+    margin-top:4px;
+}
+
+.withdraw-form{
+    margin-top:16px;
+}
+
+.withdraw-form .field:last-child{
+    margin-bottom:0;
+}
+
+.bank-wrap{
+    position:relative;
+}
+
+.bank-wrap:after{
+    content:"⌄";
+    position:absolute;
+    right:16px;
+    top:14px;
+    color:#858b9a;
+    pointer-events:none;
+    font-size:18px;
+}
+
+.withdraw-actions{
+    margin-top:17px;
+}
+
+.withdraw-actions .primary{
+    height:52px;
+}
+
+.saved-details{
+    display:none;
+    margin-top:12px;
+    padding:12px 13px;
+    border-radius:13px;
+    background:rgba(53,201,138,.07);
+    border:1px solid rgba(53,201,138,.16);
+    color:#9be7c7;
+    font-size:12px;
+    line-height:1.5;
+}
+
+.saved-details.show{
+    display:block;
+}
+
+.withdraw-status{
+    margin-top:13px;
+    padding:13px;
+    border-radius:14px;
+    background:#10121a;
+    border:1px solid var(--border);
+}
+
+.withdraw-status-title{
+    font-size:13px;
+    font-weight:700;
+}
+
+.withdraw-status-text{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:4px;
+    line-height:1.45;
+}
+
+.support{
+    text-align:center;
+    color:#6e7482;
+    font-size:11px;
+    margin-top:25px;
+}
+
+/* Loading */
+
+.loader{
+    width:20px;
+    height:20px;
+    border:2px solid rgba(255,255,255,.2);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    margin:auto;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+.loading-screen{
+    position:fixed;
+    inset:0;
+    background:var(--bg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+}
+
+/* Modal */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(7px);
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    z-index:200;
+    padding:12px;
+}
+
+.modal-box{
+    width:100%;
+    max-width:520px;
+    background:#12141b;
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:20px;
+    margin-bottom:0;
+}
+
+.modal-title{
+    font-size:19px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.modal-text{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.5;
+    margin-bottom:17px;
+}
+
+.modal-summary{
+    background:#0d0f15;
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:14px;
+    margin-bottom:16px;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    padding:5px 0;
+    font-size:13px;
+}
+
+.summary-row span:first-child{
+    color:var(--muted);
+}
+
+.summary-row span:last-child{
+    color:#f5f7fb;
+    text-align:right;
+}
+
+.modal-buttons{
+    display:flex;
+    gap:9px;
+}
+
+.modal-buttons button{
+    flex:1;
+}
+</style>
+</head>
+
+<body>
+
+<div id="loadingScreen" class="loading-screen">
+    <div class="loader"></div>
+</div>
+
+<div class="app">
+
+    <div class="logo">App<span>Core</span></div>
+    <div class="subtitle">Реферальная программа</div>
+
+    <!-- AUTH -->
+    <section id="authSection">
+
+        <!-- LOGIN -->
+        <div id="loginCard" class="card">
+
+            <h1>Вход</h1>
+
+            <div class="description">
+                Войдите в личный кабинет реферальной программы.
+            </div>
+
+            <div id="loginMessage" class="message"></div>
+
+            <div class="field">
+                <label>Номер телефона</label>
+                <input
+                    id="loginPhone"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="+7 900 000-00-00"
+                >
+            </div>
+
+            <div class="field">
+                <label>Пароль</label>
+                <input
+                    id="loginPassword"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="Введите пароль"
+                >
+            </div>
+
+            <button id="loginBtn" class="primary">
+                Войти
+            </button>
+
+            <div class="switch">
+                Нет аккаунта?
+                <button id="showRegister" class="link-btn">
+                    Зарегистрироваться
+                </button>
+            </div>
+
+        </div>
+
+        <!-- REGISTER -->
+        <div id="registerCard" class="card hidden">
+
+            <h1>Регистрация</h1>
+
+            <div class="description">
+                Создайте аккаунт и получите личную реферальную ссылку.
+            </div>
+
+            <div id="registerMessage" class="message"></div>
+
+            <div class="field">
+                <label>Номер телефона</label>
+                <input
+                    id="registerPhone"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="+7 900 000-00-00"
+                >
+            </div>
+
+            <div class="field">
+                <label>Имя пользователя</label>
+                <input
+                    id="registerUsername"
+                    type="text"
+                    autocomplete="username"
+                    maxlength="30"
+                    placeholder="Например: murat"
+                >
+            </div>
+
+            <div class="field">
+                <label>Пароль</label>
+                <input
+                    id="registerPassword"
+                    type="password"
+                    autocomplete="new-password"
+                    placeholder="Минимум 6 символов"
+                >
+            </div>
+
+            <div class="field">
+                <label>Повторите пароль</label>
+                <input
+                    id="registerPassword2"
+                    type="password"
+                    autocomplete="new-password"
+                    placeholder="Повторите пароль"
+                >
+            </div>
+
+            <button id="registerBtn" class="primary">
+                Создать аккаунт
+            </button>
+
+            <div class="switch">
+                Уже есть аккаунт?
+                <button id="showLogin" class="link-btn">
+                    Войти
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboardSection" class="hidden">
+
+        <div class="card" style="margin-top:24px">
+
+            <div class="header-row">
+
+                <div>
+                    <h2>Личный кабинет</h2>
+                    <div id="dashboardUsername" class="user-name"></div>
+                </div>
+
+                <button id="logoutBtn" class="logout">
+                    Выйти
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="balance-card">
+
+            <div class="balance-label">
+                Текущий баланс
+            </div>
+
+            <div class="balance">
+                <span id="balanceValue">0</span>
+                <span class="balance-rub">₽</span>
+            </div>
+
+            <div class="progress-wrap">
+
+                <div class="progress-info">
+                    <span>До минимальной выплаты</span>
+                    <span id="progressText">0 / 500 ₽</span>
+                </div>
+
+                <div class="progress">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="stats">
+
+            <div class="stat">
+                <div id="earnedValue" class="stat-value">0 ₽</div>
+                <div class="stat-label">Заработано</div>
+            </div>
+
+            <div class="stat">
+                <div id="withdrawnValue" class="stat-value">0 ₽</div>
+                <div class="stat-label">Выведено</div>
+            </div>
+
+            <div class="stat">
+                <div id="clicksValue" class="stat-value">0</div>
+                <div class="stat-label">Переходов</div>
+            </div>
+
+            <div class="stat">
+                <div id="registrationsValue" class="stat-value">0</div>
+                <div class="stat-label">Регистраций</div>
+            </div>
+
+            <div class="stat" style="grid-column:1/-1">
+                <div id="paidValue" class="stat-value">0</div>
+                <div class="stat-label">Завершили заказ</div>
+            </div>
+
+        </div>
+
+        <div class="card referral-card">
+
+            <h2>Ваша реферальная ссылка</h2>
+
+            <div class="referral-link-box">
+
+                <div
+                    id="referralLink"
+                    class="referral-link"
+                ></div>
+
+                <button id="copyBtn" class="copy">
+                    Копировать
+                </button>
+
+            </div>
+
+            <div class="small-note">
+                Отправляйте эту ссылку друзьям и знакомым.
+                После регистрации клиента ваша связь с ним закрепляется.
+            </div>
+
+        </div>
+
+        <!-- WITHDRAW -->
+        <div class="card withdraw-card">
+
+            <div class="withdraw-head">
+                <h2>Вывод средств</h2>
+
+                <div
+                    id="withdrawAvailable"
+                    class="withdraw-available"
+                >
+                    0 ₽ доступно
+                </div>
+            </div>
+
+            <div class="withdraw-info">
+
+                <div class="withdraw-info-title">
+                    Минимальная сумма — 500 ₽
+                </div>
+
+                <div
+                    id="withdrawInfoText"
+                    class="withdraw-info-text"
+                >
+                    Накопите 500 ₽, чтобы оформить выплату.
+                </div>
+
+            </div>
+
+            <div id="withdrawMessage" class="message"></div>
+
+            <div class="withdraw-form">
+
+                <div class="field">
+                    <label>Сумма вывода</label>
+
+                    <input
+                        id="withdrawAmount"
+                        type="number"
+                        inputmode="numeric"
+                        min="500"
+                        step="50"
+                        placeholder="Например, 500"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Номер телефона</label>
+
+                    <input
+                        id="payoutPhone"
+                        type="tel"
+                        inputmode="tel"
+                        autocomplete="tel"
+                        placeholder="+7 900 000-00-00"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Банк получателя</label>
+
+                    <div class="bank-wrap">
+                        <select id="payoutBank">
+
+                            <option value="">
+                                Выберите банк
+                            </option>
+
+                            <option value="Сбербанк">
+                                Сбербанк
+                            </option>
+
+                            <option value="Т-Банк">
+                                Т-Банк
+                            </option>
+
+                            <option value="Альфа-Банк">
+                                Альфа-Банк
+                            </option>
+
+                            <option value="ВТБ">
+                                ВТБ
+                            </option>
+
+                            <option value="ПСБ">
+                                ПСБ
+                            </option>
+
+                            <option value="Газпромбанк">
+                                Газпромбанк
+                            </option>
+
+                            <option value="Россельхозбанк">
+                                Россельхозбанк
+                            </option>
+
+                            <option value="Другой банк">
+                                Другой банк
+                            </option>
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Имя получателя</label>
+
+                    <input
+                        id="payoutFirstName"
+                        type="text"
+                        autocomplete="given-name"
+                        maxlength="50"
+                        placeholder="Введите имя"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Фамилия получателя</label>
+
+                    <input
+                        id="payoutLastName"
+                        type="text"
+                        autocomplete="family-name"
+                        maxlength="50"
+                        placeholder="Введите фамилию"
+                    >
+                </div>
+
+                <div
+                    id="savedDetails"
+                    class="saved-details"
+                ></div>
+
+                <div class="withdraw-actions">
+
+                    <button
+                        id="withdrawBtn"
+                        class="primary"
+                        disabled
+                    >
+                        Вывести средства
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="support">
+            AppCore Referral
+        </div>
+
+    </section>
+
+</div>
+
+<!-- WITHDRAW MODAL -->
+<div id="withdrawModal" class="modal hidden">
+
+    <div class="modal-box">
+
+        <div class="modal-title">
+            Подтвердите вывод
+        </div>
+
+        <div class="modal-text">
+            Проверьте реквизиты получателя перед отправкой заявки.
+        </div>
+
+        <div class="modal-summary">
+
+            <div class="summary-row">
+                <span>Сумма</span>
+                <span id="summaryAmount">0 ₽</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Телефон</span>
+                <span id="summaryPhone">—</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Банк</span>
+                <span id="summaryBank">—</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Получатель</span>
+                <span id="summaryName">—</span>
+            </div>
+
+        </div>
+
+        <div class="modal-buttons">
+
+            <button
+                id="cancelWithdraw"
+                class="secondary"
+            >
+                Отмена
+            </button>
+
+            <button
+                id="confirmWithdraw"
+                class="primary"
+            >
+                Отправить
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+/* =========================================================
+   APPCORE REFERRAL
+   ========================================================= */
+
+const SUPABASE_URL =
+    "https://dkgipfotfjntlhabakns.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
+
+const SESSION_KEY =
+    "appcore_referral_session";
+
+const REFERRAL_KEY =
+    "appcore_referral_code";
+
+const VISITOR_KEY =
+    "appcore_referral_visitor";
+
+const MIN_WITHDRAW = 500;
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const loadingScreen =
+    document.getElementById("loadingScreen");
+
+const authSection =
+    document.getElementById("authSection");
+
+const dashboardSection =
+    document.getElementById("dashboardSection");
+
+const loginCard =
+    document.getElementById("loginCard");
+
+const registerCard =
+    document.getElementById("registerCard");
+
+const loginMessage =
+    document.getElementById("loginMessage");
+
+const registerMessage =
+    document.getElementById("registerMessage");
+
+const withdrawMessage =
+    document.getElementById("withdrawMessage");
+
+const withdrawBtn =
+    document.getElementById("withdrawBtn");
+
+let currentSession = null;
+let pendingWithdraw = null;
+
+
+/* =========================================================
+   SUPABASE RPC
+   ========================================================= */
+
+async function rpc(functionName, body){
+
+    const response =
+        await fetch(
+            SUPABASE_URL +
+            "/rest/v1/rpc/" +
+            functionName,
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json",
+                    "apikey":SUPABASE_KEY,
+                    "Authorization":
+                        "Bearer " + SUPABASE_KEY
+                },
+
+                body:JSON.stringify(body || {})
+            }
+        );
+
+    const text =
+        await response.text();
+
+    let data = null;
+
+    try{
+        data =
+            text
+                ? JSON.parse(text)
+                : null;
+    }catch{
+        data = text;
+    }
+
+    if(!response.ok){
+
+        let message =
+            "Произошла ошибка.";
+
+        if(
+            data &&
+            typeof data === "object"
+        ){
+
+            message =
+                data.message ||
+                data.error_description ||
+                data.hint ||
+                data.error ||
+                message;
+        }
+
+        throw new Error(message);
+    }
+
+    return data;
+}
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function showMessage(
+    element,
+    text,
+    type="error"
+){
+
+    element.className =
+        "message " + type;
+
+    element.textContent =
+        text;
+}
+
+function clearMessage(element){
+
+    element.className =
+        "message";
+
+    element.textContent =
+        "";
+}
+
+function normalizePhone(phone){
+
+    return String(phone || "")
+        .trim()
+        .replace(/[^\d+]/g,"");
+}
+
+function getStoredToken(){
+
+    return localStorage.getItem(
+        SESSION_KEY
+    );
+}
+
+function saveToken(token){
+
+    localStorage.setItem(
+        SESSION_KEY,
+        token
+    );
+}
+
+function clearToken(){
+
+    localStorage.removeItem(
+        SESSION_KEY
+    );
+}
+
+function getVisitorId(){
+
+    let id =
+        localStorage.getItem(
+            VISITOR_KEY
+        );
+
+    if(!id){
+
+        id =
+            crypto.randomUUID();
+
+        localStorage.setItem(
+            VISITOR_KEY,
+            id
+        );
+    }
+
+    return id;
+}
+
+function getReferralCodeFromUrl(){
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const code =
+        params.get("ref");
+
+    if(!code){
+        return null;
+    }
+
+    return code
+        .trim()
+        .toUpperCase();
+}
+
+function formatMoney(value){
+
+    const number =
+        Number(value || 0);
+
+    return number.toLocaleString(
+        "ru-RU"
+    );
+}
+
+
+/* =========================================================
+   REFERRAL CLICK
+   ========================================================= */
+
+async function processReferralClick(){
+
+    const urlCode =
+        getReferralCodeFromUrl();
+
+    if(urlCode){
+
+        if(
+            !localStorage.getItem(
+                REFERRAL_KEY
+            )
+        ){
+
+            localStorage.setItem(
+                REFERRAL_KEY,
+                urlCode
+            );
+        }
+    }
+
+    const code =
+        localStorage.getItem(
+            REFERRAL_KEY
+        );
+
+    if(!code){
+        return;
+    }
+
+    try{
+
+        await rpc(
+            "track_referral_click",
+            {
+                p_referral_code:code,
+                p_visitor_id:getVisitorId()
+            }
+        );
+
+    }catch(error){
+
+        console.log(
+            "Referral click:",
+            error.message
+        );
+    }
+}
+
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+
+function showLogin(){
+
+    registerCard.classList.add(
+        "hidden"
+    );
+
+    loginCard.classList.remove(
+        "hidden"
+    );
+
+    clearMessage(
+        registerMessage
+    );
+}
+
+function showRegister(){
+
+    loginCard.classList.add(
+        "hidden"
+    );
+
+    registerCard.classList.remove(
+        "hidden"
+    );
+
+    clearMessage(
+        loginMessage
+    );
+}
+
+
+/* =========================================================
+   REGISTER
+   ========================================================= */
+
+async function register(){
+
+    clearMessage(
+        registerMessage
+    );
+
+    const phone =
+        normalizePhone(
+            document.getElementById(
+                "registerPhone"
+            ).value
+        );
+
+    const username =
+        document.getElementById(
+            "registerUsername"
+        ).value.trim();
+
+    const password =
+        document.getElementById(
+            "registerPassword"
+        ).value;
+
+    const password2 =
+        document.getElementById(
+            "registerPassword2"
+        ).value;
+
+    if(!phone){
+
+        showMessage(
+            registerMessage,
+            "Введите номер телефона."
+        );
+
+        return;
+    }
+
+    if(username.length < 3){
+
+        showMessage(
+            registerMessage,
+            "Имя пользователя должно содержать минимум 3 символа."
+        );
+
+        return;
+    }
+
+    if(password.length < 6){
+
+        showMessage(
+            registerMessage,
+            "Пароль должен содержать минимум 6 символов."
+        );
+
+        return;
+    }
+
+    if(password !== password2){
+
+        showMessage(
+            registerMessage,
+            "Пароли не совпадают."
+        );
+
+        return;
+    }
+
+    const button =
+        document.getElementById(
+            "registerBtn"
+        );
+
+    button.disabled = true;
+    button.textContent =
+        "Создание...";
+
+    try{
+
+        const referralCode =
+            localStorage.getItem(
+                REFERRAL_KEY
+            );
+
+        const result =
+            await rpc(
+                "referral_register",
+                {
+                    p_phone:phone,
+                    p_username:username,
+                    p_password:password,
+                    p_referral_code:
+                        referralCode || null
+                }
+            );
+
+        if(
+            !result ||
+            !result.success
+        ){
+
+            throw new Error(
+                result?.error ||
+                "Не удалось создать аккаунт."
+            );
+        }
+
+        saveToken(
+            result.token
+        );
+
+        localStorage.removeItem(
+            REFERRAL_KEY
+        );
+
+        await loadDashboard(
+            result.token
+        );
+
+    }catch(error){
+
+        showMessage(
+            registerMessage,
+            error.message ||
+            "Ошибка регистрации."
+        );
+
+    }finally{
+
+        button.disabled = false;
+        button.textContent =
+            "Создать аккаунт";
+    }
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+async function login(){
+
+    clearMessage(
+        loginMessage
+    );
+
+    const phone =
+        normalizePhone(
+            document.getElementById(
+                "loginPhone"
+            ).value
+        );
+
+    const password =
+        document.getElementById(
+            "loginPassword"
+        ).value;
+
+    if(!phone){
+
+        showMessage(
+            loginMessage,
+            "Введите номер телефона."
+        );
+
+        return;
+    }
+
+    if(!password){
+
+        showMessage(
+            loginMessage,
+            "Введите пароль."
+        );
+
+        return;
+    }
+
+    const button =
+        document.getElementById(
+            "loginBtn"
+        );
+
+    button.disabled = true;
+    button.textContent =
+        "Вход...";
+
+    try{
+
+        const result =
+            await rpc(
+                "referral_login",
+                {
+                    p_phone:phone,
+                    p_password:password
+                }
+            );
+
+        if(
+            !result ||
+            !result.success
+        ){
+
+            throw new Error(
+                result?.error ||
+                "Не удалось выполнить вход."
+            );
+        }
+
+        saveToken(
+            result.token
+        );
+
+        await loadDashboard(
+            result.token
+        );
+
+    }catch(error){
+
+        showMessage(
+            loginMessage,
+            error.message ||
+            "Неверный номер телефона или пароль."
+        );
+
+    }finally{
+
+        button.disabled = false;
+        button.textContent =
+            "Войти";
+    }
+}
+
+
+/* =========================================================
+   SESSION
+   ========================================================= */
+
+async function getSession(token){
+
+    return await rpc(
+        "referral_get_session",
+        {
+            p_token:token
+        }
+    );
+}
+
+
+/* =========================================================
+   WITHDRAW UI
+   ========================================================= */
+
+function updateWithdrawState(balance){
+
+    const available =
+        Number(balance || 0);
+
+    document.getElementById(
+        "withdrawAvailable"
+    ).textContent =
+        formatMoney(available) +
+        " ₽ доступно";
+
+    const info =
+        document.getElementById(
+            "withdrawInfoText"
+        );
+
+    if(available < MIN_WITHDRAW){
+
+        const remaining =
+            MIN_WITHDRAW - available;
+
+        info.textContent =
+            "До минимальной суммы вывода не хватает " +
+            formatMoney(remaining) +
+            " ₽.";
+
+        withdrawBtn.disabled = true;
+
+    }else{
+
+        info.textContent =
+            "Вы можете вывести от 500 ₽ до " +
+            formatMoney(available) +
+            " ₽.";
+
+        withdrawBtn.disabled = false;
+    }
+
+    const amountInput =
+        document.getElementById(
+            "withdrawAmount"
+        );
+
+    amountInput.max =
+        available;
+
+    if(available < MIN_WITHDRAW){
+
+        amountInput.value = "";
+    }
+}
+
+function loadSavedPayoutDetails(){
+
+    /*
+     * Пока реквизиты хранятся в браузере только
+     * после успешной заявки. Серверная запись также
+     * создаётся функцией submit_referral_withdrawal.
+     */
+
+    const saved =
+        localStorage.getItem(
+            "appcore_payout_details"
+        );
+
+    if(!saved){
+        return;
+    }
+
+    try{
+
+        const data =
+            JSON.parse(saved);
+
+        if(data.phone){
+            document.getElementById(
+                "payoutPhone"
+            ).value =
+                data.phone;
+        }
+
+        if(data.bank_name){
+
+            document.getElementById(
+                "payoutBank"
+            ).value =
+                data.bank_name;
+        }
+
+        if(data.first_name){
+
+            document.getElementById(
+                "payoutFirstName"
+            ).value =
+                data.first_name;
+        }
+
+        if(data.last_name){
+
+            document.getElementById(
+                "payoutLastName"
+            ).value =
+                data.last_name;
+        }
+
+        document.getElementById(
+            "savedDetails"
+        ).classList.add(
+            "show"
+        );
+
+        document.getElementById(
+            "savedDetails"
+        ).textContent =
+            "Сохранённые реквизиты загружены. " +
+            "При необходимости измените их перед выплатой.";
+
+    }catch{
+        localStorage.removeItem(
+            "appcore_payout_details"
+        );
+    }
+}
+
+function getPayoutForm(){
+
+    const amount =
+        Number(
+            document.getElementById(
+                "withdrawAmount"
+            ).value
+        );
+
+    const phone =
+        normalizePhone(
+            document.getElementById(
+                "payoutPhone"
+            ).value
+        );
+
+    const bankName =
+        document.getElementById(
+            "payoutBank"
+        ).value.trim();
+
+    const firstName =
+        document.getElementById(
+            "payoutFirstName"
+        ).value.trim();
+
+    const lastName =
+        document.getElementById(
+            "payoutLastName"
+        ).value.trim();
+
+    return {
+        amount,
+        phone,
+        bankName,
+        firstName,
+        lastName
+    };
+}
+
+function validatePayoutForm(data,balance){
+
+    if(!Number.isFinite(data.amount)){
+
+        return "Введите сумму вывода.";
+    }
+
+    if(data.amount < MIN_WITHDRAW){
+
+        return "Минимальная сумма вывода — 500 ₽.";
+    }
+
+    if(data.amount > balance){
+
+        return "Сумма вывода больше доступного баланса.";
+    }
+
+    if(data.amount % 1 !== 0){
+
+        return "Сумма вывода должна быть целым числом.";
+    }
+
+    if(data.phone.length < 10){
+
+        return "Укажите корректный номер телефона.";
+    }
+
+    if(!data.bankName){
+
+        return "Выберите банк получателя.";
+    }
+
+    if(data.firstName.length < 2){
+
+        return "Укажите имя получателя.";
+    }
+
+    if(data.lastName.length < 2){
+
+        return "Укажите фамилию получателя.";
+    }
+
+    return null;
+}
+
+function maskPhone(phone){
+
+    const value =
+        String(phone || "");
+
+    if(value.length < 7){
+        return value;
+    }
+
+    return (
+        value.slice(0,4) +
+        " *** ** " +
+        value.slice(-2)
+    );
+}
+
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+function renderDashboard(data){
+
+    currentSession = data;
+
+    document.getElementById(
+        "dashboardUsername"
+    ).textContent =
+        "@" + (data.username || "");
+
+    const balance =
+        Number(data.balance || 0);
+
+    const earned =
+        Number(data.total_earned || 0);
+
+    const withdrawn =
+        Number(data.total_withdrawn || 0);
+
+    const clicks =
+        Number(data.clicks_count || 0);
+
+    const registrations =
+        Number(data.registrations_count || 0);
+
+    const paid =
+        Number(data.paid_referrals_count || 0);
+
+    document.getElementById(
+        "balanceValue"
+    ).textContent =
+        formatMoney(balance);
+
+    document.getElementById(
+        "earnedValue"
+    ).textContent =
+        formatMoney(earned) +
+        " ₽";
+
+    document.getElementById(
+        "withdrawnValue"
+    ).textContent =
+        formatMoney(withdrawn) +
+        " ₽";
+
+    document.getElementById(
+        "clicksValue"
+    ).textContent =
+        formatMoney(clicks);
+
+    document.getElementById(
+        "registrationsValue"
+    ).textContent =
+        formatMoney(registrations);
+
+    document.getElementById(
+        "paidValue"
+    ).textContent =
+        formatMoney(paid);
+
+    const progress =
+        Math.min(
+            100,
+            (balance / MIN_WITHDRAW) * 100
+        );
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+        progress + "%";
+
+    document.getElementById(
+        "progressText"
+    ).textContent =
+        formatMoney(
+            Math.min(
+                balance,
+                MIN_WITHDRAW
+            )
+        ) +
+        " / 500 ₽";
+
+    const referralLink =
+        window.location.origin +
+        window.location.pathname +
+        "?ref=" +
+        data.referral_code;
+
+    document.getElementById(
+        "referralLink"
+    ).textContent =
+        referralLink;
+
+    updateWithdrawState(
+        balance
+    );
+
+    loadSavedPayoutDetails();
+}
+
+async function loadDashboard(token){
+
+    try{
+
+        const data =
+            await getSession(token);
+
+        if(
+            !data ||
+            !data.success
+        ){
+
+            throw new Error(
+                "Сессия недействительна."
+            );
+        }
+
+        renderDashboard(data);
+
+        authSection.classList.add(
+            "hidden"
+        );
+
+        dashboardSection.classList.remove(
+            "hidden"
+        );
+
+    }catch(error){
+
+        clearToken();
+
+        dashboardSection.classList.add(
+            "hidden"
+        );
+
+        authSection.classList.remove(
+            "hidden"
+        );
+
+        showLogin();
+
+    }finally{
+
+        loadingScreen.classList.add(
+            "hidden"
+        );
+    }
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+async function logout(){
+
+    const token =
+        getStoredToken();
+
+    if(token){
+
+        try{
+
+            await rpc(
+                "referral_logout",
+                {
+                    p_token:token
+                }
+            );
+
+        }catch(error){
+
+            console.log(
+                "Logout:",
+                error.message
+            );
+        }
+    }
+
+    clearToken();
+
+    dashboardSection.classList.add(
+        "hidden"
+    );
+
+    authSection.classList.remove(
+        "hidden"
+    );
+
+    showLogin();
+
+    document.getElementById(
+        "loginPassword"
+    ).value = "";
+}
+
+
+/* =========================================================
+   COPY LINK
+   ========================================================= */
+
+async function copyReferralLink(){
+
+    const text =
+        document.getElementById(
+            "referralLink"
+        ).textContent;
+
+    try{
+
+        await navigator.clipboard.writeText(
+            text
+        );
+
+        const button =
+            document.getElementById(
+                "copyBtn"
+            );
+
+        const oldText =
+            button.textContent;
+
+        button.textContent =
+            "Скопировано";
+
+        setTimeout(() => {
+
+            button.textContent =
+                oldText;
+
+        },1500);
+
+    }catch{
+
+        alert(
+            "Не удалось скопировать ссылку."
+        );
+    }
+}
+
+
+/* =========================================================
+   WITHDRAW
+   ========================================================= */
+
+function showWithdrawModal(data){
+
+    pendingWithdraw =
+        data;
+
+    document.getElementById(
+        "summaryAmount"
+    ).textContent =
+        formatMoney(data.amount) +
+        " ₽";
+
+    document.getElementById(
+        "summaryPhone"
+    ).textContent =
+        maskPhone(data.phone);
+
+    document.getElementById(
+        "summaryBank"
+    ).textContent =
+        data.bankName;
+
+    document.getElementById(
+        "summaryName"
+    ).textContent =
+        data.firstName +
+        " " +
+        data.lastName;
+
+    document.getElementById(
+        "withdrawModal"
+    ).classList.remove(
+        "hidden"
+    );
+}
+
+function closeWithdrawModal(){
+
+    pendingWithdraw = null;
+
+    document.getElementById(
+        "withdrawModal"
+    ).classList.add(
+        "hidden"
+    );
+}
+
+async function requestWithdraw(){
+
+    clearMessage(
+        withdrawMessage
+    );
+
+    const token =
+        getStoredToken();
+
+    if(!token){
+
+        showMessage(
+            withdrawMessage,
+            "Сессия закончилась. Войдите снова."
+        );
+
+        return;
+    }
+
+    try{
+
+        const session =
+            await getSession(token);
+
+        if(
+            !session ||
+            !session.success
+        ){
+
+            throw new Error(
+                "Сессия недействительна."
+            );
+        }
+
+        const balance =
+            Number(
+                session.balance || 0
+            );
+
+        const data =
+            getPayoutForm();
+
+        const validationError =
+            validatePayoutForm(
+                data,
+                balance
+            );
+
+        if(validationError){
+
+            showMessage(
+                withdrawMessage,
+                validationError
+            );
+
+            return;
+        }
+
+        showWithdrawModal(
+            data
+        );
+
+    }catch(error){
+
+        showMessage(
+            withdrawMessage,
+            error.message ||
+            "Не удалось проверить баланс."
+        );
+    }
+}
+
+async function confirmWithdraw(){
+
+    if(!pendingWithdraw){
+        return;
+    }
+
+    const button =
+        document.getElementById(
+            "confirmWithdraw"
+        );
+
+    button.disabled = true;
+    button.textContent =
+        "Отправка...";
+
+    try{
+
+        const token =
+            getStoredToken();
+
+        const session =
+            await getSession(token);
+
+        if(
+            !session ||
+            !session.success
+        ){
+
+            throw new Error(
+                "Сессия недействительна."
+            );
+        }
+
+        const result =
+            await rpc(
+                "submit_referral_withdrawal",
+                {
+                    p_user_id:
+                        session.user_id,
+
+                    p_amount:
+                        pendingWithdraw.amount,
+
+                    p_phone:
+                        pendingWithdraw.phone,
+
+                    p_bank_name:
+                        pendingWithdraw.bankName,
+
+                    p_first_name:
+                        pendingWithdraw.firstName,
+
+                    p_last_name:
+                        pendingWithdraw.lastName
+                }
+            );
+
+        if(
+            !result ||
+            !result.success
+        ){
+
+            throw new Error(
+                result?.error ||
+                "Не удалось создать заявку."
+            );
+        }
+
+        localStorage.setItem(
+            "appcore_payout_details",
+            JSON.stringify({
+                phone:
+                    pendingWithdraw.phone,
+
+                bank_name:
+                    pendingWithdraw.bankName,
+
+                first_name:
+                    pendingWithdraw.firstName,
+
+                last_name:
+                    pendingWithdraw.lastName
+            })
+        );
+
+        closeWithdrawModal();
+
+        showMessage(
+            withdrawMessage,
+            "Заявка на выплату отправлена.",
+            "success"
+        );
+
+        document.getElementById(
+            "withdrawAmount"
+        ).value = "";
+
+        /*
+         * Обновляем кабинет с сервера,
+         * чтобы баланс сразу изменился.
+         */
+        await loadDashboard(
+            token
+        );
+
+    }catch(error){
+
+        showMessage(
+            withdrawMessage,
+            error.message ||
+            "Не удалось создать заявку."
+        );
+
+    }finally{
+
+        button.disabled = false;
+        button.textContent =
+            "Отправить";
+    }
+}
+
+
+/* =========================================================
+   EVENTS
+   ========================================================= */
+
+document.getElementById(
+    "showRegister"
+).addEventListener(
+    "click",
+    showRegister
+);
+
+document.getElementById(
+    "showLogin"
+).addEventListener(
+    "click",
+    showLogin
+);
+
+document.getElementById(
+    "registerBtn"
+).addEventListener(
+    "click",
+    register
+);
+
+document.getElementById(
+    "loginBtn"
+).addEventListener(
+    "click",
+    login
+);
+
+document.getElementById(
+    "logoutBtn"
+).addEventListener(
+    "click",
+    logout
+);
+
+document.getElementById(
+    "copyBtn"
+).addEventListener(
+    "click",
+    copyReferralLink
+);
+
+withdrawBtn.addEventListener(
+    "click",
+    requestWithdraw
+);
+
+document.getElementById(
+    "cancelWithdraw"
+).addEventListener(
+    "click",
+    closeWithdrawModal
+);
+
+document.getElementById(
+    "confirmWithdraw"
+).addEventListener(
+    "click",
+    confirmWithdraw
+);
+
+
+/* =========================================================
+   ENTER KEY
+   ========================================================= */
+
+document.getElementById(
+    "loginPassword"
+).addEventListener(
+    "keydown",
+    event => {
+
+        if(event.key === "Enter"){
+            login();
+        }
+
+    }
+);
+
+document.getElementById(
+    "registerPassword2"
+).addEventListener(
+    "keydown",
+    event => {
+
+        if(event.key === "Enter"){
+            register();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+(async function(){
+
+    await processReferralClick();
+
+    const token =
+        getStoredToken();
+
+    if(token){
+
+        await loadDashboard(token);
+
+    }else{
+
+        loadingScreen.classList.add(
+            "hidden"
+        );
+
+        authSection.classList.remove(
+            "hidden"
+        );
+
+        showLogin();
+    }
+
+})();
+</script>
+
+</body>
+</html>
