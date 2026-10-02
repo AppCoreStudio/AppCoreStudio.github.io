@@ -2288,7 +2288,45 @@ function renderWithdrawStatus(status, amount){
 
     box.classList.add("hidden");
 }
+async function loadLatestWithdrawStatus(userId){
 
+    if(!userId){
+        return;
+    }
+
+    try{
+
+        const result =
+            await rpc(
+                "get_referral_withdrawals",
+                {
+                    p_user_id:userId
+                }
+            );
+
+        if(
+            !Array.isArray(result) ||
+            result.length === 0
+        ){
+            return;
+        }
+
+        const latest =
+            result[0];
+
+        renderWithdrawStatus(
+            latest.status,
+            latest.amount
+        );
+
+    }catch(error){
+
+        console.log(
+            "Withdraw status:",
+            error.message
+        );
+    }
+}
 
 /* =========================================================
    DASHBOARD
@@ -2386,13 +2424,16 @@ function renderDashboard(data){
     ).textContent =
         referralLink;
 
-    updateWithdrawState(
-        balance
-    );
+updateWithdrawState(
+    balance
+);
 
-    loadSavedPayoutDetails();
+loadSavedPayoutDetails();
+
+loadLatestWithdrawStatus(
+    data.user_id
+);
 }
-
 
 /* =========================================================
    LOAD DASHBOARD
