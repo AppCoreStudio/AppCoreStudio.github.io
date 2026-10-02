@@ -2009,11 +2009,9 @@ function renderDashboard(data){
         ) +
         " / 500 ₽";
 
-    const referralLink =
-        window.location.origin +
-        window.location.pathname +
-        "?ref=" +
-        data.referral_code;
+   const referralLink =
+    "https://appcorestudio.github.io/?ref=" +
+    encodeURIComponent(data.referral_code);
 
     document.getElementById(
         "referralLink"
