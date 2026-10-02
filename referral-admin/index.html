@@ -1899,9 +1899,28 @@ rows.forEach(row => {
             Пользователь
           </div>
 
-          <div class="withdrawal-user-id">
-            ${escapeHtml(row.user_id)}
-          </div>
+        <div class="withdrawal-user-id">
+  ${escapeHtml(
+    (() => {
+      try {
+        const obj =
+          typeof row.payment_details === 'string'
+            ? JSON.parse(row.payment_details)
+            : row.payment_details;
+
+        return [
+          obj?.last_name,
+          obj?.first_name
+        ]
+          .filter(Boolean)
+          .join(' ') || '—';
+
+      } catch {
+        return '—';
+      }
+    })()
+  )}
+</div>
 
         </div>
 
