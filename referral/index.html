@@ -427,6 +427,16 @@ input::placeholder{
     font-size:18px;
 }
 
+/* Новый ввод названия банка */
+
+.custom-bank-wrap{
+    display:none;
+}
+
+.custom-bank-wrap.show{
+    display:block;
+}
+
 .withdraw-actions{
     margin-top:17px;
 }
@@ -905,6 +915,22 @@ input::placeholder{
 
                         </select>
                     </div>
+                </div>
+
+                <!-- CUSTOM BANK -->
+                <div
+                    id="customBankWrap"
+                    class="field custom-bank-wrap"
+                >
+                    <label>Название банка</label>
+
+                    <input
+                        id="customBankName"
+                        type="text"
+                        autocomplete="organization"
+                        maxlength="100"
+                        placeholder="Введите название банка"
+                    >
                 </div>
 
                 <div class="field">
@@ -1667,6 +1693,7 @@ function loadSavedPayoutDetails(){
             JSON.parse(saved);
 
         if(data.phone){
+
             document.getElementById(
                 "payoutPhone"
             ).value =
@@ -1675,10 +1702,53 @@ function loadSavedPayoutDetails(){
 
         if(data.bank_name){
 
-            document.getElementById(
-                "payoutBank"
-            ).value =
-                data.bank_name;
+            const bankSelect =
+                document.getElementById(
+                    "payoutBank"
+                );
+
+            const customBankWrap =
+                document.getElementById(
+                    "customBankWrap"
+                );
+
+            const customBankName =
+                document.getElementById(
+                    "customBankName"
+                );
+
+            const knownBank =
+                Array.from(
+                    bankSelect.options
+                ).some(
+                    option =>
+                        option.value === data.bank_name &&
+                        option.value !== "Другой банк"
+                );
+
+            if(knownBank){
+
+                bankSelect.value =
+                    data.bank_name;
+
+                customBankWrap.classList.remove(
+                    "show"
+                );
+
+                customBankName.value = "";
+
+            }else{
+
+                bankSelect.value =
+                    "Другой банк";
+
+                customBankName.value =
+                    data.bank_name;
+
+                customBankWrap.classList.add(
+                    "show"
+                );
+            }
         }
 
         if(data.first_name){
@@ -1710,6 +1780,7 @@ function loadSavedPayoutDetails(){
             "При необходимости измените их перед выплатой.";
 
     }catch{
+
         localStorage.removeItem(
             "appcore_payout_details"
         );
@@ -1732,10 +1803,23 @@ function getPayoutForm(){
             ).value
         );
 
-    const bankName =
+    const bankSelect =
         document.getElementById(
             "payoutBank"
+        );
+
+    const selectedBank =
+        bankSelect.value.trim();
+
+    const customBankName =
+        document.getElementById(
+            "customBankName"
         ).value.trim();
+
+    const bankName =
+        selectedBank === "Другой банк"
+            ? customBankName
+            : selectedBank;
 
     const firstName =
         document.getElementById(
@@ -1751,6 +1835,7 @@ function getPayoutForm(){
         amount,
         phone,
         bankName,
+        selectedBank,
         firstName,
         lastName
     };
@@ -1783,7 +1868,18 @@ function validatePayoutForm(data,balance){
         return "Укажите корректный номер телефона.";
     }
 
-    if(!data.bankName){
+    if(
+        data.selectedBank === "Другой банк" &&
+        data.bankName.length < 2
+    ){
+
+        return "Введите название банка получателя.";
+    }
+
+    if(
+        data.selectedBank !== "Другой банк" &&
+        !data.selectedBank
+    ){
 
         return "Выберите банк получателя.";
     }
@@ -2285,6 +2381,7 @@ async function confirmWithdraw(){
          * Обновляем кабинет с сервера,
          * чтобы баланс сразу изменился.
          */
+
         await loadDashboard(
             token
         );
@@ -2369,6 +2466,46 @@ document.getElementById(
 ).addEventListener(
     "click",
     confirmWithdraw
+);
+
+
+/* =========================================================
+   BANK SELECT
+   ========================================================= */
+
+document.getElementById(
+    "payoutBank"
+).addEventListener(
+    "change",
+    function(){
+
+        const customBankWrap =
+            document.getElementById(
+                "customBankWrap"
+            );
+
+        const customBankName =
+            document.getElementById(
+                "customBankName"
+            );
+
+        if(this.value === "Другой банк"){
+
+            customBankWrap.classList.add(
+                "show"
+            );
+
+            customBankName.focus();
+
+        }else{
+
+            customBankWrap.classList.remove(
+                "show"
+            );
+
+            customBankName.value = "";
+        }
+    }
 );
 
 
