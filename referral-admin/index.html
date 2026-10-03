@@ -1821,6 +1821,15 @@ async function rejectRequest(id) {
     return;
   }
 
+  const buttons =
+    document.querySelectorAll(
+      '.btn-reject'
+    );
+
+  buttons.forEach(button => {
+    button.disabled = true;
+  });
+
   try {
 
     const result =
@@ -1836,13 +1845,29 @@ async function rejectRequest(id) {
       result
     );
 
-    await loadStats();
+    if (!result) {
 
+      throw new Error(
+        'Заявка не была отклонена. Возможно, она уже обработана.'
+      );
+
+    }
+
+    /*
+     * Сразу обновляем список заявок.
+     */
     await loadWithdrawalsWithCountdownData();
+
+    /*
+     * Статистику обновляем после списка.
+     */
+    await loadStats();
 
     await loadStatistics();
 
-    alert('Заявка успешно отклонена.');
+    alert(
+      'Заявка успешно отклонена.'
+    );
 
   } catch (error) {
 
@@ -1855,6 +1880,14 @@ async function rejectRequest(id) {
       'Ошибка отклонения:\n\n' +
       error.message
     );
+
+    /*
+     * Если произошла ошибка,
+     * возвращаем кнопки.
+     */
+    buttons.forEach(button => {
+      button.disabled = false;
+    });
 
   }
 
