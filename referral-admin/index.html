@@ -1846,11 +1846,6 @@ async function rejectRequest(id) {
       result
     );
 
-    if (!result) {
-      throw new Error(
-        'Заявка не была отклонена. Возможно, она уже обработана.'
-      );
-    }
 
     await loadWithdrawalsWithCountdownData();
 
