@@ -2211,34 +2211,15 @@ if (clientsSearch) {
         30000
       );
 
-    countdownTimer =
-      setInterval(
-        () => {
+   countdownTimer =
+  setInterval(
+    () => {
 
-          updateCountdowns();
-            /*
-             * Если 5 минут только что прошли,
-             * перерисовываем заявки, чтобы кнопки
-             * Выплатить/Отклонить стали активными.
-             */
-            if (
-              window.withdrawalRows &&
-              window.withdrawalRows.some(
-                row =>
-                  row.status === 'pending' &&
-                  isReady(row)
-              )
-            ) {
+      updateCountdowns();
 
-              loadWithdrawalsWithCountdownData()
-                .catch(console.error);
-
-            }
-
-          },
-          1000
-        );
-
+    },
+    1000
+  );
 
     } catch (error) {
 
