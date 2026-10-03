@@ -1821,14 +1821,15 @@ async function rejectRequest(id) {
     return;
   }
 
-  const buttons =
-    document.querySelectorAll(
-      '.btn-reject'
+  const button =
+    document.querySelector(
+      `.btn-reject[onclick="rejectRequest(${id})"]`
     );
 
-  buttons.forEach(button => {
+  if (button) {
     button.disabled = true;
-  });
+    button.textContent = '⏳ Обработка...';
+  }
 
   try {
 
@@ -1846,21 +1847,13 @@ async function rejectRequest(id) {
     );
 
     if (!result) {
-
       throw new Error(
         'Заявка не была отклонена. Возможно, она уже обработана.'
       );
-
     }
 
-    /*
-     * Сразу обновляем список заявок.
-     */
     await loadWithdrawalsWithCountdownData();
 
-    /*
-     * Статистику обновляем после списка.
-     */
     await loadStats();
 
     await loadStatistics();
@@ -1876,22 +1869,20 @@ async function rejectRequest(id) {
       error
     );
 
+    if (button) {
+      button.disabled = false;
+      button.textContent = '❌ Отклонить';
+    }
+
     alert(
       'Ошибка отклонения:\n\n' +
       error.message
     );
 
-    /*
-     * Если произошла ошибка,
-     * возвращаем кнопки.
-     */
-    buttons.forEach(button => {
-      button.disabled = false;
-    });
-
   }
 
 }
+ 
   async function loadWithdrawalsWithCountdownData() {
 
     const rows =
