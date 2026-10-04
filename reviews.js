@@ -27,6 +27,66 @@ function card(r) {
   return el;
 }
 
+function plural(n) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return "отзыв";
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return "отзыва";
+  return "отзывов";
+}
+
+function renderSummary(ratings) {
+  const box = $("ratingSummary");
+  if (!box) return;
+
+  if (!ratings.length) {
+    box.hidden = true;
+    return;
+  }
+
+  const total = ratings.length;
+  const counts = [0, 0, 0, 0, 0, 0];
+  ratings.forEach(r => { counts[r]++; });
+
+  const avg = ratings.reduce((sum, r) => sum + r, 0) / total;
+  const full = Math.round(avg);
+
+  $("ratingAvg").textContent = avg.toFixed(1).replace(".", ",");
+  $("ratingStars").textContent = "★".repeat(full) + "☆".repeat(5 - full);
+  $("ratingCount").textContent = total + " " + plural(total);
+
+  const bars = $("ratingBars");
+  bars.replaceChildren();
+
+  for (let s = 5; s >= 1; s--) {
+    const pct = Math.round((counts[s] / total) * 100);
+
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    row.title = counts[s] + " " + plural(counts[s]);
+
+    const label = document.createElement("span");
+    label.className = "bar-label";
+    label.textContent = s + " ★";
+
+    const track = document.createElement("div");
+    track.className = "bar-track";
+
+    const fill = document.createElement("div");
+    fill.className = "bar-fill";
+    fill.style.width = pct + "%";
+    track.append(fill);
+
+    const value = document.createElement("span");
+    value.className = "bar-pct";
+    value.textContent = pct + "%";
+
+    row.append(label, track, value);
+    bars.append(row);
+  }
+
+  box.hidden = false;
+}
+
 async function loadReviews(sb) {
   const slider = $("reviewsSlider");
 
@@ -35,14 +95,19 @@ async function loadReviews(sb) {
       .from("reviews")
       .select("id,author,rating,text,created_at")
       .eq("status", "approved")
-      .limit(50);
+      .limit(1000);
 
     if (error) throw error;
 
+    const all = data || [];
+
+    // Рейтинг считается по ВСЕМ одобренным отзывам
+    renderSummary(all.map(r => r.rating));
+
     // Положительные (высокая оценка) — первыми, внутри оценки — свежие выше
-    const list = (data || []).sort(
-      (a, b) => b.rating - a.rating || new Date(b.created_at) - new Date(a.created_at)
-    );
+    const list = all
+      .sort((a, b) => b.rating - a.rating || new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 50);
 
     slider.replaceChildren(
       ...(list.length ? list.map(card) : [note("Пока нет отзывов — станьте первым!")])
