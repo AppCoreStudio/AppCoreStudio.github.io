@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
   <title>Реферальная админка — AppCore</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -24,16 +24,11 @@
       padding: 24px 0 50px;
     }
 
-    h1 {
-      margin: 0 0 6px;
-      font-size: 28px;
-    }
+    h1 { margin: 0 0 6px; font-size: 28px; }
 
-    .subtitle {
-      color: #6b7280;
-      margin-bottom: 25px;
-    }
+    .subtitle { color: #6b7280; margin-bottom: 25px; }
 
+    /* ВЕРХНИЕ КАРТОЧКИ */
     .stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -56,17 +51,10 @@
       text-transform: uppercase;
     }
 
-    .stat-value {
-      font-size: 28px;
-      font-weight: 800;
-    }
+    .stat-value { font-size: 28px; font-weight: 800; }
 
-    .nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 25px 0;
-    }
+    /* НАВИГАЦИЯ */
+    .nav { display: flex; flex-wrap: wrap; gap: 10px; margin: 25px 0; }
 
     .nav button {
       border: 0;
@@ -78,10 +66,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,.06);
     }
 
-    .nav button.active {
-      background: #111827;
-      color: #fff;
-    }
+    .nav button.active { background: #111827; color: #fff; }
 
     .panel {
       display: none;
@@ -92,73 +77,53 @@
       margin-bottom: 20px;
     }
 
-    .panel.active {
-      display: block;
-    }
+    .panel.active { display: block; }
 
-    .panel h2 {
-      margin-top: 0;
-      margin-bottom: 18px;
-    }
+    .panel h2 { margin-top: 0; margin-bottom: 18px; }
 
-    .refresh-info {
-      color: #6b7280;
-      font-size: 13px;
-      margin-bottom: 15px;
-    }
+    .refresh-info { color: #6b7280; font-size: 13px; margin-bottom: 15px; }
 
-    .table-wrap {
-      overflow-x: auto;
-    }
+    /* ТАБЛИЦЫ */
+    .table-wrap { overflow-x: auto; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 800px;
-    }
+    table { width: 100%; border-collapse: collapse; min-width: 800px; }
 
-    th,
-    td {
+    th, td {
       padding: 13px 10px;
       border-bottom: 1px solid #e5e7eb;
       text-align: left;
       vertical-align: top;
     }
 
-    th {
+    th { font-size: 12px; text-transform: uppercase; color: #6b7280; }
+
+    code {
+      font-family: monospace;
       font-size: 12px;
-      text-transform: uppercase;
-      color: #6b7280;
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 6px;
+      word-break: break-all;
     }
 
+    /* СТАТУСЫ */
     .status {
-      display: inline-block;
-      padding: 6px 9px;
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 11px;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
     }
 
-    .waiting {
-      background: #fff7d6;
-      color: #8a6400;
-    }
+    .status.ready     { background: #dcfce7; color: #166534; }
+    .status.waiting   { background: #fef3c7; color: #92400e; }
+    .status.completed { background: #dcfce7; color: #166534; }
+    .status.rejected  { background: #fee2e2; color: #991b1b; }
 
-    .ready {
-      background: #dcfce7;
-      color: #166534;
-    }
+    .countdown { margin-top: 7px; font-size: 12px; font-weight: 700; color: #92400e; }
 
-    .completed {
-      background: #dbeafe;
-      color: #1d4ed8;
-    }
-
-    .rejected {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
+    /* КНОПКИ */
     .btn {
       border: 0;
       border-radius: 8px;
@@ -168,36 +133,19 @@
       margin: 2px;
     }
 
-    .btn-pay {
-      background: #16a34a;
-      color: #fff;
-    }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
 
-    .btn-reject {
-      background: #dc2626;
-      color: #fff;
-    }
+    .btn-pay { background: #16a34a; color: #fff; }
+    .btn-pay:hover:not(:disabled) { background: #15803d; }
 
-    .btn:disabled {
-      opacity: .45;
-      cursor: not-allowed;
-    }
+    .btn-reject { background: #dc2626; color: #fff; }
+    .btn-reject:hover:not(:disabled) { background: #b91c1c; }
 
-    .details {
-      white-space: pre-line;
-      line-height: 1.5;
-    }
+    .btn-details { background: #eef2ff; color: #3730a3; }
+    .btn-details:hover { background: #e0e7ff; }
 
-    .countdown {
-      font-weight: 700;
-      margin-top: 5px;
-    }
-
-    .empty {
-      padding: 35px 10px;
-      text-align: center;
-      color: #6b7280;
-    }
+    /* ОБЩИЕ */
+    .empty { padding: 35px 10px; text-align: center; color: #6b7280; }
 
     .error {
       background: #fee2e2;
@@ -209,10 +157,7 @@
       white-space: pre-line;
     }
 
-    .loading {
-      color: #6b7280;
-      padding: 20px 0;
-    }
+    .loading { color: #6b7280; padding: 20px 0; }
 
     .stats-grid {
       display: grid;
@@ -226,107 +171,8 @@
       padding: 16px;
     }
 
-    .mini-stat .label {
-      color: #6b7280;
-      font-size: 13px;
-      margin-bottom: 7px;
-    }
-
-        .mini-stat .value {
-      font-size: 22px;
-      font-weight: 800;
-    }
-
-    /* КЛИЕНТЫ */
-
-    .client-summary {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .client-summary-card {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 15px;
-      background: #fafafa;
-    }
-
-    .client-summary-card .label {
-      color: #6b7280;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-    }
-
-    .client-summary-card .value {
-      font-size: 22px;
-      font-weight: 800;
-    }
-
-    .client-row {
-      cursor: pointer;
-    }
-
-    .client-row:hover {
-      background: #f9fafb;
-    }
-
-    .client-orders {
-      display: none;
-      background: #f9fafb;
-    }
-
-    .client-orders.open {
-      display: table-row;
-    }
-
-    .client-orders-inner {
-      padding: 16px;
-    }
-
-    .order-card {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 13px;
-      margin-bottom: 9px;
-    }
-
-    .order-card:last-child {
-      margin-bottom: 0;
-    }
-
-    .order-card-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      align-items: center;
-    }
-
-    .order-label {
-      color: #6b7280;
-      font-size: 11px;
-      margin-bottom: 3px;
-      text-transform: uppercase;
-    }
-
-    .order-value {
-      font-weight: 700;
-    }
-
-    .client-id {
-      font-family: monospace;
-      font-size: 12px;
-      word-break: break-all;
-    }
-
-    .btn-details {
-      background: #eef2ff;
-      color: #3730a3;
-    }
+    .mini-stat .label { color: #6b7280; font-size: 13px; margin-bottom: 7px; }
+    .mini-stat .value { font-size: 22px; font-weight: 800; }
 
     .search-box {
       width: 100%;
@@ -338,226 +184,192 @@
       outline: none;
     }
 
-    .search-box:focus {
-      border-color: #6366f1;
+    .search-box:focus { border-color: #6366f1; }
+
+    /* ЗАЯВКИ НА ВЫПЛАТУ */
+    .withdrawals-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .withdrawal-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
     }
 
-    @media (max-width: 900px) {
-      .stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .withdrawal-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f0f0f0;
+    }
 
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .withdrawal-id { font-size: 16px; font-weight: 800; color: #111827; }
+    .withdrawal-date { font-size: 13px; color: #6b7280; }
+
+    .withdrawal-main {
+      display: grid;
+      grid-template-columns: 1.5fr .8fr 1fr;
+      gap: 24px;
+      padding: 18px 0;
+    }
+
+    .withdrawal-label {
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .withdrawal-user-id { font-size: 14px; color: #374151; word-break: break-all; }
+    .withdrawal-amount strong { font-size: 22px; color: #111827; }
+
+    .withdrawal-details { padding: 14px 16px; background: #f9fafb; border-radius: 12px; }
+
+    .withdrawal-details-content { font-size: 14px; line-height: 1.7; color: #374151; }
+    .withdrawal-details-content strong { color: #111827; }
+
+    .withdrawal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 16px;
+      margin-top: 14px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .withdrawal-actions .btn { min-width: 140px; border-radius: 10px; }
+
+    /* ТОП РЕФЕРАЛОВ */
+    .top-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .top-item {
+      display: grid;
+      grid-template-columns: 44px 1fr auto auto;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 18px;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .top-position {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      color: #374151;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-item:nth-child(1) .top-position { background: #fef3c7; color: #92400e; }
+    .top-item:nth-child(2) .top-position { background: #e5e7eb; color: #374151; }
+    .top-item:nth-child(3) .top-position { background: #fde8d7; color: #9a3412; }
+
+    .top-username { font-weight: 700; word-break: break-word; }
+
+    .top-user-id {
+      margin-top: 3px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #9ca3af;
+      word-break: break-all;
+    }
+
+    .top-clients, .top-earned { text-align: right; min-width: 90px; }
+
+    .top-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #9ca3af;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .top-clients strong, .top-earned strong { font-size: 17px; }
+
+    /* КЛИЕНТЫ */
+    .client-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .client-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .client-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .client-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 16px 18px;
+    }
+
+    .client-title { font-weight: 800; word-break: break-all; }
+    .client-meta { margin-top: 5px; font-size: 13px; color: #6b7280; }
+    .client-meta strong { color: #111827; }
+
+    .client-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 22px; }
+
+    .client-stat { display: flex; flex-direction: column; gap: 3px; text-align: right; }
+    .client-stat span { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; }
+    .client-stat strong { font-size: 16px; }
+
+    .client-orders {
+      display: none;
+      padding: 8px 18px 14px;
+      background: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .client-orders.open { display: block; }
+
+    /* АДАПТИВ */
+    @media (max-width: 900px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .client-summary { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .withdrawal-card { padding: 15px; }
+      .withdrawal-card-top { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .withdrawal-main { grid-template-columns: 1fr; gap: 14px; }
+      .withdrawal-actions { flex-direction: column; }
+      .withdrawal-actions .btn { width: 100%; }
+
+      .top-item { grid-template-columns: 36px 1fr; gap: 10px 14px; }
+      .top-clients, .top-earned { grid-column: 2; text-align: left; }
+
+      .client-stat { text-align: left; }
     }
 
     @media (max-width: 600px) {
-      .container {
-        width: min(100% - 20px, 1400px);
-        padding-top: 16px;
-      }
-
-      h1 {
-        font-size: 23px;
-      }
-
-      .stats {
-        grid-template-columns: 1fr 1fr;
-        gap: 9px;
-      }
-
-      .stat {
-        padding: 14px;
-      }
-
-      .stat-value {
-        font-size: 22px;
-      }
-
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .panel {
-        padding: 15px;
-      }
+      .container { width: min(100% - 20px, 1400px); padding-top: 16px; }
+      h1 { font-size: 23px; }
+      .stats { grid-template-columns: 1fr 1fr; gap: 9px; }
+      .stat { padding: 14px; }
+      .stat-value { font-size: 22px; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .panel { padding: 15px; }
     }
-    /* КАРТОЧКИ ЗАЯВОК НА ВЫПЛАТУ */
-
-.withdrawals-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.withdrawal-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 18px 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
-}
-
-.withdrawal-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.withdrawal-id {
-  font-size: 16px;
-  font-weight: 800;
-  color: #111827;
-}
-
-.withdrawal-date {
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.withdrawal-main {
-  display: grid;
-  grid-template-columns: 1.5fr .8fr 1fr;
-  gap: 24px;
-  padding: 18px 0;
-}
-
-.withdrawal-label {
-  margin-bottom: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #9ca3af;
-  text-transform: uppercase;
-  letter-spacing: .04em;
-}
-
-.withdrawal-user-id {
-  font-size: 14px;
-  color: #374151;
-  word-break: break-all;
-}
-
-.withdrawal-amount strong {
-  font-size: 22px;
-  color: #111827;
-}
-
-.withdrawal-details {
-  padding: 14px 16px;
-  background: #f9fafb;
-  border-radius: 12px;
-}
-
-.withdrawal-details-content {
-  font-size: 14px;
-  line-height: 1.7;
-  color: #374151;
-}
-
-.withdrawal-details-content strong {
-  color: #111827;
-}
-
-.withdrawal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  padding-top: 16px;
-  margin-top: 14px;
-  border-top: 1px solid #f0f0f0;
-}
-
-.withdrawal-actions .btn {
-  min-width: 140px;
-  border-radius: 10px;
-}
-
-.status {
-  display: inline-flex;
-  align-items: center;
-  padding: 7px 11px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.status.ready {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.status.waiting {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.status.completed {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.status.rejected {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.countdown {
-  margin-top: 7px;
-  font-size: 12px;
-  color: #92400e;
-}
-
-.btn-pay {
-  background: #16a34a;
-  color: #fff;
-}
-
-.btn-pay:hover:not(:disabled) {
-  background: #15803d;
-}
-
-.btn-reject {
-  background: #dc2626;
-  color: #fff;
-}
-
-.btn-reject:hover:not(:disabled) {
-  background: #b91c1c;
-}
-
-.withdrawal-actions .btn:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-}
-
-@media (max-width: 700px) {
-  .withdrawal-card {
-    padding: 15px;
-  }
-
-  .withdrawal-card-top {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .withdrawal-main {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .withdrawal-actions {
-    flex-direction: column;
-  }
-
-  .withdrawal-actions .btn {
-    width: 100%;
-  }
-}
   </style>
 </head>
 
@@ -566,177 +378,128 @@
 <div class="container">
 
   <h1>💸 Реферальная админка</h1>
-  <div class="subtitle">
-    Управление рефералами, выплатами и статистикой
-  </div>
+  <div class="subtitle">Управление рефералами, выплатами и статистикой</div>
 
   <div id="errorBox" class="error"></div>
 
   <!-- ПЕРВАЯ СТРОКА -->
   <div class="stats">
-
     <div class="stat">
       <div class="stat-title">👥 Рефералы</div>
       <div class="stat-value" id="statReferrals">—</div>
     </div>
-
     <div class="stat">
       <div class="stat-title">👤 Клиенты</div>
       <div class="stat-value" id="statClients">—</div>
     </div>
-
     <div class="stat">
       <div class="stat-title">💰 Заработано</div>
       <div class="stat-value" id="statEarned">—</div>
     </div>
-
     <div class="stat">
       <div class="stat-title">💸 Выплачено</div>
       <div class="stat-value" id="statPaid">—</div>
     </div>
-
   </div>
 
   <!-- ВТОРАЯ СТРОКА -->
   <div class="stats">
-
     <div class="stat">
       <div class="stat-title">🟡 Заявки</div>
       <div class="stat-value" id="statRequests">—</div>
     </div>
-
     <div class="stat">
       <div class="stat-title">🟢 Готовы</div>
       <div class="stat-value" id="statReady">—</div>
     </div>
-
     <div class="stat">
       <div class="stat-title">⏳ Ожидают</div>
       <div class="stat-value" id="statWaiting">—</div>
     </div>
-
     <div class="stat">
       <div class="stat-title">💵 Балансы</div>
       <div class="stat-value" id="statBalances">—</div>
     </div>
-
   </div>
 
   <div class="nav">
-
-    <button class="active" data-panel="withdrawals">
-      💸 Заявки на выплату
-    </button>
-
-    <button data-panel="top">
-      🏆 Топ рефералов
-    </button>
-
-    <button data-panel="all">
-      👥 Все рефералы
-    </button>
-       <button data-panel="clients">
-      🧾 Клиенты
-    </button>
-    <button data-panel="statistics">
-      📊 Статистика
-    </button>
-
+    <button class="active" data-panel="withdrawals">💸 Заявки на выплату</button>
+    <button data-panel="top">🏆 Топ рефералов</button>
+    <button data-panel="all">👥 Все рефералы</button>
+    <button data-panel="clients">🧾 Клиенты</button>
+    <button data-panel="statistics">📊 Статистика</button>
   </div>
 
   <!-- ВЫПЛАТЫ -->
   <section id="withdrawals" class="panel active">
-
     <h2>💸 Заявки на выплату</h2>
-
-    <div class="refresh-info">
-      Автоматическое обновление каждые 30 секунд
-    </div>
-
-    <div id="withdrawalsContent" class="loading">
-      Загрузка...
-    </div>
-
+    <div class="refresh-info">Автоматическое обновление каждые 30 секунд</div>
+    <div id="withdrawalsContent" class="loading">Загрузка...</div>
   </section>
 
   <!-- ТОП -->
   <section id="top" class="panel">
-
     <h2>🏆 Топ 10 рефералов</h2>
-
-    <div id="topContent" class="loading">
-      Загрузка...
-    </div>
-
+    <div id="topContent" class="loading">Загрузка...</div>
   </section>
 
   <!-- ВСЕ -->
   <section id="all" class="panel">
-
     <h2>👥 Все рефералы</h2>
-
-    <div id="allContent" class="loading">
-      Загрузка...
-    </div>
-
+    <div id="allContent" class="loading">Загрузка...</div>
   </section>
-<!-- КЛИЕНТЫ -->
-<section id="clients" class="panel">
 
-  <h2>🧾 Клиенты</h2>
+  <!-- КЛИЕНТЫ -->
+  <section id="clients" class="panel">
+    <h2>🧾 Клиенты</h2>
+    <div class="refresh-info">
+      Привлечённые клиенты и все завершённые заказы, по которым начислено вознаграждение
+    </div>
+    <input
+      id="clientsSearch"
+      class="search-box"
+      type="text"
+      placeholder="Поиск по ID клиента, рефералу (имя, телефон, email), коду или заказу..."
+    >
+    <div id="clientsContent" class="loading">Загрузка...</div>
+  </section>
 
-  <div class="refresh-info">
-    Привлечённые клиенты и все завершённые заказы, по которым начислено вознаграждение
-  </div>
-
-  <input
-    id="clientsSearch"
-    class="search-box"
-    type="text"
-    placeholder="Поиск по телефону, ID клиента, рефералу или коду..."
-  >
-
-  <div id="clientsContent" class="loading">
-    Загрузка...
-  </div>
-
-</section>
   <!-- СТАТИСТИКА -->
   <section id="statistics" class="panel">
-
     <h2>📊 Статистика</h2>
-
-    <div id="statisticsContent" class="loading">
-      Загрузка...
-    </div>
-
+    <div id="statisticsContent" class="loading">Загрузка...</div>
   </section>
 
 </div>
 
 <script>
 
-  const SUPABASE_URL =
-    'https://dkgipfotfjntlhabakns.supabase.co';
-
-  /*
-   * ВАЖНО:
-   * Здесь должен остаться твой настоящий
-   * sb_publishable_... ключ.
-   */
-  const SUPABASE_ANON_KEY =
-    'sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6';
+  const SUPABASE_URL = 'https://dkgipfotfjntlhabakns.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6';
 
   const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+    window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const REFRESH_INTERVAL_MS = 30000;
+  const WITHDRAWAL_DELAY_MS = 5 * 60 * 1000;
 
   let referralClientsRawData = [];
-  let refreshTimer = null;
-  let countdownTimer = null;
+  let isRefreshing = false;
 
+  // Заявки, которые обрабатываются прямо сейчас: id -> 'pay' | 'reject'
+  const busyRequests = new Map();
+
+  // Раскрытые карточки клиентов (переживают перерисовку и автообновление)
+  const openClients = new Set();
+
+  // Последний отрисованный HTML по панелям — чтобы не перерисовывать без изменений
+  const renderCache = {};
+
+  // Ошибки загрузки по панелям
+  const loadErrors = {};
+
+
+  /* ---------- Утилиты ---------- */
 
   function money(value) {
     return Number(value || 0).toLocaleString('ru-RU', {
@@ -745,6 +508,9 @@
     }) + ' ₽';
   }
 
+  function num(value) {
+    return Number(value || 0).toLocaleString('ru-RU');
+  }
 
   function dateTime(value) {
     if (!value) return '—';
@@ -758,11 +524,8 @@
     });
   }
 
-
   function escapeHtml(value) {
-    if (value === null || value === undefined) {
-      return '';
-    }
+    if (value === null || value === undefined) return '';
 
     return String(value)
       .replaceAll('&', '&amp;')
@@ -772,108 +535,74 @@
       .replaceAll("'", '&#039;');
   }
 
-
   function showError(message) {
     const box = document.getElementById('errorBox');
-
     box.textContent = message;
     box.style.display = 'block';
   }
 
-
   function clearError() {
     const box = document.getElementById('errorBox');
-
     box.textContent = '';
     box.style.display = 'none';
   }
 
+  function setHtml(elementId, html) {
+    if (renderCache[elementId] === html) return;
+
+    renderCache[elementId] = html;
+    document.getElementById(elementId).innerHTML = html;
+  }
 
   async function rpc(name, params = {}) {
-
-    const { data, error } =
-      await supabaseClient.rpc(name, params);
+    const { data, error } = await supabaseClient.rpc(name, params);
 
     if (error) {
-      throw new Error(
-        name + ': ' + error.message
-      );
+      throw new Error(name + ': ' + error.message);
     }
 
     return data;
   }
 
 
+  /* ---------- Верхняя статистика ---------- */
+
   async function loadStats() {
-
-    const data =
-      await rpc('get_referral_admin_stats');
-
+    const data = await rpc('get_referral_admin_stats');
     const row = data && data[0];
 
     if (!row) {
-      throw new Error(
-        'get_referral_admin_stats не вернул данные'
-      );
+      throw new Error('get_referral_admin_stats не вернул данные');
     }
 
-    document.getElementById('statReferrals')
-      .textContent = row.referrals_count ?? 0;
-
-    document.getElementById('statClients')
-      .textContent = row.clients_count ?? 0;
-
-    document.getElementById('statEarned')
-      .textContent = money(row.total_earned);
-
-    document.getElementById('statPaid')
-      .textContent = money(row.total_paid);
-
-    document.getElementById('statRequests')
-      .textContent = row.withdrawal_requests ?? 0;
-
-    document.getElementById('statReady')
-      .textContent = row.ready_requests ?? 0;
-
-    document.getElementById('statWaiting')
-      .textContent = row.waiting_requests ?? 0;
-
-    document.getElementById('statBalances')
-      .textContent = money(row.total_balances);
+    document.getElementById('statReferrals').textContent = num(row.referrals_count);
+    document.getElementById('statClients').textContent = num(row.clients_count);
+    document.getElementById('statEarned').textContent = money(row.total_earned);
+    document.getElementById('statPaid').textContent = money(row.total_paid);
+    document.getElementById('statRequests').textContent = num(row.withdrawal_requests);
+    document.getElementById('statReady').textContent = num(row.ready_requests);
+    document.getElementById('statWaiting').textContent = num(row.waiting_requests);
+    document.getElementById('statBalances').textContent = money(row.total_balances);
   }
 
 
-  function paymentDetails(raw) {
+  /* ---------- Заявки на выплату ---------- */
 
-    if (!raw) {
-      return 'Данные не указаны';
-    }
+  function paymentDetails(raw) {
+    if (!raw) return 'Данные не указаны';
 
     let obj;
 
     try {
-      obj =
-        typeof raw === 'string'
-          ? JSON.parse(raw)
-          : raw;
+      obj = typeof raw === 'string' ? JSON.parse(raw) : raw;
     } catch {
       return escapeHtml(raw);
     }
 
-    const phone =
-      obj.phone || '—';
-
-    const bank =
-      obj.bank_name || '—';
-
-    const lastName =
-      obj.last_name || '';
-
-    const firstName =
-      obj.first_name || '';
-
+    const phone = obj.phone || '—';
+    const bank = obj.bank_name || '—';
     const name =
-      [lastName, firstName]
+      [obj.last_name || '', obj.first_name || '']
         .filter(Boolean)
         .join(' ') || '—';
 
@@ -884,327 +613,463 @@
     `;
   }
 
+  // Единый источник времени готовности: ready_at, а если его нет — created_at + 5 минут
+  function readyAtMs(row) {
+    if (row.ready_at) {
+      const t = new Date(row.ready_at).getTime();
+      if (!Number.isNaN(t)) return t;
+    }
+
+    return new Date(row.created_at).getTime() + WITHDRAWAL_DELAY_MS;
+  }
 
   function isReady(row) {
-
-    if (row.status !== 'pending') {
-      return false;
-    }
-
-    return new Date(row.created_at).getTime()
-      <= Date.now() - 5 * 60 * 1000;
+    return row.status === 'pending' && readyAtMs(row) <= Date.now();
   }
-
 
   function remainingMs(row) {
-
-    const readyAt =
-      new Date(row.ready_at).getTime();
-
-    return Math.max(
-      0,
-      readyAt - Date.now()
-    );
+    return Math.max(0, readyAtMs(row) - Date.now());
   }
-
 
   function countdownText(row) {
-
     const ms = remainingMs(row);
 
-    if (ms <= 0) {
-      return 'Готова к выплате';
-    }
+    if (ms <= 0) return 'Готова к выплате';
 
-    const totalSeconds =
-      Math.ceil(ms / 1000);
+    const totalSeconds = Math.ceil(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
 
-    const minutes =
-      Math.floor(totalSeconds / 60);
-
-    const seconds =
-      totalSeconds % 60;
-
-    return (
-      'Можно обработать через ' +
-      minutes +
-      ':' +
-      String(seconds).padStart(2, '0')
-    );
+    return 'Можно обработать через ' +
+      minutes + ':' + String(seconds).padStart(2, '0');
   }
 
-function toggleClientOrders(index) {
-  const details =
-    document.getElementById(
-      'client-orders-' + index
-    );
+  function renderWithdrawals(rows) {
 
-  if (!details) return;
-
-  details.classList.toggle('open');
-}
-
-
-function renderClients(rows) {
-
-  const content =
-    document.getElementById(
-      'clientsContent'
-    );
-
-
-  if (!rows || rows.length === 0) {
-
-    content.innerHTML =
-      '<div class="empty">Клиентов пока нет</div>';
-
-    return;
-  }
-
-
-  const clients = {};
-
-
-  rows.forEach(row => {
-
-    const clientId =
-      row.referred_user_id;
-
-
-    if (!clients[clientId]) {
-
-      clients[clientId] = {
-
-        referred_user_id:
-          clientId,
-
-        referrer_user_id:
-          row.referrer_user_id,
-
-        referral_code:
-          row.referral_code,
-
-        orders: [],
-
-        total_orders: 0,
-
-        total_turnover: 0,
-
-        total_reward: 0,
-
-        last_order_at: null
-
-      };
+    if (!rows || rows.length === 0) {
+      setHtml('withdrawalsContent', '<div class="empty">Заявок пока нет</div>');
+      return;
     }
 
+    let html = '<div class="withdrawals-list">';
 
-    const client =
-      clients[clientId];
+    rows.forEach(row => {
 
+      const ready = isReady(row);
+      const idAttr = escapeHtml(row.id);
+      const busyAction = busyRequests.get(String(row.id));
+      const busy = Boolean(busyAction);
 
-    client.orders.push(row);
+      let statusHtml = '';
 
-    client.total_orders += 1;
+      if (row.status === 'pending') {
 
-    client.total_turnover +=
-      Number(row.order_total || 0);
+        if (ready) {
+          statusHtml = '<span class="status ready">🟢 Готова к выплате</span>';
+        } else {
+          statusHtml = `
+            <span class="status waiting">⏳ Ожидает</span>
+            <div class="countdown" data-countdown-id="${idAttr}">
+              ${countdownText(row)}
+            </div>
+          `;
+        }
 
-    client.total_reward +=
-      Number(row.reward_amount || 0);
+      } else if (row.status === 'paid') {
+        statusHtml = '<span class="status completed">✅ Выплачено</span>';
 
+      } else if (row.status === 'rejected') {
+        statusHtml = '<span class="status rejected">❌ Отклонено</span>';
 
-    if (
-      !client.last_order_at ||
-      new Date(row.order_created_at) >
-        new Date(client.last_order_at)
-    ) {
+      } else {
+        statusHtml = escapeHtml(row.status || '—');
+      }
 
-      client.last_order_at =
-        row.order_created_at;
-    }
+      let actions = '—';
 
-  });
+      if (row.status === 'pending') {
+        const disabled = (!ready || busy) ? 'disabled' : '';
 
+        actions = `
+          <button class="btn btn-pay" data-action="pay" data-id="${idAttr}" ${disabled}>
+            ${busyAction === 'pay' ? '⏳ Обработка...' : '💸 Выплатить'}
+          </button>
 
-  const clientList =
-    Object.values(clients);
-
-
-  const totalTurnover =
-    clientList.reduce(
-      (sum, client) =>
-        sum + client.total_turnover,
-      0
-    );
-
-
-  const totalReward =
-    clientList.reduce(
-      (sum, client) =>
-        sum + client.total_reward,
-      0
-    );
-
-
-  let html = `
-
-    <div class="client-summary">
-
-      <div class="mini-stat">
-        <div class="label">
-          Клиентов
-        </div>
-
-        <div class="value">
-          ${clientList.length}
-        </div>
-      </div>
-
-
-      <div class="mini-stat">
-        <div class="label">
-          Заказов
-        </div>
-
-        <div class="value">
-          ${rows.length}
-        </div>
-      </div>
-
-
-      <div class="mini-stat">
-        <div class="label">
-          Оборот
-        </div>
-
-        <div class="value">
-          ${money(totalTurnover)}
-        </div>
-      </div>
-
-
-      <div class="mini-stat">
-        <div class="label">
-          Вознаграждение
-        </div>
-
-        <div class="value">
-          ${money(totalReward)}
-        </div>
-      </div>
-
-    </div>
-
-
-    <div class="client-list">
-  `;
-
-
-  clientList.forEach(
-    (client, index) => {
-
-      const referrer =
-        window.allReferralRows?.find(
-          row =>
-            row.user_id ===
-            client.referrer_user_id
-        );
-
-
-      const referrerName =
-        referrer?.username ||
-        client.referrer_user_id ||
-        '—';
-
+          <button class="btn btn-reject" data-action="reject" data-id="${idAttr}" ${disabled}>
+            ${busyAction === 'reject' ? '⏳ Обработка...' : '❌ Отклонить'}
+          </button>
+        `;
+      }
 
       html += `
+        <div class="withdrawal-card">
 
+          <div class="withdrawal-card-top">
+            <div class="withdrawal-id">Заявка #${idAttr}</div>
+            <div class="withdrawal-date">${dateTime(row.created_at)}</div>
+          </div>
+
+          <div class="withdrawal-main">
+
+            <div class="withdrawal-user">
+              <div class="withdrawal-label">Пользователь</div>
+              <div class="withdrawal-user-id">${escapeHtml(row.user_id)}</div>
+            </div>
+
+            <div class="withdrawal-amount">
+              <div class="withdrawal-label">Сумма</div>
+              <strong>${money(row.amount)}</strong>
+            </div>
+
+            <div class="withdrawal-status">
+              <div class="withdrawal-label">Статус</div>
+              ${statusHtml}
+            </div>
+
+          </div>
+
+          <div class="withdrawal-details">
+            <div class="withdrawal-label">Реквизиты</div>
+            <div class="withdrawal-details-content">
+              ${paymentDetails(row.payment_details)}
+            </div>
+          </div>
+
+          <div class="withdrawal-actions">${actions}</div>
+
+        </div>
+      `;
+    });
+
+    html += '</div>';
+
+    setHtml('withdrawalsContent', html);
+  }
+
+  async function loadWithdrawals() {
+    const rows = await rpc('get_admin_referral_withdrawals');
+
+    window.withdrawalRows = rows || [];
+
+    renderWithdrawals(window.withdrawalRows);
+  }
+
+  function updateCountdowns() {
+    const rows = window.withdrawalRows || [];
+    let needRender = false;
+
+    document
+      .querySelectorAll('[data-countdown-id]')
+      .forEach(element => {
+
+        const row = rows.find(
+          item => String(item.id) === element.dataset.countdownId
+        );
+
+        if (!row) return;
+
+        if (remainingMs(row) <= 0) {
+          // Время вышло — перерисовываем карточку, чтобы кнопки стали активными
+          needRender = true;
+        } else {
+          element.textContent = countdownText(row);
+        }
+      });
+
+    if (needRender) renderWithdrawals(rows);
+  }
+
+  async function processRequest(row, action) {
+
+    const key = String(row.id);
+    const isPay = action === 'pay';
+
+    // Защита от повторного клика и от обхода disabled через консоль
+    if (busyRequests.has(key)) return;
+    if (!isReady(row)) return;
+
+    const question = isPay
+      ? 'Выплатить эту заявку?'
+      : 'Отклонить эту заявку?';
+
+    if (!confirm(question)) return;
+
+    // Сразу блокируем обе кнопки заявки
+    busyRequests.set(key, action);
+    renderWithdrawals(window.withdrawalRows);
+
+    let ok = false;
+
+    try {
+      await rpc(
+        isPay
+          ? 'complete_referral_withdrawal_request'
+          : 'reject_referral_withdrawal_request',
+        { p_request_id: row.id }
+      );
+
+      ok = true;
+
+    } catch (error) {
+      console.error('Ошибка обработки заявки:', error);
+
+      alert(
+        (isPay ? 'Ошибка выплаты:\n\n' : 'Ошибка отклонения:\n\n') +
+        error.message
+      );
+    }
+
+    if (ok) {
+      // Сразу показываем итоговый статус, не дожидаясь перезагрузки
+      row.status = isPay ? 'paid' : 'rejected';
+
+      await Promise.all([
+        run('Заявки', loadWithdrawals),
+        run('Статистика (сводка)', loadStats),
+        run('Статистика', loadStatistics)
+      ]);
+
+      renderErrors();
+    }
+
+    busyRequests.delete(key);
+    renderWithdrawals(window.withdrawalRows);
+
+    if (ok) {
+      alert(isPay ? 'Заявка успешно выплачена.' : 'Заявка успешно отклонена.');
+    }
+  }
+
+  document
+    .getElementById('withdrawalsContent')
+    .addEventListener('click', event => {
+
+      const button = event.target.closest('button[data-action]');
+
+      if (!button || button.disabled) return;
+
+      const row = (window.withdrawalRows || []).find(
+        item => String(item.id) === button.dataset.id
+      );
+
+      if (!row) return;
+
+      processRequest(row, button.dataset.action);
+    });
+
+
+  /* ---------- Топ рефералов ---------- */
+
+  async function loadTop() {
+    const rows = await rpc('get_referral_admin_top10');
+
+    if (!rows || rows.length === 0) {
+      setHtml('topContent', '<div class="empty">Данных пока нет</div>');
+      return;
+    }
+
+    let html = '<div class="top-list">';
+
+    rows.forEach((row, index) => {
+      html += `
+        <div class="top-item">
+
+          <div class="top-position">${index + 1}</div>
+
+          <div class="top-user">
+            <div class="top-username">
+              ${escapeHtml(row.username || row.user_id || '—')}
+            </div>
+            <div class="top-user-id">${escapeHtml(row.user_id || '—')}</div>
+          </div>
+
+          <div class="top-clients">
+            <div class="top-label">Клиенты</div>
+            <strong>${num(row.clients_count)}</strong>
+          </div>
+
+          <div class="top-earned">
+            <div class="top-label">Заработано</div>
+            <strong>${money(row.total_earned)}</strong>
+          </div>
+
+        </div>
+      `;
+    });
+
+    html += '</div>';
+
+    setHtml('topContent', html);
+  }
+
+
+  /* ---------- Все рефералы ---------- */
+
+  async function loadAll() {
+    const rows = await rpc('get_referral_admin_all_referrals');
+
+    window.allReferralRows = rows || [];
+
+    if (!rows || rows.length === 0) {
+      setHtml('allContent', '<div class="empty">Рефералов пока нет</div>');
+      return;
+    }
+
+    let html = `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Реферал</th>
+              <th>Телефон</th>
+              <th>Email</th>
+              <th>Код</th>
+              <th>Клиенты</th>
+              <th>Заработано</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    rows.forEach(row => {
+      html += `
+        <tr>
+          <td>${escapeHtml(row.username || row.user_id || '—')}</td>
+          <td>${escapeHtml(row.phone || '—')}</td>
+          <td>${escapeHtml(row.email || '—')}</td>
+          <td><code>${escapeHtml(row.referral_code || '—')}</code></td>
+          <td>${num(row.clients_count)}</td>
+          <td><strong>${money(row.total_earned)}</strong></td>
+        </tr>
+      `;
+    });
+
+    html += '</tbody></table></div>';
+
+    setHtml('allContent', html);
+  }
+
+
+  /* ---------- Клиенты ---------- */
+
+  function renderClients(rows) {
+
+    if (!rows || rows.length === 0) {
+      setHtml(
+        'clientsContent',
+        '<div class="empty">' +
+          (referralClientsRawData.length ? 'Ничего не найдено' : 'Клиентов пока нет') +
+        '</div>'
+      );
+      return;
+    }
+
+    const clients = {};
+
+    rows.forEach(row => {
+
+      const clientId = row.referred_user_id;
+
+      if (!clients[clientId]) {
+        clients[clientId] = {
+          referred_user_id: clientId,
+          referrer_user_id: row.referrer_user_id,
+          referral_code: row.referral_code,
+          orders: [],
+          total_orders: 0,
+          total_turnover: 0,
+          total_reward: 0
+        };
+      }
+
+      const client = clients[clientId];
+
+      client.orders.push(row);
+      client.total_orders += 1;
+      client.total_turnover += Number(row.order_total || 0);
+      client.total_reward += Number(row.reward_amount || 0);
+    });
+
+    const clientList = Object.values(clients);
+
+    const totalTurnover =
+      clientList.reduce((sum, c) => sum + c.total_turnover, 0);
+
+    const totalReward =
+      clientList.reduce((sum, c) => sum + c.total_reward, 0);
+
+    let html = `
+      <div class="client-summary">
+        <div class="mini-stat">
+          <div class="label">Клиентов</div>
+          <div class="value">${clientList.length}</div>
+        </div>
+        <div class="mini-stat">
+          <div class="label">Заказов</div>
+          <div class="value">${rows.length}</div>
+        </div>
+        <div class="mini-stat">
+          <div class="label">Оборот</div>
+          <div class="value">${money(totalTurnover)}</div>
+        </div>
+        <div class="mini-stat">
+          <div class="label">Вознаграждение</div>
+          <div class="value">${money(totalReward)}</div>
+        </div>
+      </div>
+
+      <div class="client-list">
+    `;
+
+    clientList.forEach(client => {
+
+      const referrer = (window.allReferralRows || []).find(
+        row => row.user_id === client.referrer_user_id
+      );
+
+      const referrerName =
+        referrer?.username || client.referrer_user_id || '—';
+
+      const clientKey = String(client.referred_user_id);
+      const isOpen = openClients.has(clientKey);
+
+      html += `
         <div class="client-card">
 
           <div class="client-card-header">
 
             <div>
-
-              <div class="client-title">
-                👤
-                ${escapeHtml(
-                  client.referred_user_id
-                )}
-              </div>
-
+              <div class="client-title">👤 ${escapeHtml(client.referred_user_id)}</div>
 
               <div class="client-meta">
-                Реферал:
-                <strong>
-                  ${escapeHtml(
-                    referrerName
-                  )}
-                </strong>
+                Реферал: <strong>${escapeHtml(referrerName)}</strong>
               </div>
-
 
               <div class="client-meta">
-                Код:
-                <code>
-                  ${escapeHtml(
-                    client.referral_code ||
-                    '—'
-                  )}
-                </code>
+                Код: <code>${escapeHtml(client.referral_code || '—')}</code>
               </div>
-
             </div>
-
 
             <div class="client-actions">
 
               <div class="client-stat">
-
-                <span>
-                  Заказов
-                </span>
-
-                <strong>
-                  ${client.total_orders}
-                </strong>
-
+                <span>Заказов</span>
+                <strong>${client.total_orders}</strong>
               </div>
-
 
               <div class="client-stat">
-
-                <span>
-                  Оборот
-                </span>
-
-                <strong>
-                  ${money(
-                    client.total_turnover
-                  )}
-                </strong>
-
+                <span>Оборот</span>
+                <strong>${money(client.total_turnover)}</strong>
               </div>
-
 
               <div class="client-stat">
-
-                <span>
-                  Заработано
-                </span>
-
-                <strong>
-                  ${money(
-                    client.total_reward
-                  )}
-                </strong>
-
+                <span>Заработано</span>
+                <strong>${money(client.total_reward)}</strong>
               </div>
-
 
               <button
-                class="btn"
-                onclick="toggleClientOrders(${index})"
-              >
+                class="btn btn-details"
+                data-client-id="${escapeHtml(clientKey)}">
                 📦 Заказы
               </button>
 
@@ -1212,18 +1077,10 @@ function renderClients(rows) {
 
           </div>
 
-
-          <div
-            id="client-orders-${index}"
-            class="client-orders"
-          >
-
+          <div class="client-orders ${isOpen ? 'open' : ''}">
             <div class="table-wrap">
-
               <table>
-
                 <thead>
-
                   <tr>
                     <th>Заказ</th>
                     <th>Сумма</th>
@@ -1232,1006 +1089,240 @@ function renderClients(rows) {
                     <th>Дата заказа</th>
                     <th>Дата начисления</th>
                   </tr>
-
                 </thead>
-
-
                 <tbody>
       `;
 
-
       client.orders.forEach(order => {
 
-        let statusHtml = '—';
-
-
-        if (
-          order.order_status ===
-          'completed'
-        ) {
-
-          statusHtml = `
-            <span class="status completed">
-              ✅ Завершён
-            </span>
-          `;
-
-        } else {
-
-          statusHtml =
-            escapeHtml(
-              order.order_status ||
-              '—'
-            );
-        }
-
+        const statusHtml =
+          order.order_status === 'completed'
+            ? '<span class="status completed">✅ Завершён</span>'
+            : escapeHtml(order.order_status || '—');
 
         html += `
-
           <tr>
-
-            <td>
-              <code>
-                ${escapeHtml(
-                  order.order_id ||
-                  '—'
-                )}
-              </code>
-            </td>
-
-
-            <td>
-              <strong>
-                ${money(
-                  order.order_total
-                )}
-              </strong>
-            </td>
-
-
-            <td>
-              ${statusHtml}
-            </td>
-
-
-            <td>
-              ${money(
-                order.reward_amount
-              )}
-            </td>
-
-
-            <td>
-              ${dateTime(
-                order.order_created_at
-              )}
-            </td>
-
-
-            <td>
-              ${dateTime(
-                order.reward_created_at
-              )}
-            </td>
-
+            <td><code>${escapeHtml(order.order_id || '—')}</code></td>
+            <td><strong>${money(order.order_total)}</strong></td>
+            <td>${statusHtml}</td>
+            <td>${money(order.reward_amount)}</td>
+            <td>${dateTime(order.order_created_at)}</td>
+            <td>${dateTime(order.reward_created_at)}</td>
           </tr>
-
         `;
       });
 
-
       html += `
-
                 </tbody>
-
               </table>
-
             </div>
-
           </div>
 
         </div>
-
       `;
-    }
-  );
+    });
 
+    html += '</div>';
 
-  html += `
-    </div>
-  `;
-
-
-  content.innerHTML =
-    html;
-}
-async function loadAll() {
-
-  const content =
-    document.getElementById(
-      'allContent'
-    );
-
-  if (!content) return;
-
-  content.innerHTML =
-    '<div class="loading">Загрузка...</div>';
-
-  const rows =
-    await rpc(
-      'get_referral_admin_all_referrals'
-    );
-
-  window.allReferralRows =
-    rows || [];
-
-  if (!rows || rows.length === 0) {
-
-    content.innerHTML =
-      '<div class="empty">Рефералов пока нет</div>';
-
-    return;
+    setHtml('clientsContent', html);
   }
 
-  let html = `
-    <div class="table-wrap">
+  function applyClientsFilter() {
 
-      <table>
+    const input = document.getElementById('clientsSearch');
+    const query = (input.value || '').trim().toLowerCase();
 
-        <thead>
-
-          <tr>
-            <th>Реферал</th>
-            <th>Телефон</th>
-            <th>Email</th>
-            <th>Код</th>
-            <th>Клиенты</th>
-            <th>Заработано</th>
-          </tr>
-
-        </thead>
-
-        <tbody>
-  `;
-
-  rows.forEach(row => {
-
-    html += `
-
-      <tr>
-
-        <td>
-          ${escapeHtml(
-            row.username ||
-            row.user_id ||
-            '—'
-          )}
-        </td>
-
-        <td>
-          ${escapeHtml(
-            row.phone || '—'
-          )}
-        </td>
-
-        <td>
-          ${escapeHtml(
-            row.email || '—'
-          )}
-        </td>
-
-        <td>
-          <code>
-            ${escapeHtml(
-              row.referral_code || '—'
-            )}
-          </code>
-        </td>
-
-        <td>
-          ${row.clients_count || 0}
-        </td>
-
-        <td>
-          <strong>
-            ${money(row.total_earned)}
-          </strong>
-        </td>
-
-      </tr>
-
-    `;
-  });
-
-  html += `
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-  `;
-
-  content.innerHTML = html;
-}
-async function loadTop() {
-
-  const content =
-    document.getElementById(
-      'topContent'
-    );
-
-  if (!content) return;
-
-  content.innerHTML =
-    '<div class="loading">Загрузка...</div>';
-
-  const rows =
-    await rpc(
-      'get_referral_admin_top10'
-    );
-
-  if (!rows || rows.length === 0) {
-
-    content.innerHTML =
-      '<div class="empty">Данных пока нет</div>';
-
-    return;
-  }
-
-  let html = `
-    <div class="top-list">
-  `;
-
-  rows.forEach((row, index) => {
-
-    html += `
-      <div class="top-item">
-
-        <div class="top-position">
-          ${index + 1}
-        </div>
-
-        <div class="top-user">
-
-          <div class="top-username">
-            ${escapeHtml(
-              row.username ||
-              row.user_id ||
-              '—'
-            )}
-          </div>
-
-          <div class="top-user-id">
-            ${escapeHtml(
-              row.user_id || '—'
-            )}
-          </div>
-
-        </div>
-
-        <div class="top-clients">
-
-          <div class="top-label">
-            Клиенты
-          </div>
-
-          <strong>
-            ${row.clients_count || 0}
-          </strong>
-
-        </div>
-
-        <div class="top-earned">
-
-          <div class="top-label">
-            Заработано
-          </div>
-
-          <strong>
-            ${money(row.total_earned)}
-          </strong>
-
-        </div>
-
-      </div>
-    `;
-  });
-
-  html += `
-    </div>
-  `;
-
-  content.innerHTML = html;
-}
-async function loadClients() {
-
-  const content =
-    document.getElementById(
-      'clientsContent'
-    );
-
-
-  content.innerHTML =
-    '<div class="loading">Загрузка...</div>';
-
-
-  const rows =
-    await rpc(
-      'get_referral_admin_client_orders'
-    );
-
-
-  referralClientsRawData =
-    rows || [];
-console.log(
-  'Данные клиентов:',
-  referralClientsRawData
-);
-
-  renderClients(
-    referralClientsRawData
-  );
-}
-  async function loadStatistics() {
-
-    const content =
-      document.getElementById(
-        'statisticsContent'
-      );
-
-    content.innerHTML =
-      '<div class="loading">Загрузка...</div>';
-
-
-    const data =
-      await rpc(
-        'get_referral_admin_statistics'
-      );
-
-    const row = data && data[0];
-
-
-    if (!row) {
-
-      throw new Error(
-        'get_referral_admin_statistics не вернул данные'
-      );
-    }
-
-
-    content.innerHTML = `
-
-      <div class="stats-grid">
-
-        <div class="mini-stat">
-          <div class="label">
-            Всего рефералов
-          </div>
-          <div class="value">
-            ${row.total_referrals}
-          </div>
-        </div>
-
-        <div class="mini-stat">
-          <div class="label">
-            Всего клиентов
-          </div>
-          <div class="value">
-            ${row.total_clients}
-          </div>
-        </div>
-
-        <div class="mini-stat">
-          <div class="label">
-            Всего заработано
-          </div>
-          <div class="value">
-            ${money(row.total_earned)}
-          </div>
-        </div>
-
-        <div class="mini-stat">
-          <div class="label">
-            Всего выплачено
-          </div>
-          <div class="value">
-            ${money(row.total_paid)}
-          </div>
-        </div>
-
-        <div class="mini-stat">
-          <div class="label">
-            Сумма ожидающих выплат
-          </div>
-          <div class="value">
-            ${money(row.total_pending)}
-          </div>
-        </div>
-
-        <div class="mini-stat">
-          <div class="label">
-            Сумма отклонённых выплат
-          </div>
-          <div class="value">
-            ${money(row.total_rejected)}
-          </div>
-        </div>
-
-        <div class="mini-stat">
-          <div class="label">
-            Балансы рефералов
-          </div>
-          <div class="value">
-            ${money(row.total_balance)}
-          </div>
-        </div>
-
-        <div class="mini-stat">
-          <div class="label">
-            Средний заработок
-          </div>
-          <div class="value">
-            ${money(row.average_earned)}
-          </div>
-        </div>
-
-        <div class="mini-stat">
-          <div class="label">
-            Среднее количество клиентов
-          </div>
-          <div class="value">
-            ${Number(
-              row.average_clients || 0
-            ).toLocaleString('ru-RU', {
-              maximumFractionDigits: 2
-            })}
-          </div>
-        </div>
-
-        <div class="mini-stat">
-          <div class="label">
-            Выплаченных заявок
-          </div>
-          <div class="value">
-            ${row.paid_requests_count}
-          </div>
-        </div>
-
-        <div class="mini-stat">
-          <div class="label">
-            Отклонённых заявок
-          </div>
-          <div class="value">
-            ${row.rejected_requests_count}
-          </div>
-        </div>
-
-        <div class="mini-stat">
-          <div class="label">
-            Ожидающих заявок
-          </div>
-          <div class="value">
-            ${row.pending_requests_count}
-          </div>
-        </div>
-
-      </div>
-    `;
-  }
-
-
-  async function refreshAll() {
-
-    try {
-
-      clearError();
-
-  await loadStats();
-await loadWithdrawalsWithCountdownData();
-await loadTop();
-    await loadAll();
-    await loadClients();
-    await loadStatistics();
-
-  } catch (error) {
-
-
-      console.error(error);
-
-      showError(
-        'Ошибка загрузки реферальной админки:\n\n' +
-        error.message
-      );
-    }
-  }
-
-
-  function updateCountdowns() {
-
-    document
-      .querySelectorAll(
-        '[data-countdown-id]'
-      )
-      .forEach(element => {
-
-        const id =
-          Number(
-            element.dataset.countdownId
-          );
-
-        const row =
-          window.withdrawalRows
-            ?.find(item => item.id === id);
-
-        if (!row) return;
-
-        element.textContent =
-          countdownText(row);
-      });
-  }
-async function completeRequest(id) {
-
-  if (!confirm('Выплатить эту заявку?')) {
-    return;
-  }
-
-  try {
-
-    const result =
-      await rpc(
-        'complete_referral_withdrawal_request',
-        {
-          p_request_id: id
-        }
-      );
-
-    console.log(
-      'Результат выплаты:',
-      result
-    );
-
-    await loadStats();
-
-    await loadWithdrawalsWithCountdownData();
-
-    await loadStatistics();
-
-    alert('Заявка успешно выплачена.');
-
-  } catch (error) {
-
-    console.error(
-      'Ошибка выплаты:',
-      error
-    );
-
-    alert(
-      'Ошибка выплаты:\n\n' +
-      error.message
-    );
-
-  }
-
-}
-async function rejectRequest(id) {
-
-  if (!confirm('Отклонить эту заявку?')) {
-    return;
-  }
-
-  const button =
-    document.querySelector(
-      `.btn-reject[onclick="rejectRequest(${id})"]`
-    );
-
-  if (button) {
-    button.disabled = true;
-    button.textContent = '⏳ Обработка...';
-  }
-
-  try {
-
-    const result =
-      await rpc(
-        'reject_referral_withdrawal_request',
-        {
-          p_request_id: id
-        }
-      );
-
-    console.log(
-      'Результат отклонения:',
-      result
-    );
-
-
-    await loadWithdrawalsWithCountdownData();
-
-    await loadStats();
-
-    await loadStatistics();
-
-    alert(
-      'Заявка успешно отклонена.'
-    );
-
-  } catch (error) {
-
-    console.error(
-      'Ошибка отклонения:',
-      error
-    );
-
-    if (button) {
-      button.disabled = false;
-      button.textContent = '❌ Отклонить';
-    }
-
-    alert(
-      'Ошибка отклонения:\n\n' +
-      error.message
-    );
-
-  }
-
-}
- 
-  async function loadWithdrawalsWithCountdownData() {
-
-    const rows =
-      await rpc(
-        'get_admin_referral_withdrawals'
-      );
-
-    window.withdrawalRows =
-      rows || [];
-
-    const content =
-      document.getElementById(
-        'withdrawalsContent'
-      );
-
-    if (!rows || rows.length === 0) {
-
-      content.innerHTML =
-        '<div class="empty">Заявок пока нет</div>';
-
+    if (!query) {
+      renderClients(referralClientsRawData);
       return;
     }
 
-let html = `
-  <div class="withdrawals-list">
-`;
+    const referrals = window.allReferralRows || [];
 
-rows.forEach(row => {
+    const filtered = referralClientsRawData.filter(row => {
 
-  const ready =
-    isReady(row);
+      const referrer = referrals.find(
+        item => item.user_id === row.referrer_user_id
+      );
 
-  let statusHtml = '';
+      const values = [
+        row.referred_user_id,
+        row.referrer_user_id,
+        row.referral_code,
+        row.order_id,
+        referrer?.username,
+        referrer?.phone,
+        referrer?.email
+      ];
 
-  if (row.status === 'pending') {
+      return values.some(
+        value => String(value ?? '').toLowerCase().includes(query)
+      );
+    });
 
-    if (ready) {
+    renderClients(filtered);
+  }
 
-      statusHtml = `
-        <span class="status ready">
-          🟢 Готова к выплате
-        </span>
-      `;
+  async function loadClients() {
+    const rows = await rpc('get_referral_admin_client_orders');
 
-    } else {
+    referralClientsRawData = rows || [];
 
-      statusHtml = `
-        <span class="status waiting">
-          ⏳ Ожидает
-        </span>
+    // Применяем текущий поисковый запрос, а не сбрасываем его
+    applyClientsFilter();
+  }
 
-        <div
-          class="countdown"
-          data-countdown-id="${row.id}">
-          ${countdownText(row)}
-        </div>
-      `;
+  document
+    .getElementById('clientsSearch')
+    .addEventListener('input', applyClientsFilter);
+
+  document
+    .getElementById('clientsContent')
+    .addEventListener('click', event => {
+
+      const button = event.target.closest('button[data-client-id]');
+
+      if (!button) return;
+
+      const key = button.dataset.clientId;
+      const orders = button
+        .closest('.client-card')
+        .querySelector('.client-orders');
+
+      if (openClients.has(key)) {
+        openClients.delete(key);
+        orders.classList.remove('open');
+      } else {
+        openClients.add(key);
+        orders.classList.add('open');
+      }
+    });
+
+
+  /* ---------- Статистика ---------- */
+
+  async function loadStatistics() {
+    const data = await rpc('get_referral_admin_statistics');
+    const row = data && data[0];
+
+    if (!row) {
+      throw new Error('get_referral_admin_statistics не вернул данные');
     }
 
-  } else if (row.status === 'paid') {
+    const cards = [
+      ['Всего рефералов', num(row.total_referrals)],
+      ['Всего клиентов', num(row.total_clients)],
+      ['Всего заработано', money(row.total_earned)],
+      ['Всего выплачено', money(row.total_paid)],
+      ['Сумма ожидающих выплат', money(row.total_pending)],
+      ['Сумма отклонённых выплат', money(row.total_rejected)],
+      ['Балансы рефералов', money(row.total_balance)],
+      ['Средний заработок', money(row.average_earned)],
+      [
+        'Среднее количество клиентов',
+        Number(row.average_clients || 0).toLocaleString('ru-RU', {
+          maximumFractionDigits: 2
+        })
+      ],
+      ['Выплаченных заявок', num(row.paid_requests_count)],
+      ['Отклонённых заявок', num(row.rejected_requests_count)],
+      ['Ожидающих заявок', num(row.pending_requests_count)]
+    ];
 
-    statusHtml = `
-      <span class="status completed">
-        ✅ Выплачено
-      </span>
-    `;
+    const html =
+      '<div class="stats-grid">' +
+      cards.map(([label, value]) => `
+        <div class="mini-stat">
+          <div class="label">${label}</div>
+          <div class="value">${value}</div>
+        </div>
+      `).join('') +
+      '</div>';
 
-  } else if (row.status === 'rejected') {
-
-    statusHtml = `
-      <span class="status rejected">
-        ❌ Отклонено
-      </span>
-    `;
-
-  } else {
-
-    statusHtml =
-      escapeHtml(row.status || '—');
+    setHtml('statisticsContent', html);
   }
 
 
-  let actions = '—';
+  /* ---------- Обновление данных ---------- */
 
-  if (row.status === 'pending') {
+  // Запускает загрузчик и запоминает ошибку, не роняя остальные панели
+  async function run(label, loader) {
+    try {
+      await loader();
+      delete loadErrors[label];
+    } catch (error) {
+      console.error(label, error);
+      loadErrors[label] = error.message;
+    }
+  }
 
-    actions = `
-      <button
-        class="btn btn-pay"
-        ${ready ? '' : 'disabled'}
-        onclick="completeRequest(${row.id})">
-        💸 Выплатить
-      </button>
+  function renderErrors() {
+    const messages = Object.values(loadErrors);
 
-      <button
-        class="btn btn-reject"
-        ${ready ? '' : 'disabled'}
-        onclick="rejectRequest(${row.id})">
-        ❌ Отклонить
-      </button>
-    `;
+    if (messages.length === 0) {
+      clearError();
+      return;
+    }
+
+    showError('Ошибка загрузки реферальной админки:\n\n' + messages.join('\n'));
+  }
+
+  async function refreshData() {
+
+    // Не запускаем новый цикл, пока не закончился предыдущий
+    if (isRefreshing) return;
+
+    isRefreshing = true;
+
+    try {
+      await Promise.all([
+        run('Сводка', loadStats),
+        run('Заявки', loadWithdrawals),
+        run('Топ', loadTop),
+        run('Статистика', loadStatistics),
+        // Клиентам нужны данные рефералов (имена), поэтому грузим после них
+        run('Рефералы', loadAll).then(() => run('Клиенты', loadClients))
+      ]);
+
+      renderErrors();
+
+    } finally {
+      isRefreshing = false;
+    }
   }
 
 
-  html += `
-    <div class="withdrawal-card">
+  /* ---------- Навигация ---------- */
 
-      <div class="withdrawal-card-top">
-
-        <div class="withdrawal-id">
-          Заявка #${escapeHtml(row.id)}
-        </div>
-
-        <div class="withdrawal-date">
-          ${dateTime(row.created_at)}
-        </div>
-
-      </div>
-
-
-      <div class="withdrawal-main">
-
-        <div class="withdrawal-user">
-
-          <div class="withdrawal-label">
-            Пользователь
-          </div>
-
-       <div class="withdrawal-user-id">
-  ${escapeHtml(row.user_id)}
-</div>
-
-        </div>
-
-
-        <div class="withdrawal-amount">
-
-          <div class="withdrawal-label">
-            Сумма
-          </div>
-
-          <strong>
-            ${money(row.amount)}
-          </strong>
-
-        </div>
-
-
-        <div class="withdrawal-status">
-
-          <div class="withdrawal-label">
-            Статус
-          </div>
-
-          ${statusHtml}
-
-        </div>
-
-      </div>
-
-
-      <div class="withdrawal-details">
-
-        <div class="withdrawal-label">
-          Реквизиты
-        </div>
-
-        <div class="withdrawal-details-content">
-          ${paymentDetails(row.payment_details)}
-        </div>
-
-      </div>
-
-
-      <div class="withdrawal-actions">
-        ${actions}
-      </div>
-
-    </div>
-  `;
-});
-
-
-html += `
-  </div>
-`;
-
-
-content.innerHTML = html;
-    
-  }
-
-
-  // Навигация
   document
     .querySelectorAll('.nav button')
     .forEach(button => {
 
-      button.addEventListener(
-        'click',
-        () => {
+      button.addEventListener('click', () => {
 
-          document
-            .querySelectorAll('.nav button')
-            .forEach(btn =>
-              btn.classList.remove('active')
-            );
+        document
+          .querySelectorAll('.nav button')
+          .forEach(btn => btn.classList.remove('active'));
 
-          document
-            .querySelectorAll('.panel')
-            .forEach(panel =>
-              panel.classList.remove('active')
-            );
+        document
+          .querySelectorAll('.panel')
+          .forEach(panel => panel.classList.remove('active'));
 
-          button.classList.add('active');
+        button.classList.add('active');
 
-          document
-            .getElementById(
-              button.dataset.panel
-            )
-            .classList.add('active');
-        }
-      );
+        document
+          .getElementById(button.dataset.panel)
+          .classList.add('active');
+      });
     });
-const clientsSearch =
-  document.getElementById('clientsSearch');
 
-if (clientsSearch) {
 
-  clientsSearch.oninput = () => {
+  /* ---------- Запуск ---------- */
 
-    const query =
-      clientsSearch.value
-        .trim()
-        .toLowerCase();
+  refreshData();
 
-    if (!query) {
-
-      renderClients(
-        referralClientsRawData
-      );
-
-      return;
-    }
-
-    const filtered =
-      referralClientsRawData.filter(
-        row => {
-
-          const values = [
-            row.referred_user_id,
-            row.referrer_user_id,
-            row.referral_code,
-            row.order_id
-          ];
-
-          return values.some(
-            value =>
-              String(value ?? '')
-                .trim()
-                .toLowerCase()
-                .includes(query)
-          );
-
-        }
-      );
-
-    renderClients(filtered);
-
-  };
-
-}
- 
- // Первичная загрузка
-(async function init() {
-
-  try {
-
-    if (
-      SUPABASE_ANON_KEY.includes(
-        'ВСТАВЬ_СЮДА'
-      )
-    ) {
-
-      throw new Error(
-        'В файл ещё не вставлен Supabase Publishable Key.'
-      );
-    }
-
-    await loadStats();
-
-    await loadWithdrawalsWithCountdownData();
-
-    await loadTop();
-
-    await loadAll();
-
-    await loadClients();
-
-    await loadStatistics();
-
-    refreshTimer =
-      setInterval(
-        async () => {
-
-          try {
-
-            await loadStats();
-
-            await loadWithdrawalsWithCountdownData();
-
-            await loadTop();
-
-            await loadAll();
-
-            await loadClients();
-
-            await loadStatistics();
-
-          } catch (error) {
-
-            console.error(error);
-
-            showError(
-              'Ошибка автоматического обновления:\n\n' +
-              error.message
-            );
-          }
-
-        },
-        30000
-      );
-
-   countdownTimer =
-  setInterval(
-    () => {
-
-      updateCountdowns();
-
-    },
-    1000
-  );
-
-    } catch (error) {
-
-      console.error(error);
-
-      showError(
-        'Не удалось запустить реферальную админку:\n\n' +
-        error.message
-      );
-    }
-
-  })();
+  setInterval(refreshData, REFRESH_INTERVAL_MS);
+  setInterval(updateCountdowns, 1000);
 
 </script>
 
