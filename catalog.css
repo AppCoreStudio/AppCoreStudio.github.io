@@ -275,9 +275,9 @@ font-weight:800
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:10px;
-  margin-top:16px
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+  margin-top:14px
 }
 .referral-banner{
   margin-top:16px;
@@ -319,106 +319,29 @@ filter:brightness(.9);
 }
 
 .app-card{
-  min-height:165px;
-  padding:14px;
+  min-height:116px;
+  padding:10px 8px 9px;
   position:relative;
   overflow:hidden;
   cursor:pointer;
-  border-radius:20px;
+  border-radius:15px;
   border:1px solid rgba(255,255,255,.07);
   background:#12141a;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   transition:transform .18s,border-color .18s,box-shadow .18s
 }
-
-.app-card:before{
-  content:"";
-  position:absolute;
-  width:110px;
-  height:110px;
-  right:-50px;
-  top:-50px;
-  border-radius:50%;
-  background:var(--app-color);
-  opacity:.13;
-  filter:blur(3px)
-}
-
-.app-card:active{
-  transform:scale(.975)
-}
-
-.app-card.selected{
-  border-color:var(--app-color);
-  box-shadow:0 0 0 1px var(--app-color),0 12px 35px rgba(0,0,0,.25)
-}
-
-.app-icon{
-  position:relative;
-  z-index:1;
-  width:50px;
-  height:50px;
-  border-radius:15px;
-  background:var(--app-gradient);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  box-shadow:0 8px 20px rgba(0,0,0,.22)
-}
-
-.app-icon img{
-  width:100%;
-  height:100%;
-  object-fit:cover
-}
-
-.fallback{
-  color:#fff;
-  font-size:16px;
-  font-weight:900
-}
-
-.check{
-  position:absolute;
-  z-index:3;
-  right:11px;
-  top:11px;
-  width:25px;
-  height:25px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(0,0,0,.22);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:transparent;
-  font-size:13px;
-  font-weight:900
-}
-
-.app-card.selected .check{
-  color:#111;
-  background:#fff;
-  border-color:#fff
-}
-
-.app-name{
-  position:relative;
-  z-index:1;
-  margin-top:13px;
-  padding-right:22px;
-  font-size:14px;
-  font-weight:800;
-  line-height:1.25
-}
-
-.app-type{
-  position:relative;
-  z-index:1;
-  margin-top:5px;
-  color:#777e8c;
-  font-size:11px
-}
+.app-card:before{content:"";position:absolute;width:80px;height:80px;right:-38px;top:-38px;border-radius:50%;background:var(--app-color);opacity:.13;filter:blur(3px)}
+.app-card:active{transform:scale(.975)}
+.app-card.selected{border-color:var(--app-color);box-shadow:0 0 0 1px var(--app-color),0 8px 22px rgba(0,0,0,.22)}
+.app-icon{position:relative;z-index:1;width:58px;height:58px;margin-top:1px;border-radius:14px;background:var(--app-gradient);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,.22)}
+.app-icon img{width:100%;height:100%;padding:6px;object-fit:contain}
+.fallback{color:#fff;font-size:16px;font-weight:900}
+.check{position:absolute;z-index:3;right:7px;top:7px;width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;color:transparent;font-size:13px;font-weight:900}
+.app-card.selected .check{color:#111;background:#fff;border-color:#fff}
+.app-name{position:relative;z-index:1;width:100%;margin-top:7px;padding:0 2px;font-size:11px;font-weight:800;line-height:1.15;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app-type{display:none}
 
 .empty{
   display:none;
@@ -454,91 +377,18 @@ filter:brightness(.9);
   font-size:13px
 }
 
-.bottom{
-  position:fixed;
-  z-index:20;
-  left:0;
-  right:0;
-  bottom:0;
-  padding:10px 14px calc(11px + env(safe-area-inset-bottom));
-  background:linear-gradient(to top,rgba(8,9,13,1) 55%,rgba(8,9,13,.96) 76%,rgba(8,9,13,0))
-}
-
-.bottom-inner{
-  width:100%;
-  max-width:920px;
-  margin:auto
-}
-
-.price-panel{
-  display:none;
-  margin-bottom:9px;
-  padding:12px 14px;
-  border-radius:17px;
-  background:rgba(20,22,29,.97);
-  border:1px solid rgba(255,255,255,.08);
-  backdrop-filter:blur(20px)
-}
-
-.price-panel.visible{
-  display:block
-}
-
-.price-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px
-}
-
-
-.price-label{
-  color:#858c9a;
-  font-size:12px
-}
-
-.price-value{
-  color:#fff;
-  font-size:13px;
-  font-weight:700
-}
-
-.total-row{
-  margin-top:7px;
-  padding-top:8px;
-  border-top:1px solid rgba(255,255,255,.06)
-}
-
-.total-row .price-label{
-  color:#fff;
-  font-weight:700
-}
-
-.total-row .price-value{
-  font-size:17px
-}
-
-.sale{
-  color:#55e18b!important
-}
-
-.continue{
-  width:100%;
-  height:52px;
-  border:0;
-  border-radius:16px;
-  background:linear-gradient(135deg,#fff,#e9e9ee);
-  color:#090a0e;
-  font-size:15px;
-  font-weight:850;
-  cursor:pointer;
-  box-shadow:0 8px 25px rgba(0,0,0,.22)
-}
-
-.continue:disabled{
-  opacity:.38;
-  box-shadow:none
-}
+.bottom{position:fixed;z-index:400;left:0;right:0;bottom:calc(68px + env(safe-area-inset-bottom));padding:6px 14px;background:linear-gradient(to top,rgba(8,9,13,1) 60%,rgba(8,9,13,.92) 82%,rgba(8,9,13,0))}
+.bottom-inner{width:100%;max-width:920px;margin:auto}
+.price-panel{display:none;margin-bottom:6px;padding:8px 11px;border-radius:13px;background:rgba(20,22,29,.97);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(20px)}
+.price-panel.visible{display:block}
+.price-summary{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;color:#b9bfcc;font-size:11px;font-weight:700;line-height:1.2}
+.price-summary b{color:#fff}
+.price-value{color:#9da4b3;font-size:11px;font-weight:700}
+.price-arrow{color:#656c7b}
+.price-total{color:#fff;font-size:14px;font-weight:900}
+.price-discount{color:#55e18b;font-size:10px;font-weight:800}
+.continue{width:100%;height:43px;border:0;border-radius:14px;background:linear-gradient(135deg,#fff,#e9e9ee);color:#090a0e;font-size:13px;font-weight:850;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,.22)}
+.continue:disabled{opacity:.38;box-shadow:none}
 
 .toast{
   position:fixed;
@@ -1308,3 +1158,5 @@ filter:brightness(.9);
   background:rgba(55,219,124,.15);
   color:#55e18b
 }
+
+@media(max-width:360px){.grid{gap:7px}.app-card{min-height:108px;padding:8px 6px}.app-icon{width:52px;height:52px}.app-name{font-size:10px}}
