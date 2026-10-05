@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090d">
+<meta name="robots" content="noindex,nofollow">
+<title>Профиль — AppCore</title>
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="profile.css">
+</head>
+<body>
+
+<main class="page">
+
+  <header class="p-head">
+    <a class="back" href="index.html" aria-label="На главную">←</a>
+    <h1>Профиль</h1>
+  </header>
+
+  <div id="loading" class="note">Загрузка…</div>
+
+  <!-- Профиль найден -->
+  <section id="view" hidden>
+
+    <div class="p-card">
+      <div class="p-name" id="pName"></div>
+      <div class="p-meta">ID клиента: <code id="pId"></code></div>
+      <div class="p-meta" id="pPhone"></div>
+    </div>
+
+    <div class="p-card">
+      <div class="p-timer-label">Профиль и заказы будут удалены через</div>
+      <div class="p-timer" id="pTimer">—</div>
+      <div class="bar"><i id="pBar"></i></div>
+    </div>
+
+    <h2>Мои заказы</h2>
+    <div id="orders"></div>
+
+    <a class="btn primary" href="catalog.html">Заказать ещё приложение <span aria-hidden="true">→</span></a>
+
+  </section>
+
+  <!-- Профиля нет или срок вышел -->
+  <section id="recover" hidden>
+
+    <div class="p-card">
+      <h2 id="recTitle">Войдите в профиль</h2>
+      <p class="p-text" id="recText"></p>
+
+      <form class="p-form" id="recForm">
+        <input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Телефон, указанный в заказе" required>
+        <input name="order" type="text" autocomplete="off" autocapitalize="characters" placeholder="Номер заказа (AC-…)" required>
+        <button class="btn primary" type="submit">Открыть профиль</button>
+      </form>
+    </div>
+
+    <a class="btn" href="catalog.html">Выбрать приложение</a>
+
+  </section>
+
+</main>
+
+<nav class="tabbar">
+  <a href="catalog.html"><i>📱</i>Приложения</a>
+  <a href="index.html"><i>🏠</i>Главная</a>
+  <a href="profile.html" class="active"><i>👤</i>Профиль</a>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module" src="profile.js"></script>
+</body>
+</html>

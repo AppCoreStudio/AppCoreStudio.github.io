@@ -1,0 +1,35 @@
+[hidden]{display:none!important}
+.p-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.p-head h1{margin:0;font-size:28px;letter-spacing:-1px}
+.back{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.07);border:1px solid var(--line);color:#fff;text-decoration:none;font-size:20px}
+h2{margin:20px 0 10px;font-size:17px}
+.p-card{margin-bottom:12px;padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.p-card h2{margin-top:0}
+.p-name{font-size:20px;font-weight:850}
+.p-meta{margin-top:6px;color:var(--muted);font-size:13px}
+.p-meta code{color:#c8baff;font-size:13px}
+.p-text{color:#aeb4c4;font-size:13px;line-height:1.5;margin:0 0 12px}
+.p-timer-label{color:var(--muted);font-size:12px}
+.p-timer{margin-top:6px;font-size:24px;font-weight:850;font-variant-numeric:tabular-nums}
+.bar{margin-top:12px;height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#7557ff,#55e18b);transition:width 1s linear}
+
+.order{margin-bottom:12px;padding:15px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.order-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.order-num{font-size:13px;font-weight:800;word-break:break-all}
+.badge{flex:0 0 auto;padding:6px 10px;border-radius:99px;font-size:11px;font-weight:800}
+.badge.wait{background:#fef3c7;color:#92400e}
+.badge.ok{background:#dcfce7;color:#166534}
+.badge.bad{background:#fee2e2;color:#991b1b}
+.order-sum{margin-top:6px;color:var(--muted);font-size:12px}
+.order-left{margin-top:10px;padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.05);font-size:12px;color:#d5d9e4;font-variant-numeric:tabular-nums}
+.order-hint{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.45}
+.app-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px;padding:10px 12px;border-radius:13px;background:rgba(255,255,255,.045);border:1px solid var(--line);font-size:13px;font-weight:700}
+.install-btn{flex:0 0 auto;padding:8px 12px;border-radius:10px;background:linear-gradient(135deg,#fff,#e9e9ee);color:#08090d;font-size:11px;font-weight:850;text-decoration:none}
+.wa-btn{display:flex;align-items:center;justify-content:center;width:100%;height:44px;margin-top:12px;border-radius:12px;background:linear-gradient(135deg,#55e18b,#25b86c);color:#07110b;font-size:12px;font-weight:850;text-decoration:none}
+
+.p-form{display:flex;flex-direction:column;gap:10px}
+.p-form input{width:100%;padding:13px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.04);color:#fff;outline:none}
+.p-form input:focus{border-color:rgba(135,109,255,.5)}
+#recover .btn{margin-top:4px}
+.tabbar a.active{color:#fff}
