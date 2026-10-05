@@ -255,7 +255,7 @@
         if (message.indexOf("RATE_LIMIT:") !== -1) {
           showToast("Лимит заказов достигнут. Попробуйте снова через 10 минут.");
         } else {
-          showToast("Ошибка Supabase: " + (message || "неизвестная ошибка"));
+          showToast("Не удалось оформить заказ. Попробуйте ещё раз.");
         }
 
         return;
@@ -282,8 +282,6 @@
       }
 
       currentOrder = order;
-
-      saveOrderLock(order);
       saveClientOrder(order, Date.now());
 
       try {
