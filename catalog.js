@@ -458,36 +458,28 @@ function isValidSavedOrder(order){
   return true;
 }
 
-function markAppsInstalled(order){
-
+function getInstalledOrders(){
   try{
-
-    localStorage.setItem(
-      INSTALLED_ORDER_KEY,
-      order.order_number
-    );
-
+    const raw=localStorage.getItem(INSTALLED_ORDER_KEY);
+    const list=raw ? JSON.parse(raw) : [];
+    return Array.isArray(list) ? list.filter(Boolean) : [];
   }catch(error){
+    return [];
+  }
+}
 
-    console.log(
-      "Installed state save error:",
-      error
-    );
+function markAppsInstalled(order){
+  try{
+    const list=getInstalledOrders();
+    if(!list.includes(order.order_number)) list.push(order.order_number);
+    localStorage.setItem(INSTALLED_ORDER_KEY,JSON.stringify(list));
+  }catch(error){
+    console.log("Installed state save error:",error);
   }
 }
 
 function isAppsInstalled(order){
-
-  try{
-
-    return localStorage.getItem(
-      INSTALLED_ORDER_KEY
-    )===order.order_number;
-
-  }catch(error){
-
-    return false;
-  }
+  return getInstalledOrders().includes(order.order_number);
 }
 
 function getOrderLock(){
