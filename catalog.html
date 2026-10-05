@@ -20,11 +20,11 @@
 
 <link rel="stylesheet" href="catalog.css">
 <style>
-.catalog-bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:500;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(8,9,13,.94);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.08)}
-.catalog-bottom-nav a{min-width:0;text-align:center;text-decoration:none;color:#8f96a8;font-size:10px;font-weight:800;padding:5px 2px;border-radius:10px}
-.catalog-bottom-nav a span{display:block;margin-top:3px;white-space:nowrap}
+.catalog-bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:500;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(8,9,13,.94);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.08)}
+.catalog-bottom-nav a{min-width:0;text-align:center;text-decoration:none;color:#aeb4c4;font-size:19px;font-weight:700;padding:6px 4px;border-radius:12px}
+.catalog-bottom-nav a span{display:block;margin-top:3px;white-space:nowrap;font-size:11px}
 .catalog-bottom-nav a.active{color:#fff;background:rgba(118,83,255,.16)}
-body{padding-bottom:82px}
+body{padding-bottom:150px}
 </style></head>
 
 <body>
@@ -248,27 +248,13 @@ body{padding-bottom:82px}
 <div class="bottom-inner">
 
 <div id="pricePanel" class="price-panel">
-
-  <div class="price-row">
-    <span class="price-label">Приложений</span>
-    <span id="count" class="price-value">0</span>
-  </div>
-
-  <div class="price-row">
-    <span class="price-label">Сумма</span>
+  <div class="price-summary">
+    <span><b id="count">0</b> приложений</span>
     <span id="original" class="price-value">0 ₽</span>
+    <span class="price-arrow">→</span>
+    <span id="total" class="price-total">0 ₽</span>
+    <span class="price-discount">🎁 <span id="discount">0%</span></span>
   </div>
-
-  <div class="price-row">
-    <span class="price-label">Скидка</span>
-    <span id="discount" class="price-value sale">0%</span>
-  </div>
-
-  <div class="price-row total-row">
-    <span class="price-label">Итого</span>
-    <span id="total" class="price-value">0 ₽</span>
-  </div>
-
 </div>
 
 <button id="continue" class="continue" disabled>
