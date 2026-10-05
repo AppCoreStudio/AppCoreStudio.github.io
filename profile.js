@@ -116,7 +116,9 @@ const STATUS = {
 
 function isOrderInstalled(orderNumber) {
   try {
-    return localStorage.getItem(INSTALLED_ORDER_KEY) === orderNumber;
+    const raw = localStorage.getItem(INSTALLED_ORDER_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    return Array.isArray(list) && list.includes(orderNumber);
   } catch (e) {
     return false;
   }
