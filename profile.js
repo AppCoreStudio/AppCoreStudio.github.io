@@ -58,10 +58,10 @@ function orderText(o, intro, closing) {
 /* ---------- Вход / восстановление ---------- */
 
 function showRecover(ended) {
-  $("recTitle").textContent = ended ? "Срок профиля истёк" : "Войдите в профиль";
+  $("recTitle").textContent = ended ? "Срок профиля истёк" : "Войти в профиль";
   $("recText").textContent = ended
-    ? "Профиль и заказы удаляются через 24 часа. Чтобы продолжить, оформите новый заказ или войдите по заказу, который ещё действует."
-    : "Укажите телефон и номер заказа — их можно найти в переписке в WhatsApp.";
+    ? "Срок хранения текущего профиля истёк. Чтобы продолжить, оформите новый заказ или восстановите доступ по действующему заказу."
+    : "Введите телефон, который указывали при заказе, и номер заказа. Номер заказа показывается сразу после оформления.";
   show("recover");
 }
 
@@ -69,7 +69,7 @@ $("recForm").addEventListener("submit", async e => {
   e.preventDefault();
 
   const phone = e.target.elements.phone.value.trim();
-  const order = e.target.elements.order.value.trim();
+  const order = e.target.elements.order.value.trim().toUpperCase();
   const button = e.target.querySelector("[type=submit]");
 
   button.disabled = true;
