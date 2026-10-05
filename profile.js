@@ -7,6 +7,8 @@ const TOKEN_KEY = "appcore_profile_token";
 const WHATSAPP_NUMBER = "79289480706";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const POLL_MS = 20000;
+const INSTALLED_ORDER_KEY = "appcore_installed_order";
+const GUIDE_SEEN_KEY = "appcore_first_profile_install_guide";
 
 const $ = id => document.getElementById(id);
 
@@ -65,6 +67,11 @@ function showRecover(ended) {
   show("recover");
 }
 
+$("guideClose").addEventListener("click", () => {
+  try { localStorage.setItem(GUIDE_SEEN_KEY, "1"); } catch (e) {}
+  $("firstInstallGuide").hidden = true;
+});
+
 $("recForm").addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -107,15 +114,26 @@ const STATUS = {
   cancelled: ["❌ Отменён", "bad"]
 };
 
+function isOrderInstalled(orderNumber) {
+  try {
+    return localStorage.getItem(INSTALLED_ORDER_KEY) === orderNumber;
+  } catch (e) {
+    return false;
+  }
+}
+
+function activationWhatsapp(o) {
+  const text = "Все приложения установлены и полностью загрузились. Пришлите инструкцию по активации";
+  return waLink(text);
+}
+
 function orderCard(o) {
   const [label, cls] = STATUS[o.status] || [o.status, "wait"];
   const paid = o.status === "paid" || o.status === "completed";
-
   const card = make("div", "order");
 
   const top = make("div", "order-top");
   top.append(make("div", "order-num", o.order_number), make("span", "badge " + cls, label));
-
   card.append(top, make("div", "order-sum", "Сумма: " + money(o.total)));
 
   if (o.status !== "cancelled") {
@@ -126,13 +144,23 @@ function orderCard(o) {
   }
 
   if (paid) {
+    const tabs = make("div", "order-tabs");
+    const appsTab = make("button", "order-tab active", "1. ПРИЛОЖЕНИЯ");
+    const installed = isOrderInstalled(o.order_number);
+    const activationTab = make("button", "order-tab activation-tab" + (installed ? "" : " locked"), "2. 🔐 АКТИВАЦИЯ");
+    activationTab.innerHTML = '2. <span>🔐 АКТИВАЦИЯ</span><small>⚠️ ОБЯЗАТЕЛЬНО</small>';
+    tabs.append(appsTab, activationTab);
+    card.append(tabs);
+
+    const appsPane = make("div", "order-pane active");
+    const activationPane = make("div", "order-pane activation-pane");
+
     const links = {};
     (o.install_links || []).forEach(l => { links[l.id] = l.install; });
 
     (o.apps || []).forEach(a => {
       const row = make("div", "app-row");
       row.append(make("span", "", a.name));
-
       const url = links[a.id];
       if (typeof url === "string" && url.startsWith("https://")) {
         const link = make("a", "install-btn", "Установить");
@@ -141,35 +169,75 @@ function orderCard(o) {
         link.rel = "noopener noreferrer";
         row.append(link);
       }
-
-      card.append(row);
+      appsPane.append(row);
     });
 
-    card.append(make("div", "order-hint",
-      "После установки приложениям нужна активация — без неё они не заработают."));
+    const hint = make("div", "order-hint",
+      "⏱ Установите все приложения полностью, затем перейдите к шагу 2.");
+    appsPane.append(hint);
 
-    const wa = make("a", "wa-btn", "💬 Получить инструкцию по активации");
-    wa.href = waLink(orderText(o, "Здравствуйте!\n\nХочу активировать приложения.",
-      "Статус: оплата подтверждена. Все приложения установлены."));
+    const confirmInstalled = make("button", "installed-confirm", installed ? "✅ Все приложения установлены" : "Я установил все приложения");
+    confirmInstalled.type = "button";
+    if (installed) confirmInstalled.disabled = true;
+    confirmInstalled.addEventListener("click", () => {
+      try { localStorage.setItem(INSTALLED_ORDER_KEY, o.order_number); } catch (e) {}
+      activationTab.classList.remove("locked");
+      activationTab.disabled = false;
+      confirmInstalled.disabled = true;
+      confirmInstalled.textContent = "✅ Все приложения установлены";
+      toast("Теперь доступна обязательная активация");
+    });
+    appsPane.append(confirmInstalled);
+
+    activationPane.append(
+      make("div", "activation-title", "⚠️ ВНИМАТЕЛЬНО ОЗНАКОМЬТЕСЬ С ИНСТРУКЦИЕЙ"),
+      make("div", "activation-copy", "Инструкция по активации выдаётся там, где вы получили заказ."),
+      make("div", "activation-copy", "Если вы получили заказ через WhatsApp, нажмите кнопку ниже — откроется чат с готовым сообщением.")
+    );
+
+    const wa = make("a", "wa-btn", "💬 ПОЛУЧИТЬ ИНСТРУКЦИЮ");
+    wa.href = activationWhatsapp(o);
     wa.target = "_blank";
     wa.rel = "noopener noreferrer";
-    card.append(wa);
+    activationPane.append(wa);
+
+    appsTab.addEventListener("click", () => {
+      appsTab.classList.add("active"); activationTab.classList.remove("active");
+      appsPane.classList.add("active"); activationPane.classList.remove("active");
+    });
+
+    activationTab.addEventListener("click", () => {
+      if (!isOrderInstalled(o.order_number)) {
+        toast("Сначала установите все приложения");
+        return;
+      }
+      appsTab.classList.remove("active"); activationTab.classList.add("active");
+      appsPane.classList.remove("active"); activationPane.classList.add("active");
+    });
+
+    if (!installed) activationTab.disabled = true;
+    card.append(appsPane, activationPane);
 
   } else if (o.status === "awaiting_review") {
     const names = (o.apps || []).map(a => a.name).join(", ");
     card.append(make("div", "order-hint", "Приложения: " + names));
     card.append(make("div", "order-hint",
       "Реквизиты для оплаты мы пришлём в WhatsApp. После подтверждения оплаты здесь появятся кнопки установки."));
-
     const wa = make("a", "wa-btn", "💬 Написать в WhatsApp");
-    wa.href = waLink(orderText(o, "Здравствуйте!\n\nПишу по моему заказу.",
-      "Пришлите, пожалуйста, реквизиты для оплаты."));
-    wa.target = "_blank";
-    wa.rel = "noopener noreferrer";
+    wa.href = waLink(orderText(o, "Здравствуйте!\n\nПишу по моему заказу.", "Пришлите, пожалуйста, реквизиты для оплаты."));
+    wa.target = "_blank"; wa.rel = "noopener noreferrer";
     card.append(wa);
   }
-
   return card;
+}
+
+function maybeShowFirstGuide() {
+  const paidOrders = (profile.orders || []).some(o => o.status === "paid" || o.status === "completed");
+  if (!paidOrders) return;
+  try {
+    if (localStorage.getItem(GUIDE_SEEN_KEY) === "1") return;
+  } catch (e) {}
+  $("firstInstallGuide").hidden = false;
 }
 
 function render() {
@@ -181,6 +249,7 @@ function render() {
 
   show("view");
   tick();
+  maybeShowFirstGuide();
 }
 
 /* ---------- Отсчёт ---------- */
