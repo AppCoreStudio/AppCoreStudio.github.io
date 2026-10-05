@@ -699,136 +699,42 @@ function getClientOrderFallback(){
 }
 
 function clearOrderStorage(){
-
   try{
-    localStorage.removeItem(
-      CLIENT_ORDER_KEY
-    );
-
-    localStorage.removeItem(
-      CLIENT_ORDER_KEY
-    );
-
-    localStorage.removeItem(
-      CLIENT_ORDER_TIME_KEY
-    );
-
-    localStorage.removeItem(
-      INSTALLED_ORDER_KEY
-    );
-
-  }catch(error){
-
-    console.log(
-      "Storage clear error:",
-      error
-    );
-  }
+    localStorage.removeItem(CLIENT_ORDER_KEY);
+    localStorage.removeItem(CLIENT_ORDER_TIME_KEY);
+    localStorage.removeItem(INSTALLED_ORDER_KEY);
+  }catch(error){}
 }
 
 function resetExpiredOrder(){
-
   if(statusTimer){
-
     clearInterval(statusTimer);
     statusTimer=null;
   }
-
   clearTimeout(lockTimer);
   lockTimer=null;
-
   currentOrder=null;
   selected.clear();
-
   statusPanel.classList.remove("show");
   cancelledPanel.classList.remove("show");
   installPanel.classList.remove("show");
   activationPanel.classList.remove("show");
-
-  try{
-    localStorage.removeItem(
-      CLIENT_ORDER_KEY
-    );
-
-    localStorage.removeItem(
-      CLIENT_ORDER_KEY
-    );
-
-    localStorage.removeItem(
-      CLIENT_ORDER_TIME_KEY
-    );
-
-    localStorage.removeItem(
-      INSTALLED_ORDER_KEY
-    );
-  }catch(error){}
-
+  clearOrderStorage();
   render();
   updatePrice();
   updateWhatsAppLinks();
-
-  showToast(
-    "12 часов прошли — можно создать новый заказ."
-  );
+  showToast("Заказ завершён — можно оформить новый.");
 }
 
 function restoreOrderLock(){
-
-  let lock=getOrderLock();
-
-  /*
-   * Если основная запись отсутствует,
-   * пробуем восстановить заказ из резервной записи.
-   */
-  if(!lock){
-
-    lock=getClientOrderFallback();
-
-    if(lock){
-
-      }
-  }
-
-  if(!lock){
-
+  // Повторные покупки не блокируются. Восстанавливаем только последний заказ,
+  // чтобы клиент мог продолжить отслеживать его статус после обновления страницы.
+  const order=getClientOrder();
+  if(!order){
     currentOrder=null;
-
-    if(statusTimer){
-
-      clearInterval(statusTimer);
-      statusTimer=null;
-    }
-
     return;
   }
-
-  if(!isValidSavedOrder(lock.order)){
-
-    resetExpiredOrder();
-    return;
-  }
-
-  currentOrder=lock.order;
-
-  clearTimeout(lockTimer);
-
-  const elapsed=
-    Date.now()-lock.createdAt;
-
-  const remaining=
-    0-elapsed;
-
-  if(remaining<=0){
-
-    resetExpiredOrder();
-    return;
-  }
-
-  lockTimer=setTimeout(()=>{
-
-    resetExpiredOrder();
-
-  },remaining);
+  currentOrder=order;
 }
 
 function openNewOrderConfirmation(){
@@ -928,15 +834,6 @@ function getSafeSelectedApps(){
 }
 
 function openPaymentModal(){
-
-  if(currentOrder){
-
-    showToast(
-      "Заказ уже создан. Ожидайте проверки."
-    );
-
-    return;
-  }
 
   const selectedList=
     getSafeSelectedApps();
@@ -1647,28 +1544,7 @@ async function checkOrderStatus(){
     currentOrder=
       updatedOrder;
 
-    /*
-     * Обновляем lock с прежним временем создания,
-     * чтобы проверка 12 часов не начиналась заново
-     * после каждого обновления статуса.
-     */
-    try{
-
-      localStorage.setItem(
-        CLIENT_ORDER_KEY,
-        JSON.stringify({
-          createdAt,
-          order:updatedOrder
-        })
-      );
-
-    }catch(error){
-
-      console.log(
-        "Order lock update error:",
-        error
-      );
-    }
+    
 
     updateWhatsAppLinks();
 
