@@ -1,0 +1,2094 @@
+
+const SUPABASE_URL="https://dkgipfotfjntlhabakns.supabase.co";
+const SUPABASE_KEY="sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
+
+const supabaseClient=window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+  const referralUserId =
+  localStorage.getItem("referral_user_id") ||
+  "user_" + Date.now() + "_" +
+  Math.random().toString(36).slice(2,10);
+
+localStorage.setItem(
+  "referral_user_id",
+  referralUserId
+);
+
+/*
+ * Сохраняем первого реферера.
+ * Последующий ?ref=... не перезаписывает
+ * уже сохранённый реферальный код.
+ */
+
+const REFERRAL_CODE_KEY =
+  "appcore_referral_code";
+
+const savedReferralCode =
+  localStorage.getItem(
+    REFERRAL_CODE_KEY
+  ) ||
+  localStorage.getItem(
+    "referral_code"
+  );
+
+const incomingReferralCode =
+  new URLSearchParams(
+    window.location.search
+  ).get("ref");
+
+function isValidReferralCode(code){
+
+  return (
+    typeof code === "string" &&
+    /^[A-Za-z0-9_-]{3,64}$/.test(
+      code.trim()
+    )
+  );
+}
+
+if(
+  savedReferralCode &&
+  isValidReferralCode(savedReferralCode)
+){
+
+  localStorage.setItem(
+    REFERRAL_CODE_KEY,
+    savedReferralCode.trim()
+  );
+
+}else if(
+  incomingReferralCode &&
+  isValidReferralCode(
+    incomingReferralCode
+  )
+){
+
+  localStorage.setItem(
+    REFERRAL_CODE_KEY,
+    incomingReferralCode.trim()
+  );
+
+  localStorage.setItem(
+    "referral_code",
+    incomingReferralCode.trim()
+  );
+}
+
+
+
+"use strict";
+
+const PRICE=500;
+
+const ORDER_LOCK_KEY="appcore_order_lock";
+const CLIENT_ORDER_KEY="appcore_client_order";
+const CLIENT_ORDER_TIME_KEY="appcore_client_order_time";
+const INSTALLED_ORDER_KEY="appcore_installed_order";
+
+/*
+ * Один клиент может оформить новый заказ
+ * только через 12 часов после создания предыдущего.
+ */
+const ORDER_LOCK_TIME=12*60*60*1000;
+
+const WHATSAPP_NUMBER="79289480706";
+
+const apps=[
+{id:"sberbank",name:"Сбербанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#21a366",gradient:"linear-gradient(135deg,#25b86c,#08783e)",install:"https://installios.ru/apps/Huo4uP"},
+{id:"sber-invest",name:"СберИнвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#18a765",gradient:"linear-gradient(135deg,#2ac979,#087c46)",install:"https://installios.ru/apps/xCMK2b"},
+{id:"tbank",name:"Т-Банк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/tbank",color:"#ffd500",gradient:"linear-gradient(135deg,#ffe33e,#e7b900)",install:"https://installios.ru/apps/NQAqoO"},
+{id:"t-invest",name:"Т-Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/tbank",color:"#f3ca00",gradient:"linear-gradient(135deg,#ffe64a,#d9a900)",install:"https://installios.ru/apps/rOxSmd"},
+{id:"alfa",name:"Альфа-Банк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/alfabank",color:"#ef3124",gradient:"linear-gradient(135deg,#ff5145,#c70d09)",install:"https://installios.ru/apps/rOqtjI"},
+{id:"alfa-invest",name:"Альфа-Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/alfabank",color:"#e93027",gradient:"linear-gradient(135deg,#ff5b4f,#bb1009)",install:"https://installios.ru/apps/NqXG8Z"},
+{id:"vtb",name:"ВТБ",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#1685ff",gradient:"linear-gradient(135deg,#36a4ff,#0757d9)",install:"https://installios.ru/apps/gzPg3N"},
+{id:"vtb-invest",name:"ВТБ Мои Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#1a82ed",gradient:"linear-gradient(135deg,#3ca8ff,#0a4fc2)",install:"https://installios.ru/apps/1ttQGQ"},
+{id:"gazprom",name:"Газпромбанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/gazprombank",color:"#3b78ff",gradient:"linear-gradient(135deg,#55a1ff,#154bc9)",install:"https://installios.ru/apps/fQOdHa"},
+{id:"gazprom-invest",name:"Газпромбанк Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/gazprombank",color:"#3673ff",gradient:"linear-gradient(135deg,#58a9ff,#164ac8)",install:"https://installios.ru/apps/GKOngE"},
+{id:"rshb",name:"Россельхозбанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/rosselkhozbank",color:"#48a93f",gradient:"linear-gradient(135deg,#6bd35c,#1e7427)",install:"https://installios.ru/apps/z7363T"},
+{id:"psb",name:"ПСБ",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/psbank",color:"#e1262d",gradient:"linear-gradient(135deg,#ff4c50,#b90c14)",install:"https://installios.ru/apps/Pj12gf"},
+{id:"yandex-pay",name:"Яндекс Пэй",type:"Сервис",category:"finance",logo:"https://cdn.simpleicons.org/yandex",color:"#ff3d00",gradient:"linear-gradient(135deg,#ff7043,#e52c00)",install:"https://installios.ru/apps/zgsOLp"},
+{id:"vk",name:"VK",type:"Социальная сеть",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#0077ff",gradient:"linear-gradient(135deg,#3c9aff,#0056cf)",install:"https://installios.ru/apps/9L324z"},
+{id:"vk-video",name:"VK Видео",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#5d65ff",gradient:"linear-gradient(135deg,#7984ff,#3b42d8)",install:"https://installios.ru/apps/63wZiS"},
+{id:"vk-messenger",name:"VK Мессенджер",type:"Мессенджер",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#7b61ff",gradient:"linear-gradient(135deg,#957cff,#5540d6)",install:"https://installios.ru/apps/cZOAbl"},
+{id:"max",name:"MAX",type:"Мессенджер",category:"social",logo:"https://cdn.simpleicons.org/max",color:"#6f5cff",gradient:"linear-gradient(135deg,#927cff,#4b36d8)",install:"https://installios.ru/apps/AhqAi7"},
+{id:"avito",name:"Авито",type:"Сервис",category:"social",logo:"https://cdn.simpleicons.org/avito",color:"#00a86b",gradient:"linear-gradient(135deg,#27d18c,#00804e)",install:"https://installios.ru/apps/IhZxy5"},
+{id:"rave",name:"Rave",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/rave",color:"#ff4d91",gradient:"linear-gradient(135deg,#ff70aa,#d3226b)",install:"https://installios.ru/apps/Uij3el"},
+{id:"rutube",name:"Rutube",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/rutube",color:"#ff3b30",gradient:"linear-gradient(135deg,#ff665e,#cf160e)",install:"https://installios.ru/apps/fihoJo"},
+{id:"happ",name:"Happ",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/happ",color:"#815cff",gradient:"linear-gradient(135deg,#a083ff,#5230d9)",install:"https://installios.ru/apps/gzGnVa"},
+{id:"v2raytun",name:"v2RayTun",type:"Сервис",category:"useful",logo:"",color:"#5d65ff",gradient:"linear-gradient(135deg,#7984ff,#3b42d8)",install:"https://installios.ru/apps/XHmTTz"},
+{id:"chatgpt",name:"ChatGPT",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/openai",color:"#10a37f",gradient:"linear-gradient(135deg,#20c997,#087c60)",install:"https://installios.ru/apps/ux5YKb"}
+];
+
+let selected=new Set();
+let currentCategory="all";
+let query="";
+let currentOrder=null;
+let isCreatingOrder=false;
+let statusTimer=null;
+let lockTimer=null;
+let toastTimer=null;
+
+const $=id=>document.getElementById(id);
+
+const appList=$("appList");
+const empty=$("empty");
+const search=$("search");
+const clear=$("clear");
+const categories=$("categories");
+const pricePanel=$("pricePanel");
+const countEl=$("count");
+const originalEl=$("original");
+const discountEl=$("discount");
+const totalEl=$("total");
+const continueButton=$("continue");
+const toast=$("toast");
+
+const paymentOverlay=$("paymentOverlay");
+const paymentClose=$("paymentClose");
+const paymentDone=$("paymentDone");
+const selectedApps=$("selectedApps");
+const paymentTotal=$("paymentTotal");
+const phoneInput=$("phoneInput");
+
+const statusPanel=$("statusPanel");
+const statusTitle=$("statusTitle");
+const statusText=$("statusText");
+const orderNumberDisplay=$("orderNumberDisplay");
+
+const installPanel=$("installPanel");
+const installList=$("installList");
+const installedButton=$("installedButton");
+const activationPanel=$("activationPanel");
+const activationWhatsapp=$("activationWhatsapp");
+
+const supportTopButton=$("supportTopButton");
+const statusSupportButton=$("statusSupportButton");
+
+const cancelledPanel=$("cancelledPanel");
+const cancelledOrderNumber=$("cancelledOrderNumber");
+
+const newOrderStatusButton=$("newOrderStatusButton");
+const newOrderInstallButton=$("newOrderInstallButton");
+const newOrderCancelledButton=$("newOrderCancelledButton");
+
+const confirmOverlay=$("confirmOverlay");
+const confirmClose=$("confirmClose");
+const confirmCancel=$("confirmCancel");
+const confirmYes=$("confirmYes");
+
+function getDiscount(count){
+  if(count>=5)return 20;
+  if(count===4)return 15;
+  if(count===3)return 10;
+  if(count===2)return 5;
+  return 0;
+}
+
+function calculatePrice(count){
+
+  const original=count*PRICE;
+  const discountPercent=getDiscount(count);
+  const discountAmount=original*discountPercent/100;
+
+  return{
+    original,
+    discountPercent,
+    discountAmount,
+    total:original-discountAmount
+  };
+}
+
+function money(value){
+  return Math.round(value).toLocaleString("ru-RU")+" ₽";
+}
+
+function initials(name){
+
+  const words=name
+    .replace(/[^а-яА-Яa-zA-Z0-9\s]/g,"")
+    .trim()
+    .split(/\s+/);
+
+  if(words.length>=2){
+    return(words[0][0]+words[1][0]).toUpperCase();
+  }
+
+  return name
+    .replace(/[^а-яА-Яa-zA-Z0-9]/g,"")
+    .substring(0,2)
+    .toUpperCase();
+}
+
+function updatePrice(){
+
+  const count=selected.size;
+
+  if(!count){
+
+    pricePanel.classList.remove("visible");
+
+    countEl.textContent="0";
+    originalEl.textContent="0 ₽";
+    discountEl.textContent="0%";
+    totalEl.textContent="0 ₽";
+
+    continueButton.disabled=true;
+    continueButton.textContent="Выберите приложение";
+
+    return;
+  }
+
+  const price=calculatePrice(count);
+
+  pricePanel.classList.add("visible");
+
+  countEl.textContent=count;
+  originalEl.textContent=money(price.original);
+  discountEl.textContent=price.discountPercent+"%";
+  totalEl.textContent=money(price.total);
+
+  continueButton.disabled=false;
+  continueButton.textContent="Продолжить · "+money(price.total);
+}
+
+function render(){
+
+  const searchText=query.trim().toLowerCase();
+  const hasSearch=searchText.length>0;
+
+  const filtered=apps.filter(app=>{
+
+    const categoryOk=
+      currentCategory==="all"||
+      app.category===currentCategory;
+
+    const searchOk=
+      !hasSearch||
+      app.name.toLowerCase().includes(searchText)||
+      app.type.toLowerCase().includes(searchText);
+
+    return categoryOk&&searchOk;
+  });
+
+  appList.innerHTML="";
+
+  if(!filtered.length){
+
+    empty.classList.add("show");
+    return;
+  }
+
+  empty.classList.remove("show");
+
+  const grid=document.createElement("div");
+  grid.className="grid";
+
+  filtered.forEach(app=>{
+
+    const card=document.createElement("div");
+    card.className="app-card";
+
+    if(selected.has(app.id)){
+      card.classList.add("selected");
+    }
+
+    card.style.setProperty("--app-color",app.color);
+    card.style.setProperty("--app-gradient",app.gradient);
+
+    const check=document.createElement("div");
+    check.className="check";
+    check.textContent="✓";
+
+    const icon=document.createElement("div");
+    icon.className="app-icon";
+
+    const fallback=document.createElement("span");
+    fallback.className="fallback";
+    fallback.textContent=initials(app.name);
+
+    icon.appendChild(fallback);
+
+    if(app.logo){
+
+      const img=document.createElement("img");
+
+      img.src=app.logo;
+      img.alt="";
+
+      img.onload=()=>{
+        fallback.style.display="none";
+      };
+
+      img.onerror=()=>{
+        img.remove();
+      };
+
+      icon.appendChild(img);
+    }
+
+    const name=document.createElement("div");
+    name.className="app-name";
+    name.textContent=app.name;
+
+    const type=document.createElement("div");
+    type.className="app-type";
+    type.textContent=app.type;
+
+    card.append(check,icon,name,type);
+
+    card.addEventListener("click",()=>{
+
+      if(currentOrder){
+
+        showToast("Сначала завершите текущий заказ.");
+        return;
+      }
+
+      selected.has(app.id)
+        ?selected.delete(app.id)
+        :selected.add(app.id);
+
+      render();
+      updatePrice();
+    });
+
+    grid.appendChild(card);
+  });
+
+  appList.appendChild(grid);
+}
+
+function showToast(message){
+
+  toast.textContent=message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer=setTimeout(()=>{
+    toast.classList.remove("show");
+  },3000);
+}
+
+function generateOrderNumber(){
+
+  const now=new Date();
+
+  const year=String(now.getFullYear()).slice(-2);
+  const month=String(now.getMonth()+1).padStart(2,"0");
+  const day=String(now.getDate()).padStart(2,"0");
+  const random=Math.floor(1000+Math.random()*9000);
+
+  return`AC-${year}${month}${day}-${random}`;
+}
+
+function normalizePhone(value){
+  return value.replace(/[^\d+]/g,"").trim();
+}
+
+function isValidPhone(phone){
+
+  const digits=phone.replace(/\D/g,"");
+
+  return digits.length>=10&&digits.length<=15;
+}
+
+/*
+ * Проверяем, что сохранённый заказ действительно
+ * соответствует структуре нашего приложения.
+ */
+function isValidSavedOrder(order){
+
+  if(!order||typeof order!=="object"){
+    return false;
+  }
+
+  if(
+    typeof order.order_number!=="string"||
+    !order.order_number.trim()
+  ){
+    return false;
+  }
+
+  if(
+    typeof order.client_phone!=="string"||
+    !isValidPhone(order.client_phone)
+  ){
+    return false;
+  }
+
+  if(
+    !Array.isArray(order.apps)||
+    order.apps.length<1||
+    order.apps.length>apps.length
+  ){
+    return false;
+  }
+
+  const ids=order.apps.map(app=>app&&app.id);
+
+  if(
+    ids.some(id=>typeof id!=="string")||
+    new Set(ids).size!==ids.length
+  ){
+    return false;
+  }
+
+  if(
+    ids.some(id=>!apps.some(app=>app.id===id))
+  ){
+    return false;
+  }
+
+  if(
+    !Array.isArray(order.app_ids)||
+    order.app_ids.length!==order.apps.length
+  ){
+    return false;
+  }
+
+  if(
+    order.app_ids.some(id=>!ids.includes(id))
+  ){
+    return false;
+  }
+
+  if(
+    typeof order.total!=="number"||
+    !Number.isFinite(order.total)||
+    order.total<0
+  ){
+    return false;
+  }
+
+  return true;
+}
+
+function markAppsInstalled(order){
+
+  try{
+
+    localStorage.setItem(
+      INSTALLED_ORDER_KEY,
+      order.order_number
+    );
+
+  }catch(error){
+
+    console.log(
+      "Installed state save error:",
+      error
+    );
+  }
+}
+
+function isAppsInstalled(order){
+
+  try{
+
+    return localStorage.getItem(
+      INSTALLED_ORDER_KEY
+    )===order.order_number;
+
+  }catch(error){
+
+    return false;
+  }
+}
+
+function getOrderLock(){
+
+  try{
+
+    const saved=
+      localStorage.getItem(
+        ORDER_LOCK_KEY
+      );
+
+    if(!saved)return null;
+
+    const data=JSON.parse(saved);
+
+    if(
+      !data||
+      typeof data.createdAt!=="number"||
+      !Number.isFinite(data.createdAt)||
+      !data.order||
+      !isValidSavedOrder(data.order)
+    ){
+
+      localStorage.removeItem(
+        ORDER_LOCK_KEY
+      );
+
+      return null;
+    }
+
+    const age=Date.now()-data.createdAt;
+
+    if(
+      age<0||
+      age>=ORDER_LOCK_TIME
+    ){
+
+      localStorage.removeItem(
+        ORDER_LOCK_KEY
+      );
+
+      return null;
+    }
+
+    return data;
+
+  }catch(error){
+
+    console.log(
+      "Order lock restore error:",
+      error
+    );
+
+    try{
+      localStorage.removeItem(
+        ORDER_LOCK_KEY
+      );
+    }catch(e){}
+
+    return null;
+  }
+}
+
+function saveOrderLock(order,createdAt=Date.now()){
+
+  try{
+
+    if(
+      !Number.isFinite(createdAt)||
+      createdAt<=0
+    ){
+      createdAt=Date.now();
+    }
+
+    localStorage.setItem(
+      ORDER_LOCK_KEY,
+      JSON.stringify({
+        createdAt,
+        order
+      })
+    );
+
+    return true;
+
+  }catch(error){
+
+    console.log(
+      "Order lock save error:",
+      error
+    );
+
+    return false;
+  }
+}
+
+function saveClientOrder(order,createdAt=Date.now()){
+
+  try{
+
+    localStorage.setItem(
+      CLIENT_ORDER_KEY,
+      JSON.stringify(order)
+    );
+
+    localStorage.setItem(
+      CLIENT_ORDER_TIME_KEY,
+      String(createdAt)
+    );
+
+    return true;
+
+  }catch(error){
+
+    console.log(
+      "Client order save error:",
+      error
+    );
+
+    return false;
+  }
+}
+
+function getClientOrder(){
+
+  try{
+
+    const saved=
+      localStorage.getItem(
+        CLIENT_ORDER_KEY
+      );
+
+    if(!saved)return null;
+
+    const order=JSON.parse(saved);
+
+    if(!isValidSavedOrder(order)){
+      return null;
+    }
+
+    return order;
+
+  }catch(error){
+
+    return null;
+  }
+}
+
+/*
+ * Дополнительное восстановление через CLIENT_ORDER_KEY.
+ * Используется только если запись ещё находится
+ * внутри 12-часового периода.
+ */
+function getClientOrderFallback(){
+
+  try{
+
+    const saved=
+      localStorage.getItem(
+        CLIENT_ORDER_KEY
+      );
+
+    const savedTime=
+      localStorage.getItem(
+        CLIENT_ORDER_TIME_KEY
+      );
+
+    if(!saved||!savedTime){
+      return null;
+    }
+
+    const createdAt=
+      Number(savedTime);
+
+    if(
+      !Number.isFinite(createdAt)||
+      createdAt<=0
+    ){
+      return null;
+    }
+
+    const age=Date.now()-createdAt;
+
+    if(
+      age<0||
+      age>=ORDER_LOCK_TIME
+    ){
+      localStorage.removeItem(
+        CLIENT_ORDER_KEY
+      );
+
+      localStorage.removeItem(
+        CLIENT_ORDER_TIME_KEY
+      );
+
+      return null;
+    }
+
+    const order=JSON.parse(saved);
+
+    if(!isValidSavedOrder(order)){
+      return null;
+    }
+
+    return{
+      createdAt,
+      order
+    };
+
+  }catch(error){
+
+    console.log(
+      "Client order fallback error:",
+      error
+    );
+
+    return null;
+  }
+}
+
+function clearOrderStorage(){
+
+  try{
+    localStorage.removeItem(
+      ORDER_LOCK_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_TIME_KEY
+    );
+
+    localStorage.removeItem(
+      INSTALLED_ORDER_KEY
+    );
+
+  }catch(error){
+
+    console.log(
+      "Storage clear error:",
+      error
+    );
+  }
+}
+
+function resetExpiredOrder(){
+
+  if(statusTimer){
+
+    clearInterval(statusTimer);
+    statusTimer=null;
+  }
+
+  clearTimeout(lockTimer);
+  lockTimer=null;
+
+  currentOrder=null;
+  selected.clear();
+
+  statusPanel.classList.remove("show");
+  cancelledPanel.classList.remove("show");
+  installPanel.classList.remove("show");
+  activationPanel.classList.remove("show");
+
+  try{
+    localStorage.removeItem(
+      ORDER_LOCK_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_TIME_KEY
+    );
+
+    localStorage.removeItem(
+      INSTALLED_ORDER_KEY
+    );
+  }catch(error){}
+
+  render();
+  updatePrice();
+  updateWhatsAppLinks();
+
+  showToast(
+    "12 часов прошли — можно создать новый заказ."
+  );
+}
+
+function restoreOrderLock(){
+
+  let lock=getOrderLock();
+
+  /*
+   * Если основная запись отсутствует,
+   * пробуем восстановить заказ из резервной записи.
+   */
+  if(!lock){
+
+    lock=getClientOrderFallback();
+
+    if(lock){
+
+      saveOrderLock(
+        lock.order,
+        lock.createdAt
+      );
+    }
+  }
+
+  if(!lock){
+
+    currentOrder=null;
+
+    if(statusTimer){
+
+      clearInterval(statusTimer);
+      statusTimer=null;
+    }
+
+    return;
+  }
+
+  if(!isValidSavedOrder(lock.order)){
+
+    resetExpiredOrder();
+    return;
+  }
+
+  currentOrder=lock.order;
+
+  clearTimeout(lockTimer);
+
+  const elapsed=
+    Date.now()-lock.createdAt;
+
+  const remaining=
+    ORDER_LOCK_TIME-elapsed;
+
+  if(remaining<=0){
+
+    resetExpiredOrder();
+    return;
+  }
+
+  lockTimer=setTimeout(()=>{
+
+    resetExpiredOrder();
+
+  },remaining);
+}
+
+function openNewOrderConfirmation(){
+
+  confirmOverlay.classList.add("show");
+
+  document.body.style.overflow="hidden";
+}
+
+function closeNewOrderConfirmation(){
+
+  confirmOverlay.classList.remove("show");
+
+  document.body.style.overflow="";
+}
+
+function startNewOrder(){
+
+  if(statusTimer){
+
+    clearInterval(statusTimer);
+    statusTimer=null;
+  }
+
+  clearTimeout(lockTimer);
+  lockTimer=null;
+
+  currentOrder=null;
+  selected.clear();
+  isCreatingOrder=false;
+
+  clearOrderStorage();
+
+  statusPanel.classList.remove("show");
+  cancelledPanel.classList.remove("show");
+  installPanel.classList.remove("show");
+  activationPanel.classList.remove("show");
+
+  paymentOverlay.classList.remove("show");
+
+  phoneInput.value="";
+
+  document.body.style.overflow="";
+
+  render();
+  updatePrice();
+  updateWhatsAppLinks();
+
+  closeNewOrderConfirmation();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+  showToast(
+    "Готово. Можно создать новый заказ."
+  );
+}
+
+/*
+ * Возвращает только безопасный список выбранных приложений.
+ */
+function getSafeSelectedApps(){
+
+  const count=Number(selected.size);
+
+  if(
+    !Number.isInteger(count)||
+    count<1||
+    count>apps.length
+  ){
+    return null;
+  }
+
+  const selectedList=
+    apps.filter(app=>selected.has(app.id));
+
+  if(
+    selectedList.length!==count||
+    selectedList.length<1||
+    selectedList.length>apps.length
+  ){
+    return null;
+  }
+
+  const ids=
+    selectedList.map(app=>app.id);
+
+  if(
+    new Set(ids).size!==ids.length
+  ){
+    return null;
+  }
+
+  return selectedList;
+}
+
+function openPaymentModal(){
+
+  if(currentOrder){
+
+    showToast(
+      "Заказ уже создан. Ожидайте проверки."
+    );
+
+    return;
+  }
+
+  const selectedList=
+    getSafeSelectedApps();
+
+  if(!selectedList){
+
+    selected.clear();
+    render();
+    updatePrice();
+
+    showToast(
+      "Некорректное количество приложений"
+    );
+
+    return;
+  }
+
+  const price=
+    calculatePrice(selectedList.length);
+
+  selectedApps.innerHTML="";
+
+  selectedList.forEach(app=>{
+
+    const row=document.createElement("div");
+    row.className="selected-app";
+
+    const name=document.createElement("span");
+    name.className="selected-app-name";
+    name.textContent=app.name;
+
+    const appPrice=document.createElement("span");
+    appPrice.className="selected-app-price";
+    appPrice.textContent=money(PRICE);
+
+    row.append(name,appPrice);
+
+    selectedApps.appendChild(row);
+  });
+
+  paymentTotal.textContent=
+    money(price.total);
+
+  paymentOverlay.classList.add("show");
+
+  document.body.style.overflow="hidden";
+}
+
+function closePaymentModal(){
+
+  paymentOverlay.classList.remove("show");
+
+  document.body.style.overflow="";
+}
+
+function humanStatus(status){
+
+  switch(status){
+
+    case"paid":
+      return"Оплата подтверждена";
+
+    case"completed":
+      return"Заказ выполнен";
+
+    case"cancelled":
+      return"Заказ отменён";
+
+    default:
+      return"Ожидает проверки оплаты";
+  }
+}
+
+function buildWhatsAppMessage(type){
+
+  const order=
+    currentOrder||
+    getClientOrder();
+
+  if(type==="support"){
+
+    let text=
+      "Здравствуйте!\n\n"+
+      "Мне нужна техническая поддержка.\n\n";
+
+    if(order){
+
+      const appNames=
+        (order.apps||[])
+          .map(app=>app.name)
+          .join(", ");
+
+      text+=
+        `Номер заказа: ${order.order_number}\n`+
+        `Телефон клиента: ${order.client_phone}\n`+
+        `Приложения: ${appNames||"—"}\n`+
+        `Исходная сумма: ${money(order.original||0)}\n`+
+        `Скидка: ${money(order.discount||0)}\n`+
+        `Бесплатных приложений: ${order.free_apps||0}\n`+
+        `Количество приложений: ${(order.apps||[]).length}\n`+
+        `Сумма заказа: ${money(order.total||0)}\n`+
+        `Статус: ${humanStatus(order.status)}\n\n`+
+        "Опишите, пожалуйста, проблему.";
+
+    }else{
+
+      text+=
+        "Заказ ещё не создан.\n\n"+
+        "Опишите, пожалуйста, проблему.";
+    }
+
+    return text;
+  }
+
+  if(type==="status"){
+
+    if(!order){
+
+      return(
+        "Здравствуйте!\n\n"+
+        "Не обновляется статус заказа.\n\n"+
+        "Заказ ещё не найден.\n\n"+
+        "Проверьте, пожалуйста, статус заказа."
+      );
+    }
+
+    const appNames=
+      (order.apps||[])
+        .map(app=>app.name)
+        .join(", ");
+
+    return(
+      "Здравствуйте!\n\n"+
+      "Не обновляется статус заказа.\n\n"+
+      `Номер заказа: ${order.order_number}\n`+
+      `Телефон клиента: ${order.client_phone}\n`+
+      `Приложения: ${appNames||"—"}\n`+
+      `Исходная сумма: ${money(order.original||0)}\n`+
+      `Скидка: ${money(order.discount||0)}\n`+
+      `Бесплатных приложений: ${order.free_apps||0}\n`+
+      `Количество приложений: ${(order.apps||[]).length}\n`+
+      `Сумма заказа: ${money(order.total||0)}\n`+
+      `Статус: ${humanStatus(order.status)}\n\n`+
+      "Пожалуйста, проверьте мой заказ."
+    );
+  }
+
+  if(!order){
+
+    return(
+      "Здравствуйте!\n\n"+
+      "Хочу активировать приложения.\n\n"+
+      "Заказ ещё не найден."
+    );
+  }
+
+  const appNames=
+    (order.apps||[])
+      .map(app=>app.name)
+      .join(", ");
+
+  return(
+    "Здравствуйте!\n\n"+
+    "Хочу активировать приложения.\n\n"+
+    `Номер заказа: ${order.order_number}\n`+
+    `Телефон клиента: ${order.client_phone}\n`+
+    `Приложения: ${appNames||"—"}\n`+
+    `Сумма заказа: ${money(order.total||0)}\n`+
+    "Статус: Оплата подтверждена\n\n"+
+    "Все приложения установлены."
+  );
+}
+
+function updateWhatsAppLinks(){
+
+  const supportUrl=
+    "https://wa.me/"+
+    WHATSAPP_NUMBER+
+    "?text="+
+    encodeURIComponent(
+      buildWhatsAppMessage("support")
+    );
+
+  supportTopButton.href=supportUrl;
+
+  statusSupportButton.href=
+    "https://wa.me/"+
+    WHATSAPP_NUMBER+
+    "?text="+
+    encodeURIComponent(
+      buildWhatsAppMessage("status")
+    );
+
+  activationWhatsapp.href=
+    "https://wa.me/"+
+    WHATSAPP_NUMBER+
+    "?text="+
+    encodeURIComponent(
+      buildWhatsAppMessage("activation")
+    );
+}
+
+async function createOrder(){
+
+  if(currentOrder){
+
+    closePaymentModal();
+
+    showToast(
+      "Заказ уже создан. Ожидайте проверки."
+    );
+
+    return true;
+  }
+
+  if(isCreatingOrder){
+
+    showToast(
+      "Заказ уже отправляется…"
+    );
+
+    return false;
+  }
+
+  const phone=
+    normalizePhone(
+      phoneInput.value
+    );
+
+  if(!isValidPhone(phone)){
+
+    showToast(
+      "Введите корректный номер телефона"
+    );
+
+    phoneInput.focus();
+
+    return false;
+  }
+
+  const selectedList=
+    getSafeSelectedApps();
+
+  if(!selectedList){
+
+    showToast(
+      "Некорректное количество приложений"
+    );
+
+    selected.clear();
+    render();
+    updatePrice();
+
+    return false;
+  }
+
+  /*
+   * Дополнительная проверка перед отправкой.
+   */
+  if(
+    selectedList.length<1||
+    selectedList.length>apps.length
+  ){
+
+    showToast(
+      "Некорректное количество приложений"
+    );
+
+    return false;
+  }
+
+  const price=
+    calculatePrice(
+      selectedList.length
+    );
+
+  const orderNumber=
+    generateOrderNumber();
+
+  const orderData={
+
+    order_number:orderNumber,
+
+    client_phone:phone,
+
+    app_ids:
+      selectedList.map(
+        app=>app.id
+      ),
+
+    apps:
+      selectedList.map(app=>({
+        id:app.id,
+        name:app.name,
+        type:app.type
+      })),
+
+    original:
+      Math.round(price.original),
+
+    discount:
+      Math.round(price.discountAmount),
+
+    free_apps:0,
+
+    total:
+      Math.round(price.total),
+
+    status:
+      "awaiting_review"
+  };
+
+  /*
+   * Финальная проверка перед INSERT.
+   */
+  if(
+    !isValidSavedOrder(orderData)
+  ){
+
+    showToast(
+      "Не удалось проверить данные заказа"
+    );
+
+    return false;
+  }
+
+  isCreatingOrder=true;
+
+  paymentDone.disabled=true;
+
+  paymentDone.textContent=
+    "Сохраняем заказ…";
+
+  try{
+
+    const {error}=
+      await supabaseClient
+        .from("orders")
+        .insert([orderData]);
+
+    if(error){
+
+      console.error(error);
+
+      const message=
+        error.message||"";
+
+      if(message.includes("RATE_LIMIT:")){
+
+        showToast(
+          "Лимит заказов достигнут. Попробуйте снова через 10 минут."
+        );
+
+      }else{
+
+        showToast(
+          "Ошибка Supabase: "+
+          (message||
+          "неизвестная ошибка")
+        );
+      }
+
+      return false;
+    }
+/*
+ * После успешного создания заказа привязываем
+ * клиента к рефереру.
+ */
+
+const savedOrderReferralCode =
+  localStorage.getItem(
+    REFERRAL_CODE_KEY
+  ) ||
+  localStorage.getItem(
+    "referral_code"
+  );
+
+if(
+  isValidReferralCode(
+    savedOrderReferralCode
+  )
+){
+
+  const {
+    error: referralError
+  } = await supabaseClient.rpc(
+    "register_referral",
+    {
+      p_referral_code:
+        savedOrderReferralCode.trim(),
+
+      p_referred_user_id:
+        phone
+    }
+  );
+
+  if(referralError){
+
+    console.error(
+      "Referral registration error:",
+      referralError
+    );
+
+  }
+}
+    const createdAt=Date.now();
+
+    currentOrder=orderData;
+
+    saveOrderLock(orderData);
+    saveClientOrder(
+      orderData,
+      createdAt
+    );
+
+    closePaymentModal();
+
+    selected.clear();
+
+    render();
+    updatePrice();
+
+    showOrderStatus(
+      orderData,
+      true
+    );
+
+    startStatusChecking();
+
+    updateWhatsAppLinks();
+
+    showToast(
+      "Заказ "+
+      orderNumber+
+      " создан"
+    );
+
+    return true;
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      "Ошибка соединения с сервером"
+    );
+
+    return false;
+
+  }finally{
+
+    isCreatingOrder=false;
+
+    paymentDone.disabled=false;
+
+    paymentDone.textContent=
+      "Я оплатил";
+  }
+}
+
+function showOrderStatus(order,autoScroll=false){
+
+  statusPanel.classList.add("show");
+
+  installPanel.classList.remove("show");
+  cancelledPanel.classList.remove("show");
+
+  statusTitle.textContent=
+    "⏳ Заказ принят";
+
+  statusText.textContent=
+    "Ожидайте проверки оплаты. После подтверждения оплаты приложения будут доступны для установки.";
+
+  orderNumberDisplay.textContent=
+    "Номер заказа: "+
+    order.order_number;
+
+  updateWhatsAppLinks();
+
+  if(autoScroll){
+
+    setTimeout(()=>{
+
+      statusPanel.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+      });
+
+      statusPanel.classList.remove("focused");
+
+      void statusPanel.offsetWidth;
+
+      statusPanel.classList.add("focused");
+
+      setTimeout(()=>{
+
+        statusPanel.classList.remove("focused");
+
+      },2300);
+
+    },120);
+  }
+}
+
+function renderInstallPanel(order){
+
+  statusPanel.classList.remove("show");
+
+  cancelledPanel.classList.remove("show");
+
+  installPanel.classList.add("show");
+
+  installList.innerHTML="";
+
+  const orderedApps=
+    Array.isArray(order.apps)
+      ?order.apps
+      :[];
+
+  orderedApps.forEach(orderApp=>{
+
+    const app=
+      apps.find(
+        item=>item.id===orderApp.id
+      );
+
+    if(!app)return;
+
+    const item=
+      document.createElement("div");
+
+    item.className=
+      "install-item";
+
+    const name=
+      document.createElement("div");
+
+    name.className=
+      "install-name";
+
+    name.textContent=
+      app.name;
+
+    const link=
+      document.createElement("a");
+
+    link.className=
+      "install-button";
+
+    /*
+     * Установочная ссылка берётся только
+     * из локального списка apps.
+     * Сами ссылки не изменяются.
+     */
+    link.href=
+      app.install;
+
+    link.target="_blank";
+
+    link.rel=
+      "noopener noreferrer";
+
+    link.textContent=
+      "Установить";
+
+    item.append(
+      name,
+      link
+    );
+
+    installList.appendChild(item);
+  });
+
+  if(isAppsInstalled(order)){
+
+    installedButton.disabled=true;
+
+    installedButton.textContent=
+      "✅ Приложения установлены";
+
+    activationPanel.classList.add("show");
+
+  }else{
+
+    activationPanel.classList.remove("show");
+
+    installedButton.disabled=false;
+
+    installedButton.textContent=
+      "👉 Я установил все приложения → продолжить";
+  }
+
+  updateWhatsAppLinks();
+}
+
+function renderCancelled(order){
+
+  statusPanel.classList.remove("show");
+
+  installPanel.classList.remove("show");
+
+  cancelledPanel.classList.add("show");
+currentOrder=null;
+
+if(statusTimer){
+  clearInterval(statusTimer);
+  statusTimer=null;
+}
+
+try{
+  localStorage.removeItem(ORDER_LOCK_KEY);
+  localStorage.removeItem(CLIENT_ORDER_KEY);
+  localStorage.removeItem(CLIENT_ORDER_TIME_KEY);
+  localStorage.removeItem(INSTALLED_ORDER_KEY);
+}catch(error){}
+  cancelledOrderNumber.textContent=
+    "Заказ: "+
+    order.order_number;
+
+  updateWhatsAppLinks();
+}
+
+async function checkOrderStatus(){
+
+  const order=currentOrder;
+
+  if(!order){
+    return;
+  }
+
+  if(!isValidSavedOrder(order)){
+
+    console.error(
+      "Invalid current order"
+    );
+
+    return;
+  }
+
+  try{
+
+    const {data,error}=
+      await supabaseClient.rpc(
+        "get_client_order_status",
+        {
+          p_order_number:
+            order.order_number,
+
+          p_client_phone:
+            order.client_phone
+        }
+      );
+
+    if(error){
+
+      console.error(
+        "Status error:",
+        error
+      );
+
+      return;
+    }
+
+    if(!data||!data.length)return;
+
+    const serverOrder=
+      data[0];
+
+    if(
+      !serverOrder||
+      typeof serverOrder.status!=="string"
+    ){
+      return;
+    }
+
+    const updatedOrder={
+      ...order,
+
+      status:
+        serverOrder.status,
+
+      apps:
+        Array.isArray(serverOrder.apps)&&
+        serverOrder.apps.length
+          ?serverOrder.apps
+          :order.apps
+    };
+
+    if(!isValidSavedOrder(updatedOrder)){
+
+      console.error(
+        "Invalid server order data"
+      );
+
+      return;
+    }
+
+    /*
+     * Сохраняем обновлённый заказ,
+     * но НЕ обновляем время 12-часового lock.
+     */
+    let createdAt=Date.now();
+
+    try{
+
+      const lock=
+        JSON.parse(
+          localStorage.getItem(
+            ORDER_LOCK_KEY
+          )||"null"
+        );
+
+      if(
+        lock&&
+        typeof lock.createdAt==="number"
+      ){
+        createdAt=lock.createdAt;
+      }else{
+
+        const savedTime=
+          Number(
+            localStorage.getItem(
+              CLIENT_ORDER_TIME_KEY
+            )
+          );
+
+        if(
+          Number.isFinite(savedTime)&&
+          savedTime>0
+        ){
+          createdAt=savedTime;
+        }
+      }
+
+    }catch(error){}
+
+    saveClientOrder(
+      updatedOrder,
+      createdAt
+    );
+
+    currentOrder=
+      updatedOrder;
+
+    /*
+     * Обновляем lock с прежним временем создания,
+     * чтобы проверка 12 часов не начиналась заново
+     * после каждого обновления статуса.
+     */
+    try{
+
+      localStorage.setItem(
+        ORDER_LOCK_KEY,
+        JSON.stringify({
+          createdAt,
+          order:updatedOrder
+        })
+      );
+
+    }catch(error){
+
+      console.log(
+        "Order lock update error:",
+        error
+      );
+    }
+
+    updateWhatsAppLinks();
+
+    if(
+      serverOrder.status===
+      "awaiting_review"
+    ){
+
+      showOrderStatus(
+        updatedOrder
+      );
+
+      return;
+    }
+
+    if(
+      serverOrder.status===
+      "paid"||
+      serverOrder.status===
+      "completed"
+    ){
+
+      renderInstallPanel(
+        updatedOrder
+      );
+
+      return;
+    }
+
+    if(
+      serverOrder.status===
+      "cancelled"
+    ){
+
+      renderCancelled(
+        updatedOrder
+      );
+    }
+
+  }catch(error){
+
+    console.error(
+      "Check status error:",
+      error
+    );
+  }
+}
+
+function startStatusChecking(){
+
+  if(!currentOrder){
+    return;
+  }
+
+  if(statusTimer){
+
+    clearInterval(
+      statusTimer
+    );
+  }
+
+  checkOrderStatus();
+
+  statusTimer=
+    setInterval(
+      checkOrderStatus,
+      7000
+    );
+}
+
+continueButton.addEventListener(
+  "click",
+  openPaymentModal
+);
+
+paymentClose.addEventListener(
+  "click",
+  closePaymentModal
+);
+
+paymentOverlay.addEventListener(
+  "click",
+  event=>{
+
+    if(
+      event.target===
+      paymentOverlay
+    ){
+
+      closePaymentModal();
+    }
+  }
+);
+
+confirmClose.addEventListener(
+  "click",
+  closeNewOrderConfirmation
+);
+
+confirmCancel.addEventListener(
+  "click",
+  closeNewOrderConfirmation
+);
+
+confirmYes.addEventListener(
+  "click",
+  startNewOrder
+);
+
+confirmOverlay.addEventListener(
+  "click",
+  event=>{
+
+    if(
+      event.target===
+      confirmOverlay
+    ){
+
+      closeNewOrderConfirmation();
+    }
+  }
+);
+
+newOrderStatusButton.addEventListener(
+  "click",
+  openNewOrderConfirmation
+);
+
+newOrderInstallButton.addEventListener(
+  "click",
+  openNewOrderConfirmation
+);
+
+newOrderCancelledButton.addEventListener(
+  "click",
+  openNewOrderConfirmation
+);
+
+document.addEventListener(
+  "keydown",
+  event=>{
+
+    if(event.key==="Escape"){
+
+      closePaymentModal();
+      closeNewOrderConfirmation();
+    }
+  }
+);
+
+document
+.querySelectorAll(".copy-button")
+.forEach(button=>{
+
+  button.addEventListener(
+    "click",
+    async()=>{
+
+      const value=
+        button.dataset.copy;
+
+      try{
+
+        await navigator.clipboard.writeText(
+          value
+        );
+
+      }catch(error){
+
+        const textarea=
+          document.createElement(
+            "textarea"
+          );
+
+        textarea.value=value;
+
+        textarea.style.position=
+          "fixed";
+
+        textarea.style.opacity=
+          "0";
+
+        document.body.appendChild(
+          textarea
+        );
+
+        textarea.select();
+
+        try{
+
+          document.execCommand(
+            "copy"
+          );
+
+        }catch(e){}
+
+        textarea.remove();
+      }
+
+      const old=
+        button.textContent;
+
+      button.textContent=
+        "Скопировано";
+
+      setTimeout(()=>{
+
+        button.textContent=
+          old;
+
+      },1500);
+    }
+  );
+});
+
+search.addEventListener(
+  "input",
+  ()=>{
+
+    query=search.value;
+
+    clear.style.display=
+      query
+        ?"block"
+        :"none";
+
+    render();
+  }
+);
+
+clear.addEventListener(
+  "click",
+  ()=>{
+
+    search.value="";
+    query="";
+
+    clear.style.display=
+      "none";
+
+    search.focus();
+
+    render();
+  }
+);
+
+categories.addEventListener(
+  "click",
+  event=>{
+
+    const button=
+      event.target.closest(
+        ".category"
+      );
+
+    if(!button)return;
+
+    document
+      .querySelectorAll(
+        ".category"
+      )
+      .forEach(item=>{
+
+        item.classList.remove(
+          "active"
+        );
+      });
+
+    button.classList.add(
+      "active"
+    );
+
+    currentCategory=
+      button.dataset.category;
+
+    render();
+  }
+);
+
+paymentDone.addEventListener(
+  "click",
+  createOrder
+);
+
+installedButton.addEventListener(
+  "click",
+  ()=>{
+
+    if(!currentOrder)return;
+
+    markAppsInstalled(
+      currentOrder
+    );
+
+    installedButton.disabled=
+      true;
+
+    installedButton.textContent=
+      "✅ Приложения установлены";
+
+    activationPanel.classList.add(
+      "show"
+    );
+
+    updateWhatsAppLinks();
+
+    showToast(
+      "Готово! Теперь можно перейти в WhatsApp."
+    );
+  }
+);
+
+function initTelegram(){
+
+  if(
+    window.Telegram&&
+    window.Telegram.WebApp
+  ){
+
+    try{
+
+      const tg=
+        window.Telegram.WebApp;
+
+      tg.ready();
+      tg.expand();
+
+      if(tg.setHeaderColor){
+
+        tg.setHeaderColor(
+          "#08090d"
+        );
+      }
+
+      if(tg.setBackgroundColor){
+
+        tg.setBackgroundColor(
+          "#08090d"
+        );
+      }
+
+    }catch(error){
+
+      console.log(error);
+    }
+  }
+}
+
+/*
+ * Восстанавливаем заказ ДО render().
+ * Если заказ ещё находится в 12-часовом периоде,
+ * после перезагрузки автоматически запускается
+ * проверка статуса.
+ */
+restoreOrderLock();
+
+if(currentOrder){
+
+  startStatusChecking();
+}
+
+render();
+
+updatePrice();
+
+updateWhatsAppLinks();
+
+initTelegram();
