@@ -45,18 +45,31 @@
   <!-- Профиля нет или срок вышел -->
   <section id="recover" hidden>
 
-    <div class="p-card">
-      <h2 id="recTitle">Войдите в профиль</h2>
+    <div class="p-card recovery-card">
+      <div class="recovery-icon" aria-hidden="true">🔐</div>
+      <h2 id="recTitle">Войти в профиль</h2>
       <p class="p-text" id="recText"></p>
 
       <form class="p-form" id="recForm">
-        <input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Телефон, указанный в заказе" required>
-        <input name="order" type="text" autocomplete="off" autocapitalize="characters" placeholder="Номер заказа (AC-…)" required>
-        <button class="btn primary" type="submit">Открыть профиль</button>
+        <label>
+          <span>Номер телефона</span>
+          <input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00" required>
+        </label>
+        <label>
+          <span>Номер заказа</span>
+          <input name="order" type="text" autocomplete="off" autocapitalize="characters" placeholder="AC-123456" required>
+        </label>
+        <div class="field-help">Номер заказа показывается сразу после оформления заказа.</div>
+        <button class="btn primary" type="submit">Войти в профиль <span aria-hidden="true">→</span></button>
       </form>
+
+      <details class="recovery-help">
+        <summary>Где найти номер заказа?</summary>
+        <p>Он отображается после оформления заказа. Пример: <strong>AC-123456</strong>.</p>
+      </details>
     </div>
 
-    <a class="btn" href="catalog.html">Выбрать приложение</a>
+    <a class="btn" href="catalog.html">Выбрать приложение <span aria-hidden="true">→</span></a>
 
   </section>
 
