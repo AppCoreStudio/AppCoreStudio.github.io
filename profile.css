@@ -33,3 +33,17 @@ h2{margin:20px 0 10px;font-size:17px}
 .p-form input:focus{border-color:rgba(135,109,255,.5)}
 #recover .btn{margin-top:4px}
 .tabbar a.active{color:#fff}
+
+
+.recovery-icon{
+  width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:10px;border-radius:13px;background:rgba(117,87,255,.12);
+  border:1px solid rgba(135,109,255,.2);font-size:20px
+}
+.p-form label{display:flex;flex-direction:column;gap:6px}
+.p-form label span{color:#aeb4c4;font-size:11px;font-weight:800}
+.field-help{margin-top:-2px;color:var(--muted);font-size:11px;line-height:1.4}
+.recovery-help{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}
+.recovery-help summary{cursor:pointer;color:#c7cbd5;font-weight:750}
+.recovery-help p{margin:8px 0 0;line-height:1.45}
+.recovery-help strong{color:#c8baff}
