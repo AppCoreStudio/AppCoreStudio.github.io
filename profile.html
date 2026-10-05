@@ -30,13 +30,25 @@
     </div>
 
     <div class="p-card">
-      <div class="p-timer-label">Профиль и заказы будут удалены через</div>
+      <div class="p-timer-label">Текущий доступ профиля действует до</div>
       <div class="p-timer" id="pTimer">—</div>
       <div class="bar"><i id="pBar"></i></div>
     </div>
 
     <h2>Мои заказы</h2>
     <div id="orders"></div>
+
+    <div id="firstInstallGuide" class="guide-overlay" hidden>
+      <div class="guide-modal" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+        <div class="guide-icon">⚠️</div>
+        <h2 id="guideTitle">ВАЖНО</h2>
+        <p>Перед активацией внимательно ознакомьтесь с порядком действий.</p>
+        <div class="guide-step"><b>1.</b><span>Дождитесь полной установки всех приложений на главном экране.</span></div>
+        <div class="guide-step"><b>2.</b><span>После установки всех приложений нажмите «🔐 АКТИВАЦИЯ».</span></div>
+        <div class="guide-warning">⚠️ ОБЯЗАТЕЛЬНО<br><span>Без активации приложения не будут запускаться.</span></div>
+        <button id="guideClose" class="btn primary" type="button">ПОНЯТНО, ПЕРЕЙТИ К УСТАНОВКЕ</button>
+      </div>
+    </div>
 
     <a class="btn primary" href="catalog.html">Заказать ещё приложение <span aria-hidden="true">→</span></a>
 
