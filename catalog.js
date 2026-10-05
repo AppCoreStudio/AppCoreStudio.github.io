@@ -1235,91 +1235,38 @@ function showOrderStatus(order,autoScroll=false){
 }
 
 function renderInstallPanel(order){
-
   statusPanel.classList.remove("show");
-
   cancelledPanel.classList.remove("show");
-
   installPanel.classList.add("show");
-
   installList.innerHTML="";
 
-  const orderedApps=
-    Array.isArray(order.apps)
-      ?order.apps
-      :[];
-
+  const orderedApps=Array.isArray(order.apps)?order.apps:[];
   orderedApps.forEach(orderApp=>{
-
-    const app=
-      apps.find(
-        item=>item.id===orderApp.id
-      );
-
+    const app=apps.find(item=>item.id===orderApp.id);
     if(!app)return;
-
-    const item=
-      document.createElement("div");
-
-    item.className=
-      "install-item";
-
-    const name=
-      document.createElement("div");
-
-    name.className=
-      "install-name";
-
-    name.textContent=
-      app.name;
-
-    const link=
-      document.createElement("a");
-
-    link.className=
-      "install-button";
-
-    /*
-     * Установочная ссылка берётся только
-     * из локального списка apps.
-     * Сами ссылки не изменяются.
-     */
-    link.href=
-      app.install;
-
+    const item=document.createElement("div");
+    item.className="install-item";
+    const name=document.createElement("div");
+    name.className="install-name";
+    name.textContent=app.name;
+    const link=document.createElement("a");
+    link.className="install-button";
+    link.href=app.install;
     link.target="_blank";
-
-    link.rel=
-      "noopener noreferrer";
-
-    link.textContent=
-      "Установить";
-
-    item.append(
-      name,
-      link
-    );
-
+    link.rel="noopener noreferrer";
+    link.textContent="Установить";
+    item.append(name,link);
     installList.appendChild(item);
   });
 
   if(isAppsInstalled(order)){
-
     installedButton.disabled=true;
-
-    installedButton.textContent=
-      "✅ Приложения установлены";
-
+    installedButton.textContent="✅ Приложения установлены";
     activationPanel.classList.add("show");
-
   }else{
-
     activationPanel.classList.remove("show");
-
     installedButton.disabled=false;
-
-    installedButton.textContent=
-      "👉 Я установил все приложения → продолжить";
+    installedButton.textContent="👉 Я установил все приложения → продолжить";
   }
 
   updateWhatsAppLinks();
