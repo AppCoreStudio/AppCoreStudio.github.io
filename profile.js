@@ -144,6 +144,17 @@ function orderCard(o) {
   }
 
   if (paid) {
+    const installExpires = Date.parse(o.expires_at);
+    const installExpired = Number.isFinite(installExpires) && installExpires <= now();
+
+    if (installExpired) {
+      card.append(
+        make("div", "expired-install", "🔒 Срок установки закончился"),
+        make("div", "order-hint", "24-часовой срок установки этого заказа завершён. Установка приложений больше недоступна.")
+      );
+      return card;
+    }
+
     const tabs = make("div", "order-tabs");
     const appsTab = make("button", "order-tab active", "1. ПРИЛОЖЕНИЯ");
     const installed = isOrderInstalled(o.order_number);
