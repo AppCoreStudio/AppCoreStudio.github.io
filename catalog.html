@@ -19,7 +19,13 @@
 <title>AppCore</title>
 
 <link rel="stylesheet" href="catalog.css">
-</head>
+<style>
+.catalog-bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:500;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(8,9,13,.94);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.08)}
+.catalog-bottom-nav a{min-width:0;text-align:center;text-decoration:none;color:#8f96a8;font-size:10px;font-weight:800;padding:5px 2px;border-radius:10px}
+.catalog-bottom-nav a span{display:block;margin-top:3px;white-space:nowrap}
+.catalog-bottom-nav a.active{color:#fff;background:rgba(118,83,255,.16)}
+body{padding-bottom:82px}
+</style></head>
 
 <body>
 
@@ -454,6 +460,13 @@
   </div>
 
 </div>
+
+<nav class="catalog-bottom-nav" aria-label="Навигация">
+  <a href="catalog.html" class="active">📱<span>Приложения</span></a>
+  <a href="index.html">⌂<span>Главная</span></a>
+  <a href="profile.html">👤<span>Профиль</span></a>
+  <a href="referral/index.html">🎁<span>Рефералы</span></a>
+</nav>
 
 <div id="toast" class="toast"></div>
 
