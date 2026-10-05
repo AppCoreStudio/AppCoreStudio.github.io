@@ -9,4 +9,4 @@ initOrbit(document.getElementById("orbit"));
 initReviews(sb);
 
 // Профиль появится на следующем этапе (нужна авторизация с хранением на сервере)
-document.getElementById("tabProfile").addEventListener("click", () => toast("Профиль появится в следующем обновлении"));
+document.getElementById("tabProfile").addEventListener("click", () => { window.location.href = "profile.html"; });
