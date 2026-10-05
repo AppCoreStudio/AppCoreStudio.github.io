@@ -1038,17 +1038,6 @@ function updateWhatsAppLinks(){
 
 async function createOrder(){
 
-  if(currentOrder){
-
-    closePaymentModal();
-
-    showToast(
-      "Заказ уже создан. Ожидайте проверки."
-    );
-
-    return true;
-  }
-
   if(isCreatingOrder){
 
     showToast(
@@ -1894,10 +1883,8 @@ function initTelegram(){
 }
 
 /*
- * Восстанавливаем заказ ДО render().
- * Если заказ ещё находится в 12-часовом периоде,
- * после перезагрузки автоматически запускается
- * проверка статуса.
+ * Восстанавливаем последний заказ ДО render(),
+ * но он не блокирует оформление следующих заказов.
  */
 restoreOrderLock();
 
