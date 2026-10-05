@@ -191,12 +191,6 @@
   async function submitOrder() {
     if (busy) return;
 
-    if (currentOrder) {
-      closePaymentModal();
-      showToast("Заказ уже создан. Ожидайте проверки.");
-      return;
-    }
-
     var name = nameField.value.trim();
     var phone = normalizePhone(phoneField.value);
 
