@@ -248,7 +248,7 @@ function updatePrice(){
   totalEl.textContent=money(price.total);
 
   continueButton.disabled=false;
-  continueButton.textContent="Продолжить · "+money(price.total);
+  continueButton.textContent=count===1?"Заказать приложение":"Заказать приложения";
 }
 
 function render(){
@@ -330,11 +330,7 @@ function render(){
     name.className="app-name";
     name.textContent=app.name;
 
-    const type=document.createElement("div");
-    type.className="app-type";
-    type.textContent=app.type;
-
-    card.append(check,icon,name,type);
+    card.append(check,icon,name);
 
     card.addEventListener("click",()=>{
 
