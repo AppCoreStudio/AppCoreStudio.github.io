@@ -82,7 +82,6 @@ if(
 
 const PRICE=500;
 
-const ORDER_LOCK_KEY="appcore_order_lock";
 const CLIENT_ORDER_KEY="appcore_client_order";
 const CLIENT_ORDER_TIME_KEY="appcore_client_order_time";
 const INSTALLED_ORDER_KEY="appcore_installed_order";
@@ -91,7 +90,6 @@ const INSTALLED_ORDER_KEY="appcore_installed_order";
  * Один клиент может оформить новый заказ
  * только через 12 часов после создания предыдущего.
  */
-const ORDER_LOCK_TIME=12*60*60*1000;
 
 const WHATSAPP_NUMBER="79289480706";
 
@@ -340,12 +338,6 @@ function render(){
 
     card.addEventListener("click",()=>{
 
-      if(currentOrder){
-
-        showToast("Сначала завершите текущий заказ.");
-        return;
-      }
-
       selected.has(app.id)
         ?selected.delete(app.id)
         :selected.add(app.id);
@@ -504,7 +496,7 @@ function getOrderLock(){
 
     const saved=
       localStorage.getItem(
-        ORDER_LOCK_KEY
+        CLIENT_ORDER_KEY
       );
 
     if(!saved)return null;
@@ -520,7 +512,7 @@ function getOrderLock(){
     ){
 
       localStorage.removeItem(
-        ORDER_LOCK_KEY
+        CLIENT_ORDER_KEY
       );
 
       return null;
@@ -530,11 +522,11 @@ function getOrderLock(){
 
     if(
       age<0||
-      age>=ORDER_LOCK_TIME
+      age>=0
     ){
 
       localStorage.removeItem(
-        ORDER_LOCK_KEY
+        CLIENT_ORDER_KEY
       );
 
       return null;
@@ -551,7 +543,7 @@ function getOrderLock(){
 
     try{
       localStorage.removeItem(
-        ORDER_LOCK_KEY
+        CLIENT_ORDER_KEY
       );
     }catch(e){}
 
@@ -559,19 +551,10 @@ function getOrderLock(){
   }
 }
 
-function saveOrderLock(order,createdAt=Date.now()){
-
-  try{
-
-    if(
-      !Number.isFinite(createdAt)||
-      createdAt<=0
-    ){
-      createdAt=Date.now();
-    }
+function }
 
     localStorage.setItem(
-      ORDER_LOCK_KEY,
+      CLIENT_ORDER_KEY,
       JSON.stringify({
         createdAt,
         order
@@ -680,7 +663,7 @@ function getClientOrderFallback(){
 
     if(
       age<0||
-      age>=ORDER_LOCK_TIME
+      age>=0
     ){
       localStorage.removeItem(
         CLIENT_ORDER_KEY
@@ -719,7 +702,7 @@ function clearOrderStorage(){
 
   try{
     localStorage.removeItem(
-      ORDER_LOCK_KEY
+      CLIENT_ORDER_KEY
     );
 
     localStorage.removeItem(
@@ -764,7 +747,7 @@ function resetExpiredOrder(){
 
   try{
     localStorage.removeItem(
-      ORDER_LOCK_KEY
+      CLIENT_ORDER_KEY
     );
 
     localStorage.removeItem(
@@ -803,11 +786,7 @@ function restoreOrderLock(){
 
     if(lock){
 
-      saveOrderLock(
-        lock.order,
-        lock.createdAt
-      );
-    }
+      }
   }
 
   if(!lock){
@@ -837,7 +816,7 @@ function restoreOrderLock(){
     Date.now()-lock.createdAt;
 
   const remaining=
-    ORDER_LOCK_TIME-elapsed;
+    0-elapsed;
 
   if(remaining<=0){
 
@@ -1367,7 +1346,6 @@ if(
 
     currentOrder=orderData;
 
-    saveOrderLock(orderData);
     saveClientOrder(
       orderData,
       createdAt
@@ -1568,7 +1546,7 @@ if(statusTimer){
 }
 
 try{
-  localStorage.removeItem(ORDER_LOCK_KEY);
+  localStorage.removeItem(CLIENT_ORDER_KEY);
   localStorage.removeItem(CLIENT_ORDER_KEY);
   localStorage.removeItem(CLIENT_ORDER_TIME_KEY);
   localStorage.removeItem(INSTALLED_ORDER_KEY);
@@ -1655,43 +1633,10 @@ async function checkOrderStatus(){
       return;
     }
 
-    /*
-     * Сохраняем обновлённый заказ,
-     * но НЕ обновляем время 12-часового lock.
-     */
     let createdAt=Date.now();
-
     try{
-
-      const lock=
-        JSON.parse(
-          localStorage.getItem(
-            ORDER_LOCK_KEY
-          )||"null"
-        );
-
-      if(
-        lock&&
-        typeof lock.createdAt==="number"
-      ){
-        createdAt=lock.createdAt;
-      }else{
-
-        const savedTime=
-          Number(
-            localStorage.getItem(
-              CLIENT_ORDER_TIME_KEY
-            )
-          );
-
-        if(
-          Number.isFinite(savedTime)&&
-          savedTime>0
-        ){
-          createdAt=savedTime;
-        }
-      }
-
+      const savedTime=Number(localStorage.getItem(CLIENT_ORDER_TIME_KEY));
+      if(Number.isFinite(savedTime) && savedTime>0) createdAt=savedTime;
     }catch(error){}
 
     saveClientOrder(
@@ -1710,7 +1655,7 @@ async function checkOrderStatus(){
     try{
 
       localStorage.setItem(
-        ORDER_LOCK_KEY,
+        CLIENT_ORDER_KEY,
         JSON.stringify({
           createdAt,
           order:updatedOrder
