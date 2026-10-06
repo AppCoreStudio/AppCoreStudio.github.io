@@ -896,7 +896,7 @@
 
           <div class="top-clients">
             <div class="top-label">Клиенты</div>
-            <strong>${num(row.clients_count)}</strong>
+            <strong>${num(row.clients)}</strong>
           </div>
 
           <div class="top-earned">
@@ -949,7 +949,7 @@
           <td>${escapeHtml(row.phone || '—')}</td>
           <td>${escapeHtml(row.email || '—')}</td>
           <td><code>${escapeHtml(row.referral_code || '—')}</code></td>
-          <td>${num(row.clients_count)}</td>
+          <td>${num(row.clients)}</td>
           <td><strong>${money(row.total_earned)}</strong></td>
         </tr>
       `;
