@@ -3,16 +3,30 @@ const SUPABASE_KEY="sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
 
 let supabaseClient=null;
 
-function getSupabaseClient(){
-  if(supabaseClient)return supabaseClient;
-  if(!window.supabase||typeof window.supabase.createClient!=="function"){
-    throw new Error("Supabase client is unavailable");
-  }
-  supabaseClient=window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+async function rpc(functionName, params){
+  const response = await fetch(
+    SUPABASE_URL + "/rest/v1/rpc/" + encodeURIComponent(functionName),
+    {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params || {})
+    }
   );
-  return supabaseClient;
+  const raw = await response.text();
+  let data = null;
+  try { data = raw ? JSON.parse(raw) : null; } catch (e) {}
+  if (!response.ok) {
+    return {
+      data: null,
+      error: {
+        message: (data && (data.message || data.error || data.hint)) || ("HTTP " + response.status)
+      }
+    };
+  }
+  return { data, error: null };
 }
   const referralUserId =
   localStorage.getItem("referral_user_id") ||
@@ -994,7 +1008,7 @@ async function createOrder(){
     const {
       data: createdOrder,
       error
-    } = await getSupabaseClient().rpc(
+    } = await rpc(
       "create_order",
       {
         p_client_name: name,
@@ -1264,7 +1278,7 @@ async function checkOrderStatus(){
   try{
 
     const {data,error}=
-      await getSupabaseClient().rpc(
+      await rpc(
         "get_client_order_status",
         {
           p_order_number:
