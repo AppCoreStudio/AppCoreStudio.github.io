@@ -587,7 +587,7 @@
     }
 
     document.getElementById('statReferrals').textContent = num(row.referrals_count);
-    document.getElementById('statClients').textContent = num(row.clients_count);
+    document.getElementById('statClients').textContent = num(row.clients);
     document.getElementById('statEarned').textContent = money(row.total_earned);
     document.getElementById('statPaid').textContent = money(row.total_paid);
     document.getElementById('statRequests').textContent = num(row.withdrawal_requests);
@@ -758,7 +758,7 @@
   }
 
   async function loadWithdrawals() {
-    const rows = await rpc('get_admin_referral_withdrawals');
+    const rows = await rpc('get_referral_admin_withdrawals');
 
     window.withdrawalRows = rows || [];
 
