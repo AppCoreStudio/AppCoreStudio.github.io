@@ -2492,47 +2492,23 @@ async function setOrderStatus(
   const {
     error
   } = await supabaseClient
-    .from("orders")
-    .update({
-      status:status
-    })
-    .eq("id",id);
+    .rpc(
+      "admin_set_order_status",
+      {
+        p_order_id:id,
+        p_status:status
+      }
+    );
 
   if(error){
 
     console.error(error);
 
     showToast(
-      "Ошибка изменения статуса"
+      "Ошибка изменения статуса: " + (error.message || "")
     );
 
     return;
-  }
-
-  if(status === "completed"){
-
-    const {
-      error: rewardError
-    } = await supabaseClient
-      .rpc(
-        "reward_referral_for_order",
-        {
-          p_order_id:id
-        }
-      );
-
-    if(rewardError){
-
-      console.error(rewardError);
-
-      showToast(
-        "Заказ завершён, но начисление реферала не выполнено"
-      );
-
-      await loadOrders();
-
-      return;
-    }
   }
 
   showToast(
