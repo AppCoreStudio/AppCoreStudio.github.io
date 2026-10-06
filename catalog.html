@@ -269,13 +269,12 @@ body{padding-bottom:150px}
 <div class="payment-modal">
 
 <div class="payment-header">
-  <div class="payment-title">Оплата заказа</div>
+  <div class="payment-title">Оформление заказа</div>
   <button id="paymentClose" class="payment-close" type="button">×</button>
 </div>
 
 <div class="payment-subtitle">
-  Проверьте выбранные приложения и переведите
-  указанную сумму по реквизитам ниже.
+  Проверьте выбранные приложения и укажите имя и номер телефона.
 </div>
 
 <div class="order-box">
@@ -291,105 +290,40 @@ body{padding-bottom:150px}
 
 </div>
 
-<div class="requisites-title">Контакт для заказа</div>
+<div class="checkout-fields">
 
-<div class="requisite">
+  <label class="checkout-field">
+    <span>Имя</span>
+    <input
+      id="nameInput"
+      class="checkout-input"
+      type="text"
+      autocomplete="name"
+      maxlength="60"
+      placeholder="Ваше имя"
+    >
+  </label>
 
-  <div class="requisite-label">
-    Номер телефона
-  </div>
-
-  <div class="requisite-value-row">
-
+  <label class="checkout-field">
+    <span>Телефон</span>
     <input
       id="phoneInput"
-      class="phone-input"
+      class="checkout-input"
       type="tel"
       inputmode="tel"
       autocomplete="tel"
       placeholder="+7 900 000-00-00"
     >
-
-  </div>
-
-</div>
-
-<div class="requisites-title">
-  Реквизиты для оплаты
-</div>
-
-<div class="requisite">
-
-  <div class="requisite-label">
-    Получатель
-  </div>
-
-  <div class="requisite-value-row">
-    <div class="requisite-value">
-      Мурат Межидов М
-    </div>
-
-    <button
-      class="copy-button"
-      data-copy="Мурат Межидов М"
-      type="button"
-    >
-      Копировать
-    </button>
-  </div>
-
-</div>
-
-<div class="requisite">
-
-  <div class="requisite-label">
-    Телефон / СБП
-  </div>
-
-  <div class="requisite-value-row">
-    <div class="requisite-value">
-      +79289480706
-    </div>
-
-    <button
-      class="copy-button"
-      data-copy="+79289480706"
-      type="button"
-    >
-      Копировать
-    </button>
-  </div>
-
-</div>
-
-<div class="requisite">
-
-  <div class="requisite-label">
-    Банк
-  </div>
-
-  <div class="requisite-value-row">
-    <div class="requisite-value">
-      Т-Банк
-    </div>
-
-    <button
-      class="copy-button"
-      data-copy="Т-Банк"
-      type="button"
-    >
-      Копировать
-    </button>
-  </div>
+  </label>
 
 </div>
 
 <div class="payment-note">
-  ⚠️ После перевода нажмите «Я оплатил». После этого будет выполнена проверка оплаты.
+  После оформления заказа данные будут сохранены, а дальнейшие инструкции будут доступны через WhatsApp и в статусе заказа.
 </div>
 
 <button id="paymentDone" class="payment-done" type="button">
-  Я оплатил
+  Оформить заказ
 </button>
 
 </div>
