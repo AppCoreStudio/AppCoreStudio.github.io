@@ -1,10 +1,19 @@
 const SUPABASE_URL="https://dkgipfotfjntlhabakns.supabase.co";
 const SUPABASE_KEY="sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
 
-const supabaseClient=window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+let supabaseClient=null;
+
+function getSupabaseClient(){
+  if(supabaseClient)return supabaseClient;
+  if(!window.supabase||typeof window.supabase.createClient!=="function"){
+    throw new Error("Supabase client is unavailable");
+  }
+  supabaseClient=window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+  return supabaseClient;
+}
   const referralUserId =
   localStorage.getItem("referral_user_id") ||
   "user_" + Date.now() + "_" +
@@ -985,7 +994,7 @@ async function createOrder(){
     const {
       data: createdOrder,
       error
-    } = await supabaseClient.rpc(
+    } = await getSupabaseClient().rpc(
       "create_order",
       {
         p_client_name: name,
@@ -1255,7 +1264,7 @@ async function checkOrderStatus(){
   try{
 
     const {data,error}=
-      await supabaseClient.rpc(
+      await getSupabaseClient().rpc(
         "get_client_order_status",
         {
           p_order_number:
