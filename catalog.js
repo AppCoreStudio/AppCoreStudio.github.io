@@ -1,4 +1,3 @@
-
 const SUPABASE_URL="https://dkgipfotfjntlhabakns.supabase.co";
 const SUPABASE_KEY="sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
 
@@ -168,9 +167,6 @@ const statusSupportButton=$("statusSupportButton");
 const cancelledPanel=$("cancelledPanel");
 const cancelledOrderNumber=$("cancelledOrderNumber");
 
-const newOrderStatusButton=null;
-const newOrderInstallButton=null;
-const newOrderCancelledButton=null;
 
 const confirmOverlay=$("confirmOverlay");
 const confirmClose=$("confirmClose");
@@ -1606,21 +1602,6 @@ confirmOverlay.addEventListener(
       closeNewOrderConfirmation();
     }
   }
-);
-
-newOrderStatusButton.addEventListener(
-  "click",
-  openNewOrderConfirmation
-);
-
-newOrderInstallButton.addEventListener(
-  "click",
-  openNewOrderConfirmation
-);
-
-newOrderCancelledButton.addEventListener(
-  "click",
-  openNewOrderConfirmation
 );
 
 document.addEventListener(
