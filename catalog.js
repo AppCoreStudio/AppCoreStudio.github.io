@@ -1034,79 +1034,49 @@ async function createOrder(){
 
   try{
 
-    const {error}=
-      await supabaseClient
-        .from("orders")
-        .insert([orderData]);
+    const savedOrderReferralCode =
+      localStorage.getItem(REFERRAL_CODE_KEY) ||
+      localStorage.getItem("referral_code") ||
+      null;
+
+    const {
+      data: createdOrder,
+      error
+    } = await supabaseClient.rpc(
+      "create_order",
+      {
+        p_client_name: name,
+        p_client_phone: phone,
+        p_app_ids: selectedList.map(app=>app.id),
+        p_profile_token: getProfileToken(),
+        p_referral_code: isValidReferralCode(savedOrderReferralCode)
+          ? savedOrderReferralCode.trim()
+          : null
+      }
+    );
 
     if(error){
 
       console.error(error);
 
-      const message=
-        error.message||"";
+      const message=error.message||"";
 
       if(message.includes("RATE_LIMIT:")){
-
         showToast(
           "Лимит заказов достигнут. Попробуйте снова через 10 минут."
         );
-
       }else{
-
         showToast(
-          "Ошибка Supabase: "+
-          (message||
-          "неизвестная ошибка")
+          "Ошибка создания заказа: "+
+          (message||"неизвестная ошибка")
         );
       }
 
       return false;
     }
-/*
- * После успешного создания заказа привязываем
- * клиента к рефереру.
- */
 
-const savedOrderReferralCode =
-  localStorage.getItem(
-    REFERRAL_CODE_KEY
-  ) ||
-  localStorage.getItem(
-    "referral_code"
-  );
-
-if(
-  isValidReferralCode(
-    savedOrderReferralCode
-  )
-){
-
-  const {
-    error: referralError
-  } = await supabaseClient.rpc(
-    "register_referral",
-    {
-      p_referral_code:
-        savedOrderReferralCode.trim(),
-
-      p_referred_user_id:
-        phone
-    }
-  );
-
-  if(referralError){
-
-    console.error(
-      "Referral registration error:",
-      referralError
-    );
-
-  }
-}
     const createdAt=Date.now();
-
-    currentOrder=orderData;
+    currentOrder=createdOrder;
 
     saveClientOrder(
       orderData,
@@ -1131,9 +1101,49 @@ if(
 
     showToast(
       "Заказ "+
-      orderNumber+
+      createdOrder.order_number+
       " создан"
     );
+
+    const orderApps =
+      Array.isArray(createdOrder.apps)
+        ? createdOrder.apps.map(app=>app.name).filter(Boolean).join(", ")
+        : selectedList.map(app=>app.name).join(", ");
+
+    let whatsappText =
+      "Здравствуйте! Хочу оформить заказ.\n\n" +
+      "📦 ЗАКАЗ\n" +
+      `Номер заказа: ${createdOrder.order_number}\n` +
+      `📱 Приложение: ${orderApps}\n` +
+      `👤 Клиент: ${createdOrder.client_name}\n` +
+      `📞 Телефон: ${createdOrder.client_phone}\n\n` +
+      `💰 Стоимость: ${createdOrder.original || 0} ₽\n`;
+
+    if(Number(createdOrder.discount || 0) > 0){
+      whatsappText += `🏷️ Скидка: ${createdOrder.discount} ₽\n`;
+    }
+
+    whatsappText +=
+      `💵 Итого к оплате: ${createdOrder.total || 0} ₽\n\n` +
+      "━━━━━━━━━━━━━━━━━━\n" +
+      "💳 ОПЛАТА ЗАКАЗА\n" +
+      "━━━━━━━━━━━━━━━━━━\n\n" +
+      "🏦 Т-Банк\n" +
+      "👤 Мурат Межидов Х\n" +
+      "📱 +79289480706\n\n" +
+      `💰 К оплате: ${createdOrder.total || 0} ₽\n\n` +
+      "━━━━━━━━━━━━━━━━━━\n" +
+      "📎 ЧЕК ОБ ОПЛАТЕ ОБЯЗАТЕЛЕН\n" +
+      "━━━━━━━━━━━━━━━━━━\n\n" +
+      "✅ После проверки чека заказ будет подтверждён.\n\n" +
+      "🌐 После подтверждения вернитесь на сайт в «Ваш профиль», чтобы получить доступ к заказу.\n" +
+      "━━━━━━━━━━━━━━━━━━";
+
+    window.location.href =
+      "https://wa.me/" +
+      WHATSAPP_NUMBER +
+      "?text=" +
+      encodeURIComponent(whatsappText);
 
     return true;
 
