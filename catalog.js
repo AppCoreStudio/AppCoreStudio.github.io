@@ -1081,32 +1081,32 @@ async function createOrder(){
     // официальный api.whatsapp.com/send URL и encodeURIComponent (UTF-8).
     let whatsappText =
       "Здравствуйте! Хочу оформить заказ.\n\n" +
-      "\u{1F4E6} ЗАКАЗ\n" +
+      "[ ЗАКАЗ ]\n" +
       `Номер заказа: ${createdOrder.order_number}\n` +
-      `\u{1F4F1} Приложение: ${orderApps}\n` +
-      `\u{1F464} Клиент: ${createdOrder.client_name}\n` +
-      `\u{1F4DE} Телефон: ${createdOrder.client_phone}\n\n` +
-      `\u{1F4B0} Стоимость: ${createdOrder.original || 0} ₽\n`;
+      `Приложение: ${orderApps}\n` +
+      `Клиент: ${createdOrder.client_name}\n` +
+      `Телефон: ${createdOrder.client_phone}\n\n` +
+      `Стоимость: ${createdOrder.original || 0} ₽\n`;
 
     if(Number(createdOrder.discount || 0) > 0){
-      whatsappText += `\u{1F3F7}\uFE0F Скидка: ${createdOrder.discount} ₽\n`;
+      whatsappText += `Скидка: ${createdOrder.discount} ₽\n`;
     }
 
     whatsappText +=
-      `\u{1F4B5} Итого к оплате: ${createdOrder.total || 0} ₽\n\n` +
-      "━━━━━━━━━━━━━━━━━━\n" +
-      "\u{1F4B3} ОПЛАТА ЗАКАЗА\n" +
-      "━━━━━━━━━━━━━━━━━━\n\n" +
-      "\u{1F3E6} Т-Банк\n" +
-      "\u{1F464} Мурат Межидов Х\n" +
-      "\u{1F4F1} +79289480706\n\n" +
-      `\u{1F4B0} К оплате: ${createdOrder.total || 0} ₽\n\n` +
-      "━━━━━━━━━━━━━━━━━━\n" +
-      "\u{1F4CE} ЧЕК ОБ ОПЛАТЕ ОБЯЗАТЕЛЕН\n" +
-      "━━━━━━━━━━━━━━━━━━\n\n" +
-      "\u{2705} После проверки чека заказ будет подтверждён.\n\n" +
-      "\u{1F310} После подтверждения вернитесь на сайт в «Ваш профиль», чтобы получить доступ к заказу.\n" +
-      "━━━━━━━━━━━━━━━━━━";
+      `Итого к оплате: ${createdOrder.total || 0} ₽\n\n` +
+      "==================\n" +
+      "[ ОПЛАТА ЗАКАЗА ]\n" +
+      "==================\n\n" +
+      "Т-Банк\n" +
+      "Мурат Межидов Х\n" +
+      "+79289480706\n\n" +
+      `К оплате: ${createdOrder.total || 0} ₽\n\n` +
+      "==================\n" +
+      "[ ЧЕК ОБ ОПЛАТЕ ОБЯЗАТЕЛЕН ]\n" +
+      "==================\n\n" +
+      "После проверки чека заказ будет подтверждён.\n\n" +
+      "После подтверждения вернитесь на сайт в «Ваш профиль», чтобы получить доступ к заказу.\n" +
+      "==================";
 
     window.location.href =
       "https://api.whatsapp.com/send/?phone=" +
