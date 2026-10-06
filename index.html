@@ -1,80 +1,41 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#08090d">
-<meta property="og:title" content="AppCore">
-<meta property="og:description" content="Дистанционная установка приложений">
-<meta property="og:image" content="https://appcorestudio.github.io/photo_2026-09-29_19-14-17%20%282%29.jpg">
-<meta property="og:url" content="https://appcorestudio.github.io/">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AppCore">
-<meta name="twitter:description" content="Дистанционная установка приложений">
-<meta name="twitter:image" content="https://appcorestudio.github.io/photo_2026-09-29_19-14-17%20%282%29.jpg">
-<title>AppCore — дистанционная установка приложений</title>
-<link rel="stylesheet" href="main.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090d"><title>AppCore — дистанционная установка приложений</title>
+<link rel="stylesheet" href="main.css?v=20261006b">
 </head>
 <body>
-
 <main class="page">
-
-  <section class="hero">
-    <div class="orbit"><div class="ring" id="orbit"></div><div class="core">A</div></div>
-    <h1>AppCore</h1>
-    <p class="sub">Дистанционная установка приложений на ваш iPhone</p>
-  </section>
-
-  <section class="reviews" aria-label="Отзывы">
-    <div class="rating-summary" id="ratingSummary" hidden>
-  <div class="rating-score">
-    <strong id="ratingAvg">0</strong>
-    <div class="stars" id="ratingStars"></div>
-    <span id="ratingCount"></span>
-  </div>
-  <div class="rating-bars" id="ratingBars"></div>
-</div>
-    <div class="slider" id="reviewsSlider"><div class="note">Загрузка отзывов…</div></div>
-  </section>
-
-  <section class="steps" id="how">
-    <div class="step"><b>1</b><div><strong>Выберите приложение</strong><span>Найдите нужное в каталоге</span></div></div>
-    <div class="step"><b>2</b><div><strong>Пройдите активацию</strong><span>Следуйте короткой инструкции</span></div></div>
-    <div class="step"><b>3</b><div><strong>Пользуйтесь</strong><span>Приложение уже на вашем iPhone</span></div></div>
-  </section>
-
-  <section class="actions">
-    <a class="btn primary" href="catalog.html">Выбрать приложение <span aria-hidden="true">→</span></a>
-    <div class="row">
-      <button class="btn" id="reviewOpen" type="button">✍️ Оставить отзыв</button>
-      <a class="btn" href="referral/">🎁 Проект реферала</a>
-    </div>
-  </section>
-
+<section class="hero"><h1>AppCore</h1><p class="sub">Дистанционная установка приложений на ваш iPhone</p></section>
+<section class="reviews" aria-label="Отзывы">
+<div class="rating-summary" id="ratingSummary" hidden><div class="rating-score"><strong id="ratingAvg">0</strong><div class="stars" id="ratingStars"></div><span id="ratingCount"></span></div><div class="rating-bars" id="ratingBars"></div></div>
+<div class="review-title-row"><strong>Отзывы</strong><span>Нажмите на отзыв — открыть полностью</span></div>
+<div class="slider" id="reviewsSlider"><div class="note">Загрузка отзывов…</div></div><div class="review-dots" id="reviewDots"></div>
+</section>
+<section class="steps" id="how">
+<div class="step"><b>1</b><div><strong>Выберите приложение</strong><span>Найдите нужное в каталоге</span></div></div>
+<div class="step"><b>2</b><div><strong>Пройдите активацию</strong><span>Следуйте короткой инструкции</span></div></div>
+<div class="step"><b>3</b><div><strong>Пользуйтесь</strong><span>Приложение уже на вашем iPhone</span></div></div>
+</section>
+<section class="actions"><a class="btn primary" href="catalog.html">Выбрать приложение <span>→</span></a><div class="row"><button class="btn" id="reviewOpen" type="button">✍️ Оставить отзыв</button><a class="btn" href="referral/">🎁 Проект реферала</a></div></section>
 </main>
+<nav class="tabbar"><a href="catalog.html"><i>📱</i>Приложения</a><a href="profile.html" id="tabProfile"><i>👤</i>Профиль</a></nav>
 
-<nav class="tabbar">
-  <a href="catalog.html"><i>📱</i>Приложения</a>
-  <a href="profile.html" id="tabProfile"><i>👤</i>Профиль</a>
-</nav>
+<div class="modal detail-modal" id="reviewDetailModal" aria-hidden="true"><div class="review-detail-card" id="reviewDetailCard">
+<div class="modal-head"><strong>Отзыв</strong><button type="button" id="reviewDetailClose" aria-label="Закрыть">×</button></div>
+<div class="detail-stars" id="detailStars"></div><div class="detail-author" id="detailAuthor"></div><div class="detail-date" id="detailDate"></div><div class="detail-text" id="detailText"></div>
+<div class="detail-nav"><button type="button" id="reviewPrev">‹</button><span id="reviewPosition">1 / 1</span><button type="button" id="reviewNext">›</button></div>
+</div></div>
 
-<div class="modal" id="reviewModal">
-  <form class="modal-card" id="reviewForm">
-    <div class="modal-head"><strong>Ваш отзыв</strong><button type="button" id="reviewClose" aria-label="Закрыть">×</button></div>
-    <div class="star-pick" id="starPick">
-      <button type="button">★</button><button type="button">★</button><button type="button">★</button><button type="button">★</button><button type="button">★</button>
-    </div>
-    <input name="author" maxlength="40" placeholder="Ваше имя (необязательно)" autocomplete="given-name">
-    <textarea name="text" rows="4" maxlength="500" placeholder="Расскажите, как всё прошло…" required></textarea>
-    <button class="btn primary" type="submit">Отправить</button>
-    <small>Отзыв появится на сайте после проверки.</small>
-  </form>
-</div>
-
+<div class="modal" id="reviewModal" aria-hidden="true"><form class="modal-card" id="reviewForm">
+<div class="modal-head"><strong>Ваш отзыв</strong><button type="button" id="reviewClose" aria-label="Закрыть">×</button></div>
+<div class="star-pick" id="starPick"><button type="button">★</button><button type="button">★</button><button type="button">★</button><button type="button">★</button><button type="button">★</button></div>
+<input name="author" maxlength="40" placeholder="Ваше имя (необязательно)" autocomplete="given-name">
+<textarea name="text" rows="4" maxlength="500" placeholder="Расскажите, как всё прошло…" required></textarea>
+<button class="btn primary" type="submit">Отправить</button><small>Отзыв появится на сайте после проверки.</small>
+</form></div>
 <div class="toast" id="toast"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
-<script type="module" src="main.js?v=20261006"></script>
-</body>
-</html>
+<script type="module" src="main.js?v=20261006b"></script>
+</body></html>
