@@ -1065,6 +1065,13 @@ button:active{
   </button>
 </div>
         <button
+          id="reviewsAdminButton"
+          class="btn btn-purple"
+        >
+          ⭐ Отзывы
+        </button>
+
+        <button
           id="refreshButton"
           class="btn btn-blue"
         >
@@ -3148,6 +3155,15 @@ async function init(){
 
   }
 }
+document
+  .getElementById("reviewsAdminButton")
+  .addEventListener(
+    "click",
+    function () {
+      window.location.href = "/reviews-admin/";
+    }
+  );
+
 document
   .getElementById("referralAdminButton")
   .addEventListener(
