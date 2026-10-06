@@ -1217,3 +1217,10 @@ filter:brightness(.9);
 .payment-note{
   margin-top:14px
 }
+
+
+/* В каталоге после оплаты показываем только статус и переход в профиль.
+   Установка и активация находятся только в профиле. */
+.install-panel{
+  display:none !important;
+}
