@@ -15,6 +15,7 @@ const $ = id => document.getElementById(id);
 let profile = null;
 let offset = 0;        // разница между часами сервера и телефона
 let reloadQueued = false;
+const selectedOrderTabs = new Map();
 
 const now = () => Date.now() + offset;
 
@@ -158,7 +159,9 @@ function orderCard(o) {
     }
 
     const tabs = make("div", "order-tabs");
-    const appsTab = make("button", "order-tab active", "1. ПРИЛОЖЕНИЯ");
+    const savedTab = selectedOrderTabs.get(o.order_number) || "apps";
+    const activationSelected = savedTab === "activation";
+    const appsTab = make("button", "order-tab" + (activationSelected ? "" : " active"), "1. ПРИЛОЖЕНИЯ");
     const installedIds = new Set();
 
     try {
@@ -172,7 +175,7 @@ function orderCard(o) {
 
     const activationTab = make(
       "button",
-      "order-tab activation-tab" + (allInstalled ? " ready" : ""),
+      "order-tab activation-tab" + (allInstalled ? " ready" : "") + (activationSelected && allInstalled ? " active" : ""),
       "2. 🔐 АКТИВАЦИЯ"
     );
     activationTab.innerHTML = '2. <span>🔐 АКТИВАЦИЯ</span><small>⚠️ ОБЯЗАТЕЛЬНО</small>';
@@ -180,8 +183,8 @@ function orderCard(o) {
     tabs.append(appsTab, activationTab);
     card.append(tabs);
 
-    const appsPane = make("div", "order-pane active");
-    const activationPane = make("div", "order-pane activation-pane");
+    const appsPane = make("div", "order-pane" + (activationSelected && allInstalled ? "" : " active"));
+    const activationPane = make("div", "order-pane activation-pane" + (activationSelected && allInstalled ? " active" : ""));
 
     const links = {};
     (o.install_links || []).forEach(l => { links[l.id] = l.install; });
@@ -238,6 +241,7 @@ function orderCard(o) {
     activationPane.append(wa);
 
     appsTab.addEventListener("click", () => {
+      selectedOrderTabs.set(o.order_number, "apps");
       appsTab.classList.add("active");
       activationTab.classList.remove("active");
       appsPane.classList.add("active");
@@ -250,6 +254,7 @@ function orderCard(o) {
         toast("Сначала установите все приложения");
         return;
       }
+      selectedOrderTabs.set(o.order_number, "activation");
       appsTab.classList.remove("active");
       activationTab.classList.add("active");
       appsPane.classList.remove("active");

@@ -93,29 +93,29 @@ const INSTALLED_ORDER_KEY="appcore_installed_order";
 const WHATSAPP_NUMBER="79289480706";
 
 const apps=[
-{id:"sberbank",name:"Сбербанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#21a366",gradient:"linear-gradient(135deg,#25b86c,#08783e)",install:"https://installios.ru/apps/Huo4uP"},
-{id:"sber-invest",name:"СберИнвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#18a765",gradient:"linear-gradient(135deg,#2ac979,#087c46)",install:"https://installios.ru/apps/xCMK2b"},
-{id:"tbank",name:"Т-Банк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/tbank",color:"#ffd500",gradient:"linear-gradient(135deg,#ffe33e,#e7b900)",install:"https://installios.ru/apps/NQAqoO"},
-{id:"t-invest",name:"Т-Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/tbank",color:"#f3ca00",gradient:"linear-gradient(135deg,#ffe64a,#d9a900)",install:"https://installios.ru/apps/rOxSmd"},
-{id:"alfa",name:"Альфа-Банк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/alfabank",color:"#ef3124",gradient:"linear-gradient(135deg,#ff5145,#c70d09)",install:"https://installios.ru/apps/rOqtjI"},
-{id:"alfa-invest",name:"Альфа-Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/alfabank",color:"#e93027",gradient:"linear-gradient(135deg,#ff5b4f,#bb1009)",install:"https://installios.ru/apps/NqXG8Z"},
-{id:"vtb",name:"ВТБ",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#1685ff",gradient:"linear-gradient(135deg,#36a4ff,#0757d9)",install:"https://installios.ru/apps/gzPg3N"},
-{id:"vtb-invest",name:"ВТБ Мои Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#1a82ed",gradient:"linear-gradient(135deg,#3ca8ff,#0a4fc2)",install:"https://installios.ru/apps/1ttQGQ"},
-{id:"gazprom",name:"Газпромбанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/gazprombank",color:"#3b78ff",gradient:"linear-gradient(135deg,#55a1ff,#154bc9)",install:"https://installios.ru/apps/fQOdHa"},
-{id:"gazprom-invest",name:"Газпромбанк Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/gazprombank",color:"#3673ff",gradient:"linear-gradient(135deg,#58a9ff,#164ac8)",install:"https://installios.ru/apps/GKOngE"},
-{id:"rshb",name:"Россельхозбанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/rosselkhozbank",color:"#48a93f",gradient:"linear-gradient(135deg,#6bd35c,#1e7427)",install:"https://installios.ru/apps/z7363T"},
-{id:"psb",name:"ПСБ",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/psbank",color:"#e1262d",gradient:"linear-gradient(135deg,#ff4c50,#b90c14)",install:"https://installios.ru/apps/Pj12gf"},
-{id:"yandex-pay",name:"Яндекс Пэй",type:"Сервис",category:"finance",logo:"https://cdn.simpleicons.org/yandex",color:"#ff3d00",gradient:"linear-gradient(135deg,#ff7043,#e52c00)",install:"https://installios.ru/apps/zgsOLp"},
-{id:"vk",name:"VK",type:"Социальная сеть",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#0077ff",gradient:"linear-gradient(135deg,#3c9aff,#0056cf)",install:"https://installios.ru/apps/9L324z"},
-{id:"vk-video",name:"VK Видео",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#5d65ff",gradient:"linear-gradient(135deg,#7984ff,#3b42d8)",install:"https://installios.ru/apps/63wZiS"},
-{id:"vk-messenger",name:"VK Мессенджер",type:"Мессенджер",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#7b61ff",gradient:"linear-gradient(135deg,#957cff,#5540d6)",install:"https://installios.ru/apps/cZOAbl"},
-{id:"max",name:"MAX",type:"Мессенджер",category:"social",logo:"https://cdn.simpleicons.org/max",color:"#6f5cff",gradient:"linear-gradient(135deg,#927cff,#4b36d8)",install:"https://installios.ru/apps/AhqAi7"},
-{id:"avito",name:"Авито",type:"Сервис",category:"social",logo:"https://cdn.simpleicons.org/avito",color:"#00a86b",gradient:"linear-gradient(135deg,#27d18c,#00804e)",install:"https://installios.ru/apps/IhZxy5"},
-{id:"rave",name:"Rave",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/rave",color:"#ff4d91",gradient:"linear-gradient(135deg,#ff70aa,#d3226b)",install:"https://installios.ru/apps/Uij3el"},
-{id:"rutube",name:"Rutube",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/rutube",color:"#ff3b30",gradient:"linear-gradient(135deg,#ff665e,#cf160e)",install:"https://installios.ru/apps/fihoJo"},
-{id:"happ",name:"Happ",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/happ",color:"#815cff",gradient:"linear-gradient(135deg,#a083ff,#5230d9)",install:"https://installios.ru/apps/gzGnVa"},
-{id:"v2raytun",name:"v2RayTun",type:"Сервис",category:"useful",logo:"",color:"#5d65ff",gradient:"linear-gradient(135deg,#7984ff,#3b42d8)",install:"https://installios.ru/apps/XHmTTz"},
-{id:"chatgpt",name:"ChatGPT",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/openai",color:"#10a37f",gradient:"linear-gradient(135deg,#20c997,#087c60)",install:"https://installios.ru/apps/ux5YKb"}
+{id:"sberbank",name:"Сбербанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#21a366",gradient:"linear-gradient(135deg,#25b86c,#08783e)"},
+{id:"sber-invest",name:"СберИнвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#18a765",gradient:"linear-gradient(135deg,#2ac979,#087c46)"},
+{id:"tbank",name:"Т-Банк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/tbank",color:"#ffd500",gradient:"linear-gradient(135deg,#ffe33e,#e7b900)"},
+{id:"t-invest",name:"Т-Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/tbank",color:"#f3ca00",gradient:"linear-gradient(135deg,#ffe64a,#d9a900)"},
+{id:"alfa",name:"Альфа-Банк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/alfabank",color:"#ef3124",gradient:"linear-gradient(135deg,#ff5145,#c70d09)"},
+{id:"alfa-invest",name:"Альфа-Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/alfabank",color:"#e93027",gradient:"linear-gradient(135deg,#ff5b4f,#bb1009)"},
+{id:"vtb",name:"ВТБ",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#1685ff",gradient:"linear-gradient(135deg,#36a4ff,#0757d9)"},
+{id:"vtb-invest",name:"ВТБ Мои Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/vtb",color:"#1a82ed",gradient:"linear-gradient(135deg,#3ca8ff,#0a4fc2)"},
+{id:"gazprom",name:"Газпромбанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/gazprombank",color:"#3b78ff",gradient:"linear-gradient(135deg,#55a1ff,#154bc9)"},
+{id:"gazprom-invest",name:"Газпромбанк Инвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/gazprombank",color:"#3673ff",gradient:"linear-gradient(135deg,#58a9ff,#164ac8)"},
+{id:"rshb",name:"Россельхозбанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/rosselkhozbank",color:"#48a93f",gradient:"linear-gradient(135deg,#6bd35c,#1e7427)"},
+{id:"psb",name:"ПСБ",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/psbank",color:"#e1262d",gradient:"linear-gradient(135deg,#ff4c50,#b90c14)"},
+{id:"yandex-pay",name:"Яндекс Пэй",type:"Сервис",category:"finance",logo:"https://cdn.simpleicons.org/yandex",color:"#ff3d00",gradient:"linear-gradient(135deg,#ff7043,#e52c00)"},
+{id:"vk",name:"VK",type:"Социальная сеть",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#0077ff",gradient:"linear-gradient(135deg,#3c9aff,#0056cf)"},
+{id:"vk-video",name:"VK Видео",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#5d65ff",gradient:"linear-gradient(135deg,#7984ff,#3b42d8)"},
+{id:"vk-messenger",name:"VK Мессенджер",type:"Мессенджер",category:"social",logo:"https://cdn.simpleicons.org/vk",color:"#7b61ff",gradient:"linear-gradient(135deg,#957cff,#5540d6)"},
+{id:"max",name:"MAX",type:"Мессенджер",category:"social",logo:"https://cdn.simpleicons.org/max",color:"#6f5cff",gradient:"linear-gradient(135deg,#927cff,#4b36d8)"},
+{id:"avito",name:"Авито",type:"Сервис",category:"social",logo:"https://cdn.simpleicons.org/avito",color:"#00a86b",gradient:"linear-gradient(135deg,#27d18c,#00804e)"},
+{id:"rave",name:"Rave",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/rave",color:"#ff4d91",gradient:"linear-gradient(135deg,#ff70aa,#d3226b)"},
+{id:"rutube",name:"Rutube",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/rutube",color:"#ff3b30",gradient:"linear-gradient(135deg,#ff665e,#cf160e)"},
+{id:"happ",name:"Happ",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/happ",color:"#815cff",gradient:"linear-gradient(135deg,#a083ff,#5230d9)"},
+{id:"v2raytun",name:"v2RayTun",type:"Сервис",category:"useful",logo:"",color:"#5d65ff",gradient:"linear-gradient(135deg,#7984ff,#3b42d8)"},
+{id:"chatgpt",name:"ChatGPT",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/openai",color:"#10a37f",gradient:"linear-gradient(135deg,#20c997,#087c60)"}
 ];
 
 let selected=new Set();
@@ -381,15 +381,16 @@ function getProfileToken(){
 }
 
 function generateOrderNumber(){
-
-  const now=new Date();
-
-  const year=String(now.getFullYear()).slice(-2);
-  const month=String(now.getMonth()+1).padStart(2,"0");
-  const day=String(now.getDate()).padStart(2,"0");
-  const random=Math.floor(1000+Math.random()*9000);
-
-  return`AC-${year}${month}${day}-${random}`;
+  const alphabet="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes=new Uint8Array(10);
+  if(window.crypto && crypto.getRandomValues){
+    crypto.getRandomValues(bytes);
+  }else{
+    for(let i=0;i<bytes.length;i++) bytes[i]=Math.floor(Math.random()*256);
+  }
+  let value="";
+  for(const byte of bytes) value+=alphabet[byte%alphabet.length];
+  return "AC-"+value;
 }
 
 function normalizePhone(value){
@@ -555,73 +556,6 @@ function getClientOrder(){
  * Используется только если запись ещё находится
  * внутри 12-часового периода.
  */
-function getClientOrderFallback(){
-
-  try{
-
-    const saved=
-      localStorage.getItem(
-        CLIENT_ORDER_KEY
-      );
-
-    const savedTime=
-      localStorage.getItem(
-        CLIENT_ORDER_TIME_KEY
-      );
-
-    if(!saved||!savedTime){
-      return null;
-    }
-
-    const createdAt=
-      Number(savedTime);
-
-    if(
-      !Number.isFinite(createdAt)||
-      createdAt<=0
-    ){
-      return null;
-    }
-
-    const age=Date.now()-createdAt;
-
-    if(
-      age<0||
-      age>=0
-    ){
-      localStorage.removeItem(
-        CLIENT_ORDER_KEY
-      );
-
-      localStorage.removeItem(
-        CLIENT_ORDER_TIME_KEY
-      );
-
-      return null;
-    }
-
-    const order=JSON.parse(saved);
-
-    if(!isValidSavedOrder(order)){
-      return null;
-    }
-
-    return{
-      createdAt,
-      order
-    };
-
-  }catch(error){
-
-    console.log(
-      "Client order fallback error:",
-      error
-    );
-
-    return null;
-  }
-}
-
 function clearOrderStorage(){
   try{
     localStorage.removeItem(CLIENT_ORDER_KEY);
@@ -1032,64 +966,7 @@ async function createOrder(){
     return false;
   }
 
-  const price=
-    calculatePrice(
-      selectedList.length
-    );
-
-  const orderNumber=
-    generateOrderNumber();
-
-  const orderData={
-
-    order_number:orderNumber,
-
-    client_name:name,
-
-    client_phone:phone,
-
-    profile_token:getProfileToken(),
-
-    app_ids:
-      selectedList.map(
-        app=>app.id
-      ),
-
-    apps:
-      selectedList.map(app=>({
-        id:app.id,
-        name:app.name,
-        type:app.type
-      })),
-
-    original:
-      Math.round(price.original),
-
-    discount:
-      Math.round(price.discountAmount),
-
-    free_apps:0,
-
-    total:
-      Math.round(price.total),
-
-    status:
-      "awaiting_review"
-  };
-
-  /*
-   * Финальная проверка перед INSERT.
-   */
-  if(
-    !isValidSavedOrder(orderData)
-  ){
-
-    showToast(
-      "Не удалось проверить данные заказа"
-    );
-
-    return false;
-  }
+  const price=calculatePrice(selectedList.length);
 
   isCreatingOrder=true;
 
@@ -1100,82 +977,52 @@ async function createOrder(){
 
   try{
 
-    const {error}=
-      await supabaseClient
-        .from("orders")
-        .insert([orderData]);
+    const savedOrderReferralCode =
+      localStorage.getItem(REFERRAL_CODE_KEY) ||
+      localStorage.getItem("referral_code") ||
+      null;
+
+    const {
+      data: createdOrder,
+      error
+    } = await supabaseClient.rpc(
+      "create_order",
+      {
+        p_client_name: name,
+        p_client_phone: phone,
+        p_app_ids: selectedList.map(app=>app.id),
+        p_profile_token: getProfileToken(),
+        p_referral_code: isValidReferralCode(savedOrderReferralCode)
+          ? savedOrderReferralCode.trim()
+          : null
+      }
+    );
 
     if(error){
 
       console.error(error);
 
-      const message=
-        error.message||"";
+      const message=error.message||"";
 
       if(message.includes("RATE_LIMIT:")){
-
         showToast(
           "Лимит заказов достигнут. Попробуйте снова через 10 минут."
         );
-
       }else{
-
         showToast(
-          "Ошибка Supabase: "+
-          (message||
-          "неизвестная ошибка")
+          "Ошибка создания заказа: "+
+          (message||"неизвестная ошибка")
         );
       }
 
       return false;
     }
-/*
- * После успешного создания заказа привязываем
- * клиента к рефереру.
- */
 
-const savedOrderReferralCode =
-  localStorage.getItem(
-    REFERRAL_CODE_KEY
-  ) ||
-  localStorage.getItem(
-    "referral_code"
-  );
-
-if(
-  isValidReferralCode(
-    savedOrderReferralCode
-  )
-){
-
-  const {
-    error: referralError
-  } = await supabaseClient.rpc(
-    "register_referral",
-    {
-      p_referral_code:
-        savedOrderReferralCode.trim(),
-
-      p_referred_user_id:
-        phone
-    }
-  );
-
-  if(referralError){
-
-    console.error(
-      "Referral registration error:",
-      referralError
-    );
-
-  }
-}
     const createdAt=Date.now();
-
-    currentOrder=orderData;
+    currentOrder=createdOrder;
 
     saveClientOrder(
-      orderData,
+      createdOrder,
       createdAt
     );
 
@@ -1187,7 +1034,7 @@ if(
     updatePrice();
 
     showOrderStatus(
-      orderData,
+      createdOrder,
       true
     );
 
@@ -1197,9 +1044,49 @@ if(
 
     showToast(
       "Заказ "+
-      orderNumber+
+      createdOrder.order_number+
       " создан"
     );
+
+    const orderApps =
+      Array.isArray(createdOrder.apps)
+        ? createdOrder.apps.map(app=>app.name).filter(Boolean).join(", ")
+        : selectedList.map(app=>app.name).join(", ");
+
+    let whatsappText =
+      "Здравствуйте! Хочу оформить заказ.\n\n" +
+      "📦 ЗАКАЗ\n" +
+      `Номер заказа: ${createdOrder.order_number}\n` +
+      `📱 Приложение: ${orderApps}\n` +
+      `👤 Клиент: ${createdOrder.client_name}\n` +
+      `📞 Телефон: ${createdOrder.client_phone}\n\n` +
+      `💰 Стоимость: ${createdOrder.original || 0} ₽\n`;
+
+    if(Number(createdOrder.discount || 0) > 0){
+      whatsappText += `🏷️ Скидка: ${createdOrder.discount} ₽\n`;
+    }
+
+    whatsappText +=
+      `💵 Итого к оплате: ${createdOrder.total || 0} ₽\n\n` +
+      "━━━━━━━━━━━━━━━━━━\n" +
+      "💳 ОПЛАТА ЗАКАЗА\n" +
+      "━━━━━━━━━━━━━━━━━━\n\n" +
+      "🏦 Т-Банк\n" +
+      "👤 Мурат Межидов Х\n" +
+      "📱 +79289480706\n\n" +
+      `💰 К оплате: ${createdOrder.total || 0} ₽\n\n` +
+      "━━━━━━━━━━━━━━━━━━\n" +
+      "📎 ЧЕК ОБ ОПЛАТЕ ОБЯЗАТЕЛЕН\n" +
+      "━━━━━━━━━━━━━━━━━━\n\n" +
+      "✅ После проверки чека заказ будет подтверждён.\n\n" +
+      "🌐 После подтверждения вернитесь на сайт в «Ваш профиль», чтобы получить доступ к заказу.\n" +
+      "━━━━━━━━━━━━━━━━━━";
+
+    window.location.href =
+      "https://wa.me/" +
+      WHATSAPP_NUMBER +
+      "?text=" +
+      encodeURIComponent(whatsappText);
 
     return true;
 
@@ -1235,7 +1122,7 @@ function showPaymentSupport(){
   if(statusSupportButton) statusSupportButton.style.display="flex";
 }
 
-function showPaymentConfirmed(order){
+function showPaymentConfirmed(order,autoScroll=false){
 
   statusPanel.classList.add("show");
   installPanel.classList.remove("show");
@@ -1322,44 +1209,6 @@ function showOrderStatus(order,autoScroll=false){
   }
 }
 
-function renderInstallPanel(order){
-  statusPanel.classList.remove("show");
-  cancelledPanel.classList.remove("show");
-  installPanel.classList.add("show");
-  installList.innerHTML="";
-
-  const orderedApps=Array.isArray(order.apps)?order.apps:[];
-  orderedApps.forEach(orderApp=>{
-    const app=apps.find(item=>item.id===orderApp.id);
-    if(!app)return;
-    const item=document.createElement("div");
-    item.className="install-item";
-    const name=document.createElement("div");
-    name.className="install-name";
-    name.textContent=app.name;
-    const link=document.createElement("a");
-    link.className="install-button";
-    link.href=app.install;
-    link.target="_blank";
-    link.rel="noopener noreferrer";
-    link.textContent="Установить";
-    item.append(name,link);
-    installList.appendChild(item);
-  });
-
-  if(isAppsInstalled(order)){
-    installedButton.disabled=true;
-    installedButton.textContent="✅ Приложения установлены";
-    activationPanel.classList.add("show");
-  }else{
-    activationPanel.classList.remove("show");
-    installedButton.disabled=false;
-    installedButton.textContent="👉 Я установил все приложения → продолжить";
-  }
-
-  updateWhatsAppLinks();
-}
-
 function renderCancelled(order){
 
   statusPanel.classList.remove("show");
@@ -1375,7 +1224,6 @@ if(statusTimer){
 }
 
 try{
-  localStorage.removeItem(CLIENT_ORDER_KEY);
   localStorage.removeItem(CLIENT_ORDER_KEY);
   localStorage.removeItem(CLIENT_ORDER_TIME_KEY);
   localStorage.removeItem(INSTALLED_ORDER_KEY);

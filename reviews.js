@@ -138,6 +138,7 @@ function initForm(sb) {
     const author = form.elements.author.value.trim() || "Клиент";
     const text = form.elements.text.value.trim();
 
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) return toast("Выберите оценку от 1 до 5");
     if (text.length < 10) return toast("Напишите хотя бы 10 символов");
 
     const button = form.querySelector("[type=submit]");
