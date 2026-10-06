@@ -361,6 +361,29 @@ function showToast(message){
   },3000);
 }
 
+function generateProfileToken(){
+  try{
+    if(window.crypto && crypto.randomUUID){
+      return crypto.randomUUID();
+    }
+  }catch(error){}
+  return "ac_"+Date.now()+"_"+Math.random().toString(36).slice(2,18);
+}
+
+function getProfileToken(){
+  try{
+    const saved=localStorage.getItem("appcore_profile_token");
+    if(saved && /^[A-Za-z0-9_-]{20,80}$/.test(saved)){
+      return saved;
+    }
+  }catch(error){}
+  const token=generateProfileToken();
+  try{
+    localStorage.setItem("appcore_profile_token",token);
+  }catch(error){}
+  return token;
+}
+
 function generateOrderNumber(){
 
   const now=new Date();
@@ -1029,6 +1052,8 @@ async function createOrder(){
 
     client_phone:phone,
 
+    profile_token:getProfileToken(),
+
     app_ids:
       selectedList.map(
         app=>app.id
@@ -1203,11 +1228,53 @@ if(
   }
 }
 
+function showPaymentConfirmed(order){
+
+  statusPanel.classList.add("show");
+  installPanel.classList.remove("show");
+  cancelledPanel.classList.remove("show");
+
+  statusTitle.textContent="✅ Оплата подтверждена";
+  statusText.textContent="Ваш заказ подтверждён. Приложения доступны в вашем профиле.";
+
+  orderNumberDisplay.textContent=
+    "Номер заказа: "+order.order_number;
+
+  let profileButton=document.getElementById("profileOrderButton");
+
+  if(!profileButton){
+    profileButton=document.createElement("a");
+    profileButton.id="profileOrderButton";
+    profileButton.className="new-order-button";
+    profileButton.textContent="👤 Перейти в профиль →";
+    profileButton.style.display="block";
+    profileButton.style.textAlign="center";
+    profileButton.style.textDecoration="none";
+    profileButton.style.marginTop="14px";
+    statusPanel.insertBefore(profileButton,statusPanel.querySelector(".status-support"));
+  }
+
+  profileButton.href="profile.html";
+  profileButton.style.display="block";
+
+  if(autoScroll){
+    setTimeout(()=>{
+      statusPanel.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+      });
+    },120);
+  }
+}
+
 function showOrderStatus(order,autoScroll=false){
 
   statusPanel.classList.add("show");
 
   installPanel.classList.remove("show");
+
+  const profileButton=document.getElementById("profileOrderButton");
+  if(profileButton) profileButton.style.display="none";
   cancelledPanel.classList.remove("show");
 
   statusTitle.textContent=
@@ -1355,12 +1422,12 @@ async function checkOrderStatus(){
 
     if(!data||!data.length)return;
 
-    const serverOrder=
-      data[0];
+    const serverOrder =
+      Array.isArray(data) ? data[0] : data;
 
     if(
-      !serverOrder||
-      typeof serverOrder.status!=="string"
+      !serverOrder ||
+      typeof serverOrder.status !== "string"
     ){
       return;
     }
@@ -1414,6 +1481,9 @@ async function checkOrderStatus(){
         updatedOrder
       );
 
+      statusTitle.textContent="⏳ Ожидание оплаты";
+      statusText.textContent="Заказ принят. Ожидайте подтверждения оплаты. После подтверждения здесь появится кнопка перехода в профиль.";
+
       return;
     }
 
@@ -1424,7 +1494,7 @@ async function checkOrderStatus(){
       "completed"
     ){
 
-      renderInstallPanel(
+      showPaymentConfirmed(
         updatedOrder
       );
 
