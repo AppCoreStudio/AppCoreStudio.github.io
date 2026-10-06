@@ -1,7 +1,6 @@
-import { SUPABASE_URL, SUPABASE_KEY } from "./config.js";
 import { initReviews } from "./reviews.js";
 
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = window.supabase.createClient();
 
 initReviews(sb);
 
