@@ -159,9 +159,24 @@ function orderCard(o) {
 
     const tabs = make("div", "order-tabs");
     const appsTab = make("button", "order-tab active", "1. ПРИЛОЖЕНИЯ");
-    const installed = isOrderInstalled(o.order_number);
-    const activationTab = make("button", "order-tab activation-tab" + (installed ? "" : " locked"), "2. 🔐 АКТИВАЦИЯ");
+    const installedIds = new Set();
+
+    try {
+      const raw = localStorage.getItem(INSTALLED_ORDER_KEY + "_" + o.order_number);
+      const saved = raw ? JSON.parse(raw) : [];
+      if (Array.isArray(saved)) saved.forEach(id => installedIds.add(id));
+    } catch (e) {}
+
+    const allInstalled = (o.apps || []).length > 0 &&
+      (o.apps || []).every(a => installedIds.has(a.id));
+
+    const activationTab = make(
+      "button",
+      "order-tab activation-tab" + (allInstalled ? " ready" : ""),
+      "2. 🔐 АКТИВАЦИЯ"
+    );
     activationTab.innerHTML = '2. <span>🔐 АКТИВАЦИЯ</span><small>⚠️ ОБЯЗАТЕЛЬНО</small>';
+    activationTab.disabled = !allInstalled;
     tabs.append(appsTab, activationTab);
     card.append(tabs);
 
@@ -175,32 +190,40 @@ function orderCard(o) {
       const row = make("div", "app-row");
       row.append(make("span", "", a.name));
       const url = links[a.id];
+
       if (typeof url === "string" && url.startsWith("https://")) {
-        const link = make("a", "install-btn", "Установить");
+        const link = make("a", "install-btn" + (installedIds.has(a.id) ? " installed" : ""), installedIds.has(a.id) ? "✓ Установлено" : "Установить");
         link.href = url;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
+
+        link.addEventListener("click", () => {
+          setTimeout(() => {
+            try {
+              installedIds.add(a.id);
+              localStorage.setItem(
+                INSTALLED_ORDER_KEY + "_" + o.order_number,
+                JSON.stringify([...installedIds])
+              );
+            } catch (e) {}
+            render();
+          }, 700);
+        });
+
         row.append(link);
       }
+
       appsPane.append(row);
     });
 
-    const hint = make("div", "order-hint",
-      "⏱ Установите все приложения полностью, затем перейдите к шагу 2.");
+    const hint = make(
+      "div",
+      "order-hint",
+      allInstalled
+        ? "✅ Все приложения отмечены как установленные. Теперь доступна активация."
+        : "Установите каждое купленное приложение. После нажатия всех кнопок «Установить» станет доступна активация."
+    );
     appsPane.append(hint);
-
-    const confirmInstalled = make("button", "installed-confirm", installed ? "✅ Все приложения установлены" : "Я установил все приложения");
-    confirmInstalled.type = "button";
-    if (installed) confirmInstalled.disabled = true;
-    confirmInstalled.addEventListener("click", () => {
-      try { localStorage.setItem(INSTALLED_ORDER_KEY, o.order_number); } catch (e) {}
-      activationTab.classList.remove("locked");
-      activationTab.disabled = false;
-      confirmInstalled.disabled = true;
-      confirmInstalled.textContent = "✅ Все приложения установлены";
-      toast("Теперь доступна обязательная активация");
-    });
-    appsPane.append(confirmInstalled);
 
     activationPane.append(
       make("div", "activation-title", "⚠️ ВНИМАТЕЛЬНО ОЗНАКОМЬТЕСЬ С ИНСТРУКЦИЕЙ"),
@@ -215,20 +238,24 @@ function orderCard(o) {
     activationPane.append(wa);
 
     appsTab.addEventListener("click", () => {
-      appsTab.classList.add("active"); activationTab.classList.remove("active");
-      appsPane.classList.add("active"); activationPane.classList.remove("active");
+      appsTab.classList.add("active");
+      activationTab.classList.remove("active");
+      appsPane.classList.add("active");
+      activationPane.classList.remove("active");
     });
 
     activationTab.addEventListener("click", () => {
-      if (!isOrderInstalled(o.order_number)) {
+      const currentInstalled = (o.apps || []).every(a => installedIds.has(a.id));
+      if (!currentInstalled) {
         toast("Сначала установите все приложения");
         return;
       }
-      appsTab.classList.remove("active"); activationTab.classList.add("active");
-      appsPane.classList.remove("active"); activationPane.classList.add("active");
+      appsTab.classList.remove("active");
+      activationTab.classList.add("active");
+      appsPane.classList.remove("active");
+      activationPane.classList.add("active");
     });
 
-    if (!installed) activationTab.disabled = true;
     card.append(appsPane, activationPane);
 
   } else if (o.status === "awaiting_review") {
