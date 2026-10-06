@@ -1,6 +1,25 @@
 const SUPABASE_URL = "https://dkgipfotfjntlhabakns.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+async function rpc(functionName, params){
+  const response = await fetch(
+    SUPABASE_URL + "/rest/v1/rpc/" + encodeURIComponent(functionName),
+    {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params || {})
+    }
+  );
+  const raw = await response.text();
+  let data = null;
+  try { data = raw ? JSON.parse(raw) : null; } catch (e) {}
+  if (!response.ok) {
+    return { data: null, error: { message: (data && (data.message || data.error || data.hint)) || ("HTTP " + response.status) } };
+  }
+  return { data, error: null };
+}
 let toastTimer;
 function toast(message) {
   const el = document.getElementById("toast");
@@ -90,7 +109,7 @@ $("recForm").addEventListener("submit", async e => {
 
   button.disabled = true;
 
-  const { data, error } = await sb.rpc("recover_profile", {
+  const { data, error } = await rpc("recover_profile", {
     p_phone: phone,
     p_order_number: order
   });
@@ -348,7 +367,7 @@ async function load(manual) {
     return;
   }
 
-  const { data, error } = await sb.rpc("get_profile", { p_token: token });
+  const { data, error } = await rpc("get_profile", { p_token: token });
 
   if (error) {
     console.error(error);
