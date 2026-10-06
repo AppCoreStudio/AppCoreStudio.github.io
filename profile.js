@@ -1,7 +1,15 @@
-import { SUPABASE_URL, SUPABASE_KEY } from "./config.js";
-import { toast } from "./ui.js";
-
+const SUPABASE_URL = "https://dkgipfotfjntlhabakns.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let toastTimer;
+function toast(message) {
+  const el = document.getElementById("toast");
+  if (!el) return;
+  el.textContent = message;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 3000);
+}
 
 const TOKEN_KEY = "appcore_profile_token";
 const WHATSAPP_NUMBER = "79289480706";
