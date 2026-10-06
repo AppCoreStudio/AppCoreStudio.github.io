@@ -168,9 +168,9 @@ const statusSupportButton=$("statusSupportButton");
 const cancelledPanel=$("cancelledPanel");
 const cancelledOrderNumber=$("cancelledOrderNumber");
 
-const newOrderStatusButton=$("newOrderStatusButton");
-const newOrderInstallButton=$("newOrderInstallButton");
-const newOrderCancelledButton=$("newOrderCancelledButton");
+const newOrderStatusButton=null;
+const newOrderInstallButton=null;
+const newOrderCancelledButton=null;
 
 const confirmOverlay=$("confirmOverlay");
 const confirmClose=$("confirmClose");
@@ -1232,6 +1232,7 @@ function hidePaymentSupport(){
   if(statusSupportButton) statusSupportButton.style.display="none";
   const supportLink=document.getElementById("orderWhatsapp");
   if(supportLink) supportLink.style.display="none";
+  if(statusSupportButton) statusSupportButton.style.display="none";
 }
 
 function showPaymentSupport(){
