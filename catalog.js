@@ -966,64 +966,7 @@ async function createOrder(){
     return false;
   }
 
-  const price=
-    calculatePrice(
-      selectedList.length
-    );
-
-  const orderNumber=
-    generateOrderNumber();
-
-  const orderData={
-
-    order_number:orderNumber,
-
-    client_name:name,
-
-    client_phone:phone,
-
-    profile_token:getProfileToken(),
-
-    app_ids:
-      selectedList.map(
-        app=>app.id
-      ),
-
-    apps:
-      selectedList.map(app=>({
-        id:app.id,
-        name:app.name,
-        type:app.type
-      })),
-
-    original:
-      Math.round(price.original),
-
-    discount:
-      Math.round(price.discountAmount),
-
-    free_apps:0,
-
-    total:
-      Math.round(price.total),
-
-    status:
-      "awaiting_review"
-  };
-
-  /*
-   * Финальная проверка перед INSERT.
-   */
-  if(
-    !isValidSavedOrder(orderData)
-  ){
-
-    showToast(
-      "Не удалось проверить данные заказа"
-    );
-
-    return false;
-  }
+  const price=calculatePrice(selectedList.length);
 
   isCreatingOrder=true;
 
@@ -1079,7 +1022,7 @@ async function createOrder(){
     currentOrder=createdOrder;
 
     saveClientOrder(
-      orderData,
+      createdOrder,
       createdAt
     );
 
@@ -1091,7 +1034,7 @@ async function createOrder(){
     updatePrice();
 
     showOrderStatus(
-      orderData,
+      createdOrder,
       true
     );
 
