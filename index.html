@@ -37,5 +37,41 @@
 </form></div>
 <div class="toast" id="toast"></div>
 <script src="supabase-lite.js?v=20261006c"></script>
+<script>
+(function(){
+  const code = new URLSearchParams(window.location.search).get("ref");
+  if (!code) return;
+
+  const visitorKey = "appcore_referral_visitor_id";
+  let visitorId = null;
+
+  try {
+    visitorId = localStorage.getItem(visitorKey);
+    if (!visitorId) {
+      visitorId = (window.crypto && typeof crypto.randomUUID === "function")
+        ? crypto.randomUUID()
+        : "visitor-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+      localStorage.setItem(visitorKey, visitorId);
+    }
+  } catch {
+    visitorId = "visitor-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+  }
+
+  fetch("https://dkgipfotfjntlhabakns.supabase.co/rest/v1/rpc/track_referral_click", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": "sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6"
+    },
+    body: JSON.stringify({
+      p_referral_code: code.trim().toUpperCase(),
+      p_visitor_id: visitorId
+    }),
+    keepalive: true
+  }).catch(function(error){
+    console.warn("Referral click tracking:", error);
+  });
+})();
+</script>
 <script type="module" src="main.js?v=20261007a"></script>
 </body></html>
