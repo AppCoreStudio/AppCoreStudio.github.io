@@ -1019,7 +1019,7 @@
         </div>
         <div class="mini-stat">
           <div class="label">Заказов</div>
-          <div class="value">${rows.length}</div>
+          <div class="value">${clientList.reduce((sum, client) => sum + client.total_orders, 0)}</div>
         </div>
         <div class="mini-stat">
           <div class="label">Оборот</div>
