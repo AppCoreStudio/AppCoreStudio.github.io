@@ -995,10 +995,12 @@
 
       const client = clients[clientId];
 
-      client.orders.push(row);
-      client.total_orders += 1;
-      client.total_turnover += Number(row.order_total || 0);
-      client.total_reward += Number(row.reward_amount || 0);
+      if (row.order_id) {
+        client.orders.push(row);
+        client.total_orders += 1;
+        client.total_turnover += Number(row.order_total || 0);
+        client.total_reward += Number(row.reward_amount || 0);
+      }
     });
 
     const clientList = Object.values(clients);
