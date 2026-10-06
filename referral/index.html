@@ -2423,7 +2423,7 @@ async function loadLatestWithdrawStatus(userId){
             await rpc(
                 "get_referral_withdrawals",
                 {
-                    p_user_id:userId
+                    p_session_token:getStoredToken()
                 }
             );
 
@@ -2963,8 +2963,8 @@ async function confirmWithdraw(){
             await rpc(
                 "submit_referral_withdrawal",
                 {
-                    p_user_id:
-                        session.user_id,
+                    p_session_token:
+                        token,
 
                     p_amount:
                         pendingWithdraw.amount,
