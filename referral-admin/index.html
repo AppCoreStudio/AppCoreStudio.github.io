@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <title>Реферальная админка — AppCore</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
+  <script src="/supabase-lite.js?v=20261006"></script>
 
   <style>
     * { box-sizing: border-box; }
@@ -479,6 +479,17 @@
 
   const supabaseClient =
     window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  async function requireAdminSession() {
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (!data || !data.session) {
+      window.location.href = '/admin.html';
+      return false;
+    }
+
+    return true;
+  }
 
   const REFRESH_INTERVAL_MS = 30000;
   const WITHDRAWAL_DELAY_MS = 5 * 60 * 1000;
@@ -1319,11 +1330,12 @@
 
   /* ---------- Запуск ---------- */
 
-  refreshData();
-
-  setInterval(refreshData, REFRESH_INTERVAL_MS);
-  setInterval(updateCountdowns, 1000);
-
+  requireAdminSession().then(ok => {
+    if (!ok) return;
+    refreshData();
+    setInterval(refreshData, REFRESH_INTERVAL_MS);
+    setInterval(updateCountdowns, 1000);
+  });
 </script>
 
 </body>
