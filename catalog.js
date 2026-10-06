@@ -1076,9 +1076,12 @@ async function createOrder(){
         ? createdOrder.apps.map(app=>app.name).filter(Boolean).join(", ")
         : selectedList.map(app=>app.name).join(", ");
 
+    // ВАЖНО: текст строится только из ASCII + \uXXXX escape-последовательностей.
+    // Это исключает повреждение emoji в исходнике JS. Для WhatsApp используем
+    // официальный api.whatsapp.com/send URL и encodeURIComponent (UTF-8).
     let whatsappText =
       "Здравствуйте! Хочу оформить заказ.\n\n" +
-      "📦 ЗАКАЗ\n" +
+      "\u{1F4E6} ЗАКАЗ\n" +
       `Номер заказа: ${createdOrder.order_number}\n` +
       `\u{1F4F1} Приложение: ${orderApps}\n` +
       `\u{1F464} Клиент: ${createdOrder.client_name}\n` +
@@ -1092,23 +1095,23 @@ async function createOrder(){
     whatsappText +=
       `\u{1F4B5} Итого к оплате: ${createdOrder.total || 0} ₽\n\n` +
       "━━━━━━━━━━━━━━━━━━\n" +
-      "💳 ОПЛАТА ЗАКАЗА\n" +
+      "\u{1F4B3} ОПЛАТА ЗАКАЗА\n" +
       "━━━━━━━━━━━━━━━━━━\n\n" +
-      "🏦 Т-Банк\n" +
-      "👤 Мурат Межидов Х\n" +
-      "📱 +79289480706\n\n" +
-      `💰 К оплате: ${createdOrder.total || 0} ₽\n\n` +
+      "\u{1F3E6} Т-Банк\n" +
+      "\u{1F464} Мурат Межидов Х\n" +
+      "\u{1F4F1} +79289480706\n\n" +
+      `\u{1F4B0} К оплате: ${createdOrder.total || 0} ₽\n\n` +
       "━━━━━━━━━━━━━━━━━━\n" +
-      "📎 ЧЕК ОБ ОПЛАТЕ ОБЯЗАТЕЛЕН\n" +
+      "\u{1F4CE} ЧЕК ОБ ОПЛАТЕ ОБЯЗАТЕЛЕН\n" +
       "━━━━━━━━━━━━━━━━━━\n\n" +
-      "✅ После проверки чека заказ будет подтверждён.\n\n" +
-      "🌐 После подтверждения вернитесь на сайт в «Ваш профиль», чтобы получить доступ к заказу.\n" +
+      "\u{2705} После проверки чека заказ будет подтверждён.\n\n" +
+      "\u{1F310} После подтверждения вернитесь на сайт в «Ваш профиль», чтобы получить доступ к заказу.\n" +
       "━━━━━━━━━━━━━━━━━━";
 
     window.location.href =
-      "https://wa.me/" +
-      WHATSAPP_NUMBER +
-      "?text=" +
+      "https://api.whatsapp.com/send/?phone=" +
+      encodeURIComponent(WHATSAPP_NUMBER) +
+      "&text=" +
       encodeURIComponent(whatsappText);
 
     return true;
