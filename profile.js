@@ -1,7 +1,11 @@
 const SUPABASE_URL = "https://dkgipfotfjntlhabakns.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
 async function rpc(functionName, params){
-  const response = await fetch(
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
+  let response;
+  try {
+    response = await fetch(
     SUPABASE_URL + "/rest/v1/rpc/" + encodeURIComponent(functionName),
     {
       method: "POST",
@@ -9,9 +13,15 @@ async function rpc(functionName, params){
         "apikey": SUPABASE_KEY,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(params || {})
+      body: JSON.stringify(params || {}),
+      signal: controller.signal
     }
   );
+  } catch (error) {
+    clearTimeout(timeout);
+    return { data: null, error: { message: error && error.name === "AbortError" ? "TIMEOUT" : (error && error.message) || "NETWORK_ERROR" } };
+  }
+  clearTimeout(timeout);
   const raw = await response.text();
   let data = null;
   try { data = raw ? JSON.parse(raw) : null; } catch (e) {}
@@ -372,7 +382,10 @@ async function load(manual) {
   if (error) {
     console.error(error);
     if (!profile) {
-      $("loading").textContent = "Не удалось загрузить профиль. Обновите страницу.";
+      $("loading").textContent = error.message === "TIMEOUT"
+        ? "Сервер профиля не отвечает. Вход можно восстановить ниже."
+        : "Не удалось загрузить профиль. Вход можно восстановить ниже.";
+      showRecover(false);
     }
     return;
   }
