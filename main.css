@@ -26,11 +26,11 @@ button,input,textarea{font:inherit}.page{width:100%;max-width:560px;min-height:c
 .review-title-row{gap:10px;align-items:center}
 .review-title-row span{opacity:.68}
 .slider{scroll-snap-type:x mandatory;scroll-padding-inline:2px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;gap:12px;padding:2px 2px 8px}
-.review{scroll-snap-align:start;min-width:calc(100% - 34px);text-align:left;display:block;padding:16px;border:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.025));box-shadow:0 8px 24px rgba(0,0,0,.16);transition:transform .16s ease,border-color .16s ease,background .16s ease}
+.review{scroll-snap-align:start;min-width:calc(100% - 34px);text-align:left;display:block;padding:10px 12px;border:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.025));box-shadow:0 8px 24px rgba(0,0,0,.16);transition:transform .16s ease,border-color .16s ease,background .16s ease}
 .review:active{transform:scale(.985)}
-.review .stars{font-size:15px;letter-spacing:1.5px;margin-bottom:9px}
-.review p{font-size:14px;line-height:1.5;margin:0 0 11px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.review span{display:block;color:#8f98a9;font-size:11px;line-height:1.35}
+.review .stars{font-size:12px;letter-spacing:1px;margin-bottom:5px}
+.review p{font-size:12px;line-height:1.35;margin:0 0 5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.review span{display:block;color:#8f98a9;font-size:9px;line-height:1.25}
 .review-dots{min-height:18px}
 .review-dot{width:6px;height:6px;border-radius:50%;opacity:.35;transition:width .2s,opacity .2s}
 .review-dot.active{width:18px;border-radius:6px;opacity:1}
@@ -44,7 +44,7 @@ button,input,textarea{font:inherit}.page{width:100%;max-width:560px;min-height:c
 #detailLike:disabled{opacity:.82}
 @media (max-width:520px){
   .review-title-row span{font-size:9px}
-  .review{min-width:calc(100% - 24px)}
+  .review{min-width:calc(100% - 24px);min-height:88px}
   .actions .row{display:grid;grid-template-columns:1fr;gap:8px}
   .actions .row .btn{width:100%}
   .rating-summary{margin-bottom:10px}
@@ -53,3 +53,5 @@ button,input,textarea{font:inherit}.page{width:100%;max-width:560px;min-height:c
 @media (min-width:700px){
   .review{min-width:min(430px,calc(50% - 6px))}
 }
+
+.detail-nav{display:none!important}.review-detail-card{touch-action:pan-y}
