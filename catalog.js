@@ -1228,12 +1228,23 @@ if(
   }
 }
 
+function hidePaymentSupport(){
+  if(statusSupportButton) statusSupportButton.style.display="none";
+  const supportLink=document.getElementById("orderWhatsapp");
+  if(supportLink) supportLink.style.display="none";
+}
+
+function showPaymentSupport(){
+  if(statusSupportButton) statusSupportButton.style.display="flex";
+}
+
 function showPaymentConfirmed(order){
 
   statusPanel.classList.add("show");
   installPanel.classList.remove("show");
   cancelledPanel.classList.remove("show");
 
+  hidePaymentSupport();
   statusTitle.textContent="✅ Оплата подтверждена";
   statusText.textContent="Ваш заказ подтверждён. Приложения доступны в вашем профиле.";
 
@@ -1482,6 +1493,7 @@ async function checkOrderStatus(){
       );
 
       statusTitle.textContent="⏳ Ожидание оплаты";
+  showPaymentSupport();
       statusText.textContent="Заказ принят. Ожидайте подтверждения оплаты. После подтверждения здесь появится кнопка перехода в профиль.";
 
       return;
