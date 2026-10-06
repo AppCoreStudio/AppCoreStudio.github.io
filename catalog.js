@@ -148,6 +148,7 @@ const paymentClose=$("paymentClose");
 const paymentDone=$("paymentDone");
 const selectedApps=$("selectedApps");
 const paymentTotal=$("paymentTotal");
+const nameInput=$("nameInput");
 const phoneInput=$("phoneInput");
 
 const statusPanel=$("statusPanel");
@@ -679,6 +680,7 @@ function startNewOrder(){
 
   paymentOverlay.classList.remove("show");
 
+  nameInput.value="";
   phoneInput.value="";
 
   document.body.style.overflow="";
@@ -782,6 +784,7 @@ function openPaymentModal(){
     money(price.total);
 
   paymentOverlay.classList.add("show");
+  document.body.classList.add("checkout-open");
 
   document.body.style.overflow="hidden";
 }
@@ -789,6 +792,7 @@ function openPaymentModal(){
 function closePaymentModal(){
 
   paymentOverlay.classList.remove("show");
+  document.body.classList.remove("checkout-open");
 
   document.body.style.overflow="";
 }
@@ -951,6 +955,17 @@ async function createOrder(){
     return false;
   }
 
+  const name=nameInput.value.trim().slice(0,60);
+
+  if(!name){
+
+    showToast("Введите имя");
+
+    nameInput.focus();
+
+    return false;
+  }
+
   const phone=
     normalizePhone(
       phoneInput.value
@@ -1009,6 +1024,8 @@ async function createOrder(){
   const orderData={
 
     order_number:orderNumber,
+
+    client_name:name,
 
     client_phone:phone,
 
@@ -1182,7 +1199,7 @@ if(
     paymentDone.disabled=false;
 
     paymentDone.textContent=
-      "Я оплатил";
+      "Оформить заказ";
   }
 }
 
