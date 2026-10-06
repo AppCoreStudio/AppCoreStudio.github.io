@@ -1080,17 +1080,17 @@ async function createOrder(){
       "Здравствуйте! Хочу оформить заказ.\n\n" +
       "📦 ЗАКАЗ\n" +
       `Номер заказа: ${createdOrder.order_number}\n` +
-      `📱 Приложение: ${orderApps}\n` +
-      `👤 Клиент: ${createdOrder.client_name}\n` +
-      `📞 Телефон: ${createdOrder.client_phone}\n\n` +
-      `💰 Стоимость: ${createdOrder.original || 0} ₽\n`;
+      `\u{1F4F1} Приложение: ${orderApps}\n` +
+      `\u{1F464} Клиент: ${createdOrder.client_name}\n` +
+      `\u{1F4DE} Телефон: ${createdOrder.client_phone}\n\n` +
+      `\u{1F4B0} Стоимость: ${createdOrder.original || 0} ₽\n`;
 
     if(Number(createdOrder.discount || 0) > 0){
-      whatsappText += `🏷️ Скидка: ${createdOrder.discount} ₽\n`;
+      whatsappText += `\u{1F3F7}\uFE0F Скидка: ${createdOrder.discount} ₽\n`;
     }
 
     whatsappText +=
-      `💵 Итого к оплате: ${createdOrder.total || 0} ₽\n\n` +
+      `\u{1F4B5} Итого к оплате: ${createdOrder.total || 0} ₽\n\n` +
       "━━━━━━━━━━━━━━━━━━\n" +
       "💳 ОПЛАТА ЗАКАЗА\n" +
       "━━━━━━━━━━━━━━━━━━\n\n" +
