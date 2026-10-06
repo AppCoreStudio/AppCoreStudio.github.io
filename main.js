@@ -1,4 +1,4 @@
-import { initReviews } from "./reviews.js?v=20261007b";
+import { initReviews } from "./reviews.js?v=20261007d";
 
 const sb = window.supabase.createClient();
 
