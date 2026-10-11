@@ -991,9 +991,8 @@ async function createOrder(){
 
   const price=calculatePrice(selectedList.length);
 
-  // Открываем отдельную вкладку сразу по нажатию, чтобы не закрывать AppCore.
-  let whatsappWindow = null;
-  try { whatsappWindow = window.open("about:blank", "_blank"); } catch (e) {}
+  // WhatsApp открывается только по отдельному нажатию после сохранения заказа.
+  // Не создаём about:blank/Safari-вкладку: AppCore остаётся на экране.
 
   isCreatingOrder=true;
 
@@ -1115,17 +1114,27 @@ async function createOrder(){
       "&text=" +
       encodeURIComponent(whatsappText);
 
-    if (whatsappWindow && !whatsappWindow.closed) {
-      whatsappWindow.location.href = whatsappUrl;
-    } else {
-      showToast("Заказ сохранён. AppCore остался открыт — нажмите «Перейти в поддержку» в статусе заказа, чтобы открыть WhatsApp.");
+    let orderWhatsappButton = document.getElementById("orderSubmitWhatsApp");
+    if (!orderWhatsappButton) {
+      orderWhatsappButton = document.createElement("a");
+      orderWhatsappButton.id = "orderSubmitWhatsApp";
+      orderWhatsappButton.className = "status-support-button";
+      orderWhatsappButton.style.display = "flex";
+      orderWhatsappButton.style.marginTop = "10px";
+      orderWhatsappButton.textContent = "💬 Отправить заказ в WhatsApp";
+      const supportContainer = statusPanel.querySelector(".status-support");
+      (supportContainer || statusPanel).appendChild(orderWhatsappButton);
     }
+    orderWhatsappButton.href = whatsappUrl;
+    orderWhatsappButton.target = "_self";
+    orderWhatsappButton.rel = "nofollow";
+    orderWhatsappButton.style.display = "flex";
+    showToast("Заказ сохранён. Нажмите «Отправить заказ в WhatsApp» — AppCore не откроет пустую вкладку.");
 
     return true;
 
   }catch(error){
 
-    if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
     console.error(error);
 
     showToast(
