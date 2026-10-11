@@ -54,6 +54,13 @@ h1{position:relative;margin:0;font-size:34px;letter-spacing:-1.2px}.version{marg
 </main>
 <script>
 (function(){
+  document.getElementById("installButton").addEventListener("click", function(){
+    try {
+      if (window.opener && !window.opener.closed) {
+        window.opener.postMessage({type:"appcore-install-started", appId:"rave"}, window.location.origin);
+      }
+    } catch (e) {}
+  });
   const pageUrl = window.location.href.split("#")[0];
   const qr = document.getElementById("qr");
   qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=" + encodeURIComponent(pageUrl);
