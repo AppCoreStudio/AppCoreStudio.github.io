@@ -991,8 +991,23 @@ async function createOrder(){
 
   const price=calculatePrice(selectedList.length);
 
-  // WhatsApp открывается только по отдельному нажатию после сохранения заказа.
-  // Не создаём about:blank/Safari-вкладку: AppCore остаётся на экране.
+  // Safari/iOS может блокировать переход во внешнее приложение после await.
+  // Открываем вкладку синхронно на нажатие, показываем загрузку, затем направляем в WhatsApp.
+  let whatsappWindow = null;
+  try {
+    whatsappWindow = window.open("about:blank", "_blank");
+    if (whatsappWindow && whatsappWindow.document) {
+      whatsappWindow.document.open();
+      whatsappWindow.document.write(
+        "<!doctype html><html><head><meta name='viewport' content='width=device-width,initial-scale=1'>" +
+        "<title>AppCore — заказ</title></head><body style='font:16px -apple-system,Arial,sans-serif;padding:28px;background:#10131c;color:#fff'>" +
+        "<h2>AppCore</h2><p>Сохраняем заказ и открываем WhatsApp…</p></body></html>"
+      );
+      whatsappWindow.document.close();
+    }
+  } catch (popupError) {
+    whatsappWindow = null;
+  }
 
   isCreatingOrder=true;
 
@@ -1108,8 +1123,7 @@ async function createOrder(){
       "После проверки чека заказ будет подтверждён.\n\n" +
       "==================";
 
-    // Два способа запуска: сначала схема приложения, ниже — официальный HTTPS fallback.
-    // Оба запускаются только по явному нажатию пользователя; пустое окно не создаётся.
+    // Сначала пробуем установленное приложение, HTTPS — запасной вариант.
     const encodedText = encodeURIComponent(whatsappText);
     const whatsappAppUrl =
       "whatsapp://send?phone=" + WHATSAPP_NUMBER +
@@ -1117,6 +1131,15 @@ async function createOrder(){
     const whatsappWebUrl =
       "https://wa.me/" + WHATSAPP_NUMBER +
       "?text=" + encodedText;
+
+    // Переходим в окне, созданном непосредственно по нажатию «Оформить заказ».
+    if (whatsappWindow && !whatsappWindow.closed) {
+      try {
+        whatsappWindow.location.href = whatsappAppUrl;
+      } catch (navigationError) {
+        whatsappWindow.location.href = whatsappWebUrl;
+      }
+    }
 
     const supportContainer = statusPanel.querySelector(".status-support") || statusPanel;
     let orderWhatsappButton = document.getElementById("orderSubmitWhatsApp");
@@ -1149,7 +1172,11 @@ async function createOrder(){
     fallbackButton.rel = "nofollow";
     fallbackButton.style.display = "flex";
 
-    showToast("Заказ сохранён. Нажмите «Открыть приложение WhatsApp». Если не сработает — используйте вторую кнопку.");
+    if (!whatsappWindow || whatsappWindow.closed) {
+      showToast("Заказ сохранён, но браузер заблокировал автоматический переход. Нажмите кнопку WhatsApp в статусе заказа.");
+    } else {
+      showToast("Заказ сохранён. Открываем WhatsApp…");
+    }
 
     return true;
 
