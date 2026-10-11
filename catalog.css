@@ -1450,7 +1450,7 @@ filter:brightness(.9);
 }
 
 
-/* Бейдж популярных приложений в каталоге */
+/* Контрастные метки популярности и отдельное оформление топ-3 */
 .app-card{position:relative}
 .app-popular-badge{
   position:absolute;
@@ -1460,17 +1460,44 @@ filter:brightness(.9);
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  max-width:calc(100% - 34px);
-  padding:4px 5px;
-  border:1px solid rgba(255,211,89,.35);
-  border-radius:7px;
-  background:linear-gradient(135deg,rgba(255,204,77,.19),rgba(255,159,28,.12));
-  color:#ffd76a;
-  font-size:8px;
+  max-width:calc(100% - 14px);
+  padding:6px 8px;
+  border:1px solid #ffcf4a;
+  border-radius:8px;
+  background:linear-gradient(135deg,#ffe58a,#ffb72e);
+  color:#241600;
+  box-shadow:0 2px 10px rgba(255,183,46,.28);
+  font-size:10px;
   line-height:1;
-  font-weight:850;
+  font-weight:950;
+  letter-spacing:.15px;
   white-space:nowrap;
 }
+.app-popular-badge.top-rank{
+  padding:7px 9px;
+  font-size:10px;
+  border-width:1px;
+  box-shadow:0 3px 14px rgba(0,0,0,.35);
+}
+.app-popular-badge.top-1{
+  color:#302000;
+  border-color:#fff0a6;
+  background:linear-gradient(135deg,#fff3a6,#ffc629 55%,#f59e0b);
+  box-shadow:0 0 0 1px rgba(255,226,117,.25),0 4px 16px rgba(255,190,35,.38);
+}
+.app-popular-badge.top-2{
+  color:#17202b;
+  border-color:#edf4ff;
+  background:linear-gradient(135deg,#ffffff,#cbd8e8 58%,#91a4bb);
+  box-shadow:0 4px 14px rgba(192,211,235,.25);
+}
+.app-popular-badge.top-3{
+  color:#301508;
+  border-color:#ffd3ad;
+  background:linear-gradient(135deg,#ffd6b0,#d98b53 60%,#b9652b);
+  box-shadow:0 4px 14px rgba(217,139,83,.28);
+}
 @media(max-width:420px){
-  .app-popular-badge{top:6px;left:5px;padding:4px;font-size:7px}
+  .app-popular-badge{top:6px;left:5px;padding:5px 6px;font-size:9px}
+  .app-popular-badge.top-rank{padding:6px 7px;font-size:9px}
 }
