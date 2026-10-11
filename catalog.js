@@ -1108,10 +1108,11 @@ async function createOrder(){
       "После проверки чека заказ будет подтверждён.\n\n" +
       "==================";
 
+    // Используем HTTPS universal link: iOS открывает установленный WhatsApp без about:blank.
     const whatsappUrl =
-      "whatsapp://send?phone=" +
+      "https://wa.me/" +
       encodeURIComponent(WHATSAPP_NUMBER) +
-      "&text=" +
+      "?text=" +
       encodeURIComponent(whatsappText);
 
     let orderWhatsappButton = document.getElementById("orderSubmitWhatsApp");
