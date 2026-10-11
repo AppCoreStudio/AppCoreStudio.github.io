@@ -117,12 +117,14 @@ const WHATSAPP_NUMBER="79289480706";
 
 // Ручной рейтинг популярности для порядка каталога; первые 8 приложений отмечены бейджем.
 const POPULAR_APP_IDS=[
-  "sberbank","tbank","alfa","vtb","vk","max","avito","chatgpt",
-  "sber-invest","t-invest","alfa-invest","vtb-invest","yandex-pay",
-  "gazprom","vk-video","rutube","vk-messenger","v2raytun","happ",
-  "gazprom-invest","rshb","psb","rave"
+  "sberbank","tbank","max","vk","avito","rshb","vk-video","psb",
+  "alfa","vtb","gazprom","yandex-pay","vk-messenger","rutube","rave",
+  "happ","v2raytun","chatgpt",
+  "sber-invest","t-invest","alfa-invest","vtb-invest","gazprom-invest"
 ];
-const POPULAR_APP_SET=new Set(POPULAR_APP_IDS.slice(0,8));
+const POPULAR_APP_SET=new Set([
+  "sberbank","tbank","max","vk","avito","rshb","vk-video","psb"
+]);
 
 const apps=[
 {id:"sberbank",name:"Сбербанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#21a366",gradient:"linear-gradient(135deg,#25b86c,#08783e)"},
