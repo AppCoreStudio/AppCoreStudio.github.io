@@ -82,7 +82,7 @@ function show(which) {
 }
 
 function waLink(text) {
-  return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
+  return "whatsapp://send?phone=" + WHATSAPP_NUMBER + "&text=" + encodeURIComponent(text);
 }
 
 function orderText(o, intro, closing) {
