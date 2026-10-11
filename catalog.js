@@ -168,6 +168,14 @@ const toast=$("toast");
 const paymentOverlay=$("paymentOverlay");
 const paymentClose=$("paymentClose");
 const paymentDone=$("paymentDone");
+
+// Регистрируем клик оформления заказа сразу; createOrder объявлена ниже как function declaration.
+if(paymentDone){
+  paymentDone.addEventListener("click", function(event){
+    event.preventDefault();
+    createOrder();
+  });
+}
 const selectedApps=$("selectedApps");
 const paymentTotal=$("paymentTotal");
 const nameInput=$("nameInput");
@@ -1656,10 +1664,7 @@ categories.addEventListener(
   }
 );
 
-paymentDone.addEventListener(
-  "click",
-  createOrder
-);
+// Обработчик кнопки установлен рядом с получением элемента, чтобы он не зависел от поздней инициализации страницы.
 
 installedButton.addEventListener(
   "click",
