@@ -1120,10 +1120,10 @@ async function createOrder(){
     // Дополнительную кнопку в каталоге не создаём.
     const encodedText = encodeURIComponent(whatsappText);
     const whatsappUrl =
-      "https://wa.me/" + WHATSAPP_NUMBER +
-      "?text=" + encodedText;
+      "whatsapp://send?phone=" + WHATSAPP_NUMBER +
+      "&text=" + encodedText;
 
-    showToast("Заказ создан. Открываем WhatsApp…");
+    showToast("Заказ создан. Открываем приложение WhatsApp…");
     window.location.href = whatsappUrl;
 
     return true;
