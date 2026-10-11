@@ -1,24 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090911">
-<meta name="description" content="Инструкция по установке СберИнвестиции на iPhone через Safari.">
-<title>Установить СберИнвестиции на iPhone — AppCore</title>
+<meta name="description" content="Установка СберИнвестиции на iPhone через Safari — без компьютера.">
+<title>Установить СберИнвестиции — AppCore</title>
 <style>
-:root{color-scheme:dark;--bg:#090911;--muted:#a4a5b8;--line:rgba(255,255,255,.09);--pink:#ff4d91;--violet:#7658ff}
+:root{color-scheme:dark;--bg:#090911;--card:rgba(23,24,39,.82);--muted:#a4a5b8;--line:rgba(255,255,255,.09);--pink:#ff4d91;--violet:#7658ff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{min-height:100%;background:var(--bg)}
 body{margin:0;min-height:100dvh;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;background:radial-gradient(ellipse at 50% -8%,rgba(255,77,145,.23),transparent 42%),radial-gradient(ellipse at 100% 45%,rgba(118,88,255,.16),transparent 40%),var(--bg)}
 a{color:inherit}.wrap{width:min(100%,520px);margin:auto;padding:calc(18px + env(safe-area-inset-top)) 17px calc(28px + env(safe-area-inset-bottom))}
 .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:900;letter-spacing:-.3px}.brandmark{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#fff,#c9c5ff);color:#10101a;font-size:19px}.pill{padding:7px 10px;border:1px solid var(--line);border-radius:99px;color:#d8d8e5;font-size:11px;background:rgba(255,255,255,.04)}
 .app{text-align:center;padding:25px 19px 21px;border:1px solid var(--line);border-radius:28px;background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.018));box-shadow:0 24px 80px rgba(0,0,0,.25);overflow:hidden;position:relative}.app:before{content:"";position:absolute;width:230px;height:180px;top:-100px;left:calc(50% - 115px);background:rgba(255,77,145,.2);filter:blur(65px);pointer-events:none}
-.icon{position:relative;display:grid;place-items:center;width:86px;height:86px;margin:0 auto 15px;border-radius:25px;background:linear-gradient(145deg,#ff7ab1,#e72977 65%,#8b1e70);box-shadow:0 12px 36px rgba(255,49,131,.28);font-size:29px;font-weight:900}
-h1{position:relative;margin:0;font-size:30px;letter-spacing:-1px}.version{margin:8px 0 0;color:#d2d2df;font-size:14px}.chips{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin:17px 0 21px}.chip{padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:rgba(0,0,0,.16);color:#e8e8f0;font-size:11px}
+.icon{position:relative;display:grid;place-items:center;width:86px;height:86px;margin:0 auto 15px;border-radius:25px;background:linear-gradient(145deg,#ff7ab1,#e72977 65%,#8b1e70);box-shadow:0 12px 36px rgba(255,49,131,.28);font-size:42px;font-weight:900}
+h1{position:relative;margin:0;font-size:34px;letter-spacing:-1.2px}.version{margin:8px 0 0;color:#d2d2df;font-size:14px}.chips{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin:17px 0 21px}.chip{padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:rgba(0,0,0,.16);color:#e8e8f0;font-size:11px}
 .install{display:flex;justify-content:center;align-items:center;gap:9px;width:100%;min-height:56px;padding:14px 15px;border:0;border-radius:16px;background:linear-gradient(110deg,#ff76ad,#ff3f8b 48%,#a15cff);box-shadow:0 10px 32px rgba(255,65,143,.24);color:white;text-decoration:none;font-size:16px;font-weight:850;letter-spacing:-.2px;transition:transform .15s}.install:active{transform:scale(.985)}.note{margin:12px 0 0;color:#b9b9cc;font-size:11px;line-height:1.5}
-.section{margin-top:13px;padding:18px;border:1px solid var(--line);border-radius:21px;background:rgba(23,24,39,.82);backdrop-filter:blur(14px)}.section h2{margin:0 0 12px;font-size:15px;letter-spacing:-.2px}.tip{display:flex;align-items:flex-start;gap:11px;margin-top:12px}.tip:first-of-type{margin-top:0}.tip-icon{flex:0 0 34px;height:34px;display:grid;place-items:center;border-radius:11px;background:rgba(255,255,255,.07);font-size:16px}.tip strong{display:block;font-size:12px;margin:1px 0 4px}.tip p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
-.footer{display:flex;justify-content:center;gap:18px;margin:19px 0 2px}.footer a{color:#bcbdd0;font-size:11px;text-decoration:none}.brandline{text-align:center;margin-top:12px;color:#77798e;font-size:10px}
+.section{margin-top:13px;padding:18px;border:1px solid var(--line);border-radius:21px;background:var(--card);backdrop-filter:blur(14px)}.section h2{margin:0 0 12px;font-size:15px;letter-spacing:-.2px}.tip{display:flex;align-items:flex-start;gap:11px;margin-top:12px}.tip:first-of-type{margin-top:0}.tip-icon{flex:0 0 34px;height:34px;display:grid;place-items:center;border-radius:11px;background:rgba(255,255,255,.07);font-size:16px}.tip strong{display:block;font-size:12px;margin:1px 0 4px}.tip p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+.qrrow{display:flex;align-items:center;gap:15px}.qr{flex:0 0 108px;width:108px;height:108px;padding:6px;border-radius:13px;background:#fff;object-fit:contain}.qr-large{flex:0 0 auto;width:min(280px,75vw);height:min(280px,75vw);padding:10px;border-radius:18px;box-shadow:0 12px 35px rgba(0,0,0,.28)}.other-device{display:block;width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer}.other-device:active{transform:scale(.99)}.qrtext strong{display:block;font-size:12px;margin-bottom:6px}.qrtext p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+.links{display:flex;gap:8px;margin-top:13px}.links a{flex:1;text-align:center;padding:12px 9px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);font-size:11px;font-weight:750;text-decoration:none}.footer{display:flex;justify-content:center;gap:18px;margin:19px 0 2px}.footer a{color:#bcbdd0;font-size:11px;text-decoration:none}.brandline{text-align:center;margin-top:12px;color:#77798e;font-size:10px}
+@media(min-height:850px){.wrap{padding-top:28px}.top{margin-bottom:28px}}
 </style>
 </head>
 <body>
@@ -27,23 +29,60 @@ h1{position:relative;margin:0;font-size:30px;letter-spacing:-1px}.version{margin
 <section class="app" aria-labelledby="appName">
 <div class="icon" aria-hidden="true">С</div>
 <h1 id="appName">СберИнвестиции</h1>
-<p class="version">Установка для iPhone</p>
-<div class="chips"><span class="chip">📱 Safari</span><span class="chip">🖥️ Без ПК</span><span class="chip">⬇️ Установка приложения</span></div>
-<a class="install" id="installButton" href="https://installios.ru/apps/xCMK2b"><span>📲</span> Установить на iPhone <span>→</span></a>
+<p class="version">Установка через Safari · без компьютера</p>
+<div class="chips"><span class="chip">📱 Safari</span><span class="chip">🖥️ Без ПК</span><span class="chip">⬇️ Прямая установка</span></div>
+<a class="install" id="installButton" href="itms-services://?action=download-manifest&amp;url=https%3A%2F%2Finstallios.ru%2Fu%2Fmuradmegida%2Fpublic%2FUij3el.plist"><span>📲</span> Установить на iPhone <span>→</span></a>
 <p class="note">Откройте эту страницу в Safari на iPhone и нажмите кнопку установки.</p>
 </section>
 <section class="section">
-<h2>📲 Как установить</h2>
-<div class="tip"><span class="tip-icon">1️⃣</span><div><strong>Откройте страницу в Safari</strong><p>Для установки используйте Safari на iPhone, а не встроенный браузер мессенджера.</p></div></div>
-<div class="tip"><span class="tip-icon">2️⃣</span><div><strong>Нажмите «Установить на iPhone»</strong><p>Откроется ссылка источника установки приложения. Следуйте указаниям на экране.</p></div></div>
-<div class="tip"><span class="tip-icon">3️⃣</span><div><strong>Дождитесь завершения</strong><p>Не закрывайте процесс установки, пока приложение не появится на экране iPhone.</p></div></div>
+<h2>📶 Установка зависает?</h2>
+<p style="margin:0;color:var(--muted);font-size:13px;line-height:1.65">📶 Wi‑Fi зависает — ставьте через мобильный интернет. Мобильный тоже виснет — включите VPN и снова «Установить».</p>
 </section>
 <section class="section">
-<h2>📶 Установка зависает?</h2>
-<p style="margin:0;color:var(--muted);font-size:13px;line-height:1.65">Попробуйте другую сеть Wi-Fi или мобильный интернет. Если источник установки требует дополнительных действий, следуйте его инструкциям.</p>
+<button class="other-device" id="otherDeviceButton" type="button" aria-expanded="false" aria-controls="otherDeviceQr">📱 Установить на другом устройстве</button>
+<div id="otherDeviceQr" hidden style="margin-top:18px">
+  <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px">
+    <img class="qr qr-large" id="qr" alt="QR-код страницы установки Rave">
+    <div class="qrtext"><strong>Отсканируйте QR-код</strong><p>Наведите камеру другого iPhone на код, откройте страницу в Safari и нажмите «Установить».</p></div>
+  </div>
+</div>
+</section>
+<section class="section">
+<h2>💬 Помощь и контакты</h2>
+<p style="margin:0;color:var(--muted);font-size:11px;line-height:1.5">Если возникли сложности с установкой, напишите в поддержку AppCore.</p>
+<div class="links"><a id="whatsappButton" href="whatsapp://send?phone=79289480706">💬 Открыть WhatsApp</a></div>
+<p id="whatsappFallback" hidden style="margin:10px 0 0;color:var(--muted);font-size:11px;line-height:1.5">Если WhatsApp не открылся, <a href="https://wa.me/79289480706">откройте WhatsApp вручную</a>.</p>
 </section>
 <nav class="footer"><a href="index.html">🏠 Главная</a><a href="catalog.html">📲 Ещё приложения</a><a href="profile.html">👤 Профиль</a></nav>
 <div class="brandline">AppCore · Установка приложений на iPhone</div>
 </main>
+<script>
+(function(){
+  document.getElementById("installButton").addEventListener("click", function(){
+    try {
+      if (window.opener && !window.opener.closed) {
+        window.opener.postMessage({type:"appcore-install-started", appId:"sber-invest"}, window.location.origin);
+      }
+    } catch (e) {}
+  });
+  const whatsappButton = document.getElementById("whatsappButton");
+  const whatsappFallback = document.getElementById("whatsappFallback");
+  whatsappButton.addEventListener("click", function(){
+    whatsappFallback.hidden = false;
+  });
+  const pageUrl = window.location.href.split("#")[0];
+  const qr = document.getElementById("qr");
+  qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=480x480&margin=12&data=" + encodeURIComponent(pageUrl);
+  qr.referrerPolicy = "no-referrer";
+  const otherDeviceButton = document.getElementById("otherDeviceButton");
+  const otherDeviceQr = document.getElementById("otherDeviceQr");
+  otherDeviceButton.addEventListener("click", function(){
+    const willOpen = otherDeviceQr.hidden;
+    otherDeviceQr.hidden = !willOpen;
+    otherDeviceButton.setAttribute("aria-expanded", String(willOpen));
+    otherDeviceButton.textContent = willOpen ? "✕ Скрыть QR-код" : "📱 Установить на другом устройстве";
+  });
+})();
+</script>
 </body>
 </html>
