@@ -904,7 +904,7 @@ function updateWhatsAppLinks(){
   const supportUrl=
     "whatsapp://send?phone="+
     WHATSAPP_NUMBER+
-    "?text="+
+    "&text="+
     encodeURIComponent(
       buildWhatsAppMessage("support")
     );
@@ -914,7 +914,7 @@ function updateWhatsAppLinks(){
   statusSupportButton.href=
     "whatsapp://send?phone="+
     WHATSAPP_NUMBER+
-    "?text="+
+    "&text="+
     encodeURIComponent(
       buildWhatsAppMessage("status")
     );
@@ -922,7 +922,7 @@ function updateWhatsAppLinks(){
   activationWhatsapp.href=
     "whatsapp://send?phone="+
     WHATSAPP_NUMBER+
-    "?text="+
+    "&text="+
     encodeURIComponent(
       buildWhatsAppMessage("activation")
     );
