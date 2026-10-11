@@ -370,9 +370,17 @@ function render(){
 
     if(POPULAR_APP_SET.has(app.id)){
       const badge=document.createElement("span");
-      badge.className="app-popular-badge";
-      badge.textContent="★ Популярное";
-      badge.setAttribute("aria-label","Популярное приложение");
+      const topRank=POPULAR_APP_IDS.indexOf(app.id);
+      if(topRank>=0 && topRank<3){
+        badge.className="app-popular-badge top-rank top-"+(topRank+1);
+        badge.textContent=["🥇 ТОП-1","🥈 ТОП-2","🥉 ТОП-3"][topRank];
+        badge.setAttribute("aria-label","Топ "+(topRank+1)+" популярных приложений");
+        card.classList.add("app-top-"+(topRank+1));
+      }else{
+        badge.className="app-popular-badge";
+        badge.textContent="★ ПОПУЛЯРНОЕ";
+        badge.setAttribute("aria-label","Популярное приложение");
+      }
       card.appendChild(badge);
     }
 
