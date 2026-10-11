@@ -52,7 +52,8 @@ async function loadReviews(sb) {
       .eq("status", "approved")
       .order("created_at", { ascending: false })
       .limit(50)
-      .timeout(8000);
+      .timeout(8000)
+      .publicAccess();
 
     const { data, error } = await request;
     if (error) throw error;
