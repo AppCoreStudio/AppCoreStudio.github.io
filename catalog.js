@@ -1043,6 +1043,11 @@ async function createOrder(){
 
       console.error(error);
 
+      // Не оставляем вкладку Safari на экране загрузки, если сервер отклонил заказ.
+      try {
+        if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
+      } catch (closeError) {}
+
       const message=error.message||"";
 
       if(message.includes("RATE_LIMIT:")){
@@ -1132,12 +1137,15 @@ async function createOrder(){
       "https://wa.me/" + WHATSAPP_NUMBER +
       "?text=" + encodedText;
 
-    // Переходим в окне, созданном непосредственно по нажатию «Оформить заказ».
+    // На iOS надёжнее сначала использовать HTTPS universal link wa.me:
+    // он открывает установленный WhatsApp, а при необходимости — веб-версию.
     if (whatsappWindow && !whatsappWindow.closed) {
       try {
-        whatsappWindow.location.href = whatsappAppUrl;
+        whatsappWindow.location.replace(whatsappWebUrl);
       } catch (navigationError) {
-        whatsappWindow.location.href = whatsappWebUrl;
+        try {
+          whatsappWindow.location.href = whatsappAppUrl;
+        } catch (appNavigationError) {}
       }
     }
 
@@ -1184,8 +1192,13 @@ async function createOrder(){
 
     console.error(error);
 
+    // Если сохранение завершилось исключением, закрываем временную вкладку-заглушку.
+    try {
+      if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
+    } catch (closeError) {}
+
     showToast(
-      "Ошибка соединения с сервером"
+      "Ошибка соединения с сервером. Проверьте интернет и попробуйте ещё раз."
     );
 
     return false;
