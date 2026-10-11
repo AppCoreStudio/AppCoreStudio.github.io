@@ -238,6 +238,10 @@
       return;
     }
 
+    // Open a separate tab synchronously from the tap so the AppCore page stays open.
+    var whatsappWindow = null;
+    try { whatsappWindow = window.open("about:blank", "_blank"); } catch (e) {}
+
     busy = true;
     button.disabled = true;
     button.textContent = "Оформляем заказ…";
@@ -298,12 +302,15 @@
 
       showToast("Заказ " + order.order_number + " создан");
 
-      // Открываем приложение WhatsApp напрямую, не отправляя Safari в WhatsApp Web.
-      setTimeout(function () {
-        window.location.href = waUrl(order);
-      }, 700);
+      // Open WhatsApp in the separate tab; never navigate away from the AppCore page.
+      if (whatsappWindow && !whatsappWindow.closed) {
+        whatsappWindow.location.href = waUrl(order);
+      } else {
+        showToast("Заказ сохранён. Нажмите «Продолжить заказ в WhatsApp» в блоке статуса.");
+      }
 
     } catch (error) {
+      if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
       console.error(error);
       showToast("Ошибка соединения с сервером");
 
