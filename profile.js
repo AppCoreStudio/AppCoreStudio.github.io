@@ -274,8 +274,7 @@ function orderCard(o) {
 
     const wa = make("a", "wa-btn", "💬 ПОЛУЧИТЬ ИНСТРУКЦИЮ");
     wa.href = activationWhatsapp(o);
-    wa.target = "_blank";
-    wa.rel = "noopener noreferrer";
+
     activationPane.append(wa);
 
     appsTab.addEventListener("click", () => {
@@ -308,7 +307,7 @@ function orderCard(o) {
       "Реквизиты для оплаты мы пришлём в WhatsApp. После подтверждения оплаты здесь появятся кнопки установки."));
     const wa = make("a", "wa-btn", "💬 Написать в WhatsApp");
     wa.href = waLink(orderText(o, "Здравствуйте!\n\nПишу по моему заказу.", "Пришлите, пожалуйста, реквизиты для оплаты."));
-    wa.target = "_blank"; wa.rel = "noopener noreferrer";
+
     card.append(wa);
   }
   return card;
