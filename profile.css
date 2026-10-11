@@ -94,3 +94,21 @@ h2{margin:20px 0 10px;font-size:17px}
 }
 
 .activation-warning{margin-top:12px;padding:11px 12px;border-radius:12px;background:rgba(255,177,95,.09);border:1px solid rgba(255,177,95,.18);color:#ffbf7d;font-size:12px;font-weight:800;line-height:1.45;text-align:center}
+
+
+/* Цветовые варианты карточек заказов по статусу */
+.order.order-paid{
+  background:linear-gradient(145deg,rgba(31,105,72,.24),rgba(18,25,30,.96));
+  border-color:rgba(85,225,139,.3);
+  box-shadow:inset 3px 0 0 rgba(85,225,139,.85),0 8px 24px rgba(0,0,0,.12)
+}
+.order.order-awaiting{
+  background:linear-gradient(145deg,rgba(130,87,25,.25),rgba(25,23,20,.97));
+  border-color:rgba(255,190,92,.3);
+  box-shadow:inset 3px 0 0 rgba(255,190,92,.9),0 8px 24px rgba(0,0,0,.12)
+}
+.order.order-cancelled{
+  background:linear-gradient(145deg,rgba(125,42,48,.25),rgba(27,20,23,.97));
+  border-color:rgba(255,110,120,.3);
+  box-shadow:inset 3px 0 0 rgba(255,110,120,.9),0 8px 24px rgba(0,0,0,.12)
+}
