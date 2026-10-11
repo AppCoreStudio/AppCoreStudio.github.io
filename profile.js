@@ -233,11 +233,12 @@ function orderCard(o) {
 
       if (typeof url === "string" && (url.startsWith("https://") || url.startsWith("itms-services://"))) {
         const link = make("a", "install-btn" + (installedIds.has(a.id) ? " installed" : ""), installedIds.has(a.id) ? "✓ Установлено" : "Установить");
-        link.href = url;
+        link.href = a.id === "rave" ? "install-rave.html" : url;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
 
         link.addEventListener("click", () => {
+          if (a.id === "rave") return;
           setTimeout(() => {
             try {
               installedIds.add(a.id);
@@ -403,6 +404,21 @@ async function load(manual) {
 
   if (manual) toast("Профиль открыт");
 }
+
+window.addEventListener("message", event => {
+  if (event.origin !== window.location.origin || !event.data || event.data.type !== "appcore-install-started" || event.data.appId !== "rave" || !profile) return;
+  const order = (profile.orders || []).find(o => (o.apps || []).some(a => a.id === "rave") && (o.status === "paid" || o.status === "completed"));
+  if (!order) return;
+  try {
+    const key = INSTALLED_ORDER_KEY + "_" + order.order_number;
+    const raw = localStorage.getItem(key);
+    const saved = raw ? JSON.parse(raw) : [];
+    const ids = new Set(Array.isArray(saved) ? saved : []);
+    ids.add("rave");
+    localStorage.setItem(key, JSON.stringify([...ids]));
+  } catch (e) {}
+  render();
+});
 
 load();
 setInterval(tick, 1000);
