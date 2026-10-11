@@ -240,17 +240,9 @@ function orderCard(o) {
       card.append(row);
     });
 
-    card.append(make(
-      "div",
-      "order-hint",
-      "Установите нужные приложения. Когда закончите, нажмите кнопку активации ниже — одной активации достаточно для всех приложений в заказе."
-    ));
-
     const activationPane = make("div", "activation-pane active");
     activationPane.append(
-      make("div", "activation-title", "🔐 АКТИВАЦИЯ ПРИЛОЖЕНИЙ"),
-      make("div", "activation-copy", "После установки нажмите кнопку ниже, чтобы активировать приложения."),
-      make("div", "activation-warning", "⚠️ Без активации приложения не будут работать.")
+      make("div", "activation-warning", "⚠️ Одна активация для всех приложений заказа. Без активации приложения не будут работать.")
     );
 
     const wa = make("a", "wa-btn", "💬 АКТИВИРОВАТЬ ЧЕРЕЗ WHATSAPP");
@@ -265,7 +257,7 @@ function orderCard(o) {
     const names = (o.apps || []).map(a => a.name).join(", ");
     card.append(make("div", "order-hint", "Приложения: " + names));
     card.append(make("div", "order-hint",
-      "Реквизиты для оплаты мы пришлём в WhatsApp. После подтверждения оплаты здесь появятся кнопки установки."));
+      "Реквизиты для оплаты отправим в WhatsApp после проверки заказа."));
     const wa = make("a", "wa-btn", "💬 Написать в WhatsApp");
     wa.href = waLink(orderText(o, "Здравствуйте!\n\nПишу по моему заказу.", "Пришлите, пожалуйста, реквизиты для оплаты."));
 
