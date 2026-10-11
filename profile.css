@@ -92,3 +92,5 @@ h2{margin:20px 0 10px;font-size:17px}
 .order-tab.activation-tab.ready small{
   color:#8ff0b2
 }
+
+.activation-warning{margin-top:12px;padding:11px 12px;border-radius:12px;background:rgba(255,177,95,.09);border:1px solid rgba(255,177,95,.18);color:#ffbf7d;font-size:12px;font-weight:800;line-height:1.45;text-align:center}
