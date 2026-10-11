@@ -130,29 +130,45 @@ h2{margin:20px 0 10px;font-size:17px}
   box-shadow:inset 0 1px 0 rgba(255,255,255,.025)
 }
 .order .install-btn{
-  background:linear-gradient(135deg,#ff737b 0%,#ff3048 55%,#d80e2d 100%);
-  color:#fff;
-  box-shadow:0 4px 14px rgba(255,35,60,.24);
-  border:1px solid rgba(255,160,165,.28)
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:36px;
+  padding:8px 13px;
+  border-radius:10px;
+  background:linear-gradient(180deg,#fff 0%,#ffe8eb 100%);
+  color:#a10d25;
+  border:1px solid #fff;
+  box-shadow:0 3px 0 #b70f2b,0 6px 15px rgba(0,0,0,.28);
+  font-size:11px;
+  font-weight:900;
+  text-decoration:none;
+  white-space:nowrap;
+  text-shadow:none;
 }
 .order .install-btn.installed{
-  background:linear-gradient(135deg,#ffb0b4,#ff4b5d);
-  color:#39070e;
-  box-shadow:0 0 0 1px rgba(255,110,125,.4),0 5px 16px rgba(255,35,60,.2)
+  background:linear-gradient(180deg,#b9ffd0 0%,#55e18b 100%);
+  color:#06421f;
+  border:1px solid #d4ffe1;
+  box-shadow:0 3px 0 #16884b,0 6px 15px rgba(0,0,0,.24);
 }
 .order .wa-btn{
-  background:linear-gradient(110deg,#ff5267 0%,#f51d3d 52%,#bd0928 100%);
-  color:#fff;
-  border:1px solid rgba(255,155,165,.6);
-  box-shadow:0 0 0 1px rgba(255,40,65,.15),0 6px 18px rgba(220,15,45,.3),inset 0 1px 0 rgba(255,255,255,.22);
-  letter-spacing:.3px;
+  min-height:46px;
+  background:linear-gradient(180deg,#5cf09a 0%,#19b85f 100%);
+  color:#052b16;
+  border:2px solid #baffd2;
+  border-radius:13px;
+  box-shadow:0 4px 0 #087b3b,0 8px 18px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.55);
+  font-weight:900;
+  letter-spacing:.25px;
+  text-shadow:none;
   transition:filter .2s ease,transform .2s ease,box-shadow .2s ease
 }
 .order .wa-btn:hover{
-  filter:brightness(1.1);
-  box-shadow:0 0 0 1px rgba(255,100,115,.28),0 8px 22px rgba(220,15,45,.38),inset 0 1px 0 rgba(255,255,255,.25)
+  filter:brightness(1.06);
+  box-shadow:0 4px 0 #087b3b,0 10px 22px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.65)
 }
-.order .wa-btn:active{transform:translateY(1px)}
+.order .wa-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #087b3b,0 4px 10px rgba(0,0,0,.25)}
 .order .activation-warning{
   position:relative;
   margin-top:14px;
