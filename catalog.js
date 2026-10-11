@@ -991,23 +991,8 @@ async function createOrder(){
 
   const price=calculatePrice(selectedList.length);
 
-  // Safari/iOS может блокировать переход во внешнее приложение после await.
-  // Открываем вкладку синхронно на нажатие, показываем загрузку, затем направляем в WhatsApp.
-  let whatsappWindow = null;
-  try {
-    whatsappWindow = window.open("about:blank", "_blank");
-    if (whatsappWindow && whatsappWindow.document) {
-      whatsappWindow.document.open();
-      whatsappWindow.document.write(
-        "<!doctype html><html><head><meta name='viewport' content='width=device-width,initial-scale=1'>" +
-        "<title>AppCore — заказ</title></head><body style='font:16px -apple-system,Arial,sans-serif;padding:28px;background:#10131c;color:#fff'>" +
-        "<h2>AppCore</h2><p>Сохраняем заказ и открываем WhatsApp…</p></body></html>"
-      );
-      whatsappWindow.document.close();
-    }
-  } catch (popupError) {
-    whatsappWindow = null;
-  }
+  // WhatsApp открывается только по отдельному нажатию после сохранения заказа.
+  // Не создаём about:blank/Safari-вкладку: AppCore остаётся на экране.
 
   isCreatingOrder=true;
 
@@ -1042,11 +1027,6 @@ async function createOrder(){
     if(error){
 
       console.error(error);
-
-      // Не оставляем вкладку Safari на экране загрузки, если сервер отклонил заказ.
-      try {
-        if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
-      } catch (closeError) {}
 
       const message=error.message||"";
 
@@ -1128,7 +1108,8 @@ async function createOrder(){
       "После проверки чека заказ будет подтверждён.\n\n" +
       "==================";
 
-    // Сначала пробуем установленное приложение, HTTPS — запасной вариант.
+    // Два способа запуска: сначала схема приложения, ниже — официальный HTTPS fallback.
+    // Оба запускаются только по явному нажатию пользователя; пустое окно не создаётся.
     const encodedText = encodeURIComponent(whatsappText);
     const whatsappAppUrl =
       "whatsapp://send?phone=" + WHATSAPP_NUMBER +
@@ -1136,18 +1117,6 @@ async function createOrder(){
     const whatsappWebUrl =
       "https://wa.me/" + WHATSAPP_NUMBER +
       "?text=" + encodedText;
-
-    // На iOS надёжнее сначала использовать HTTPS universal link wa.me:
-    // он открывает установленный WhatsApp, а при необходимости — веб-версию.
-    if (whatsappWindow && !whatsappWindow.closed) {
-      try {
-        whatsappWindow.location.replace(whatsappWebUrl);
-      } catch (navigationError) {
-        try {
-          whatsappWindow.location.href = whatsappAppUrl;
-        } catch (appNavigationError) {}
-      }
-    }
 
     const supportContainer = statusPanel.querySelector(".status-support") || statusPanel;
     let orderWhatsappButton = document.getElementById("orderSubmitWhatsApp");
@@ -1180,11 +1149,7 @@ async function createOrder(){
     fallbackButton.rel = "nofollow";
     fallbackButton.style.display = "flex";
 
-    if (!whatsappWindow || whatsappWindow.closed) {
-      showToast("Заказ сохранён, но браузер заблокировал автоматический переход. Нажмите кнопку WhatsApp в статусе заказа.");
-    } else {
-      showToast("Заказ сохранён. Открываем WhatsApp…");
-    }
+    showToast("Заказ сохранён. Нажмите «Открыть приложение WhatsApp». Если не сработает — используйте вторую кнопку.");
 
     return true;
 
@@ -1192,13 +1157,8 @@ async function createOrder(){
 
     console.error(error);
 
-    // Если сохранение завершилось исключением, закрываем временную вкладку-заглушку.
-    try {
-      if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
-    } catch (closeError) {}
-
     showToast(
-      "Ошибка соединения с сервером. Проверьте интернет и попробуйте ещё раз."
+      "Ошибка соединения с сервером"
     );
 
     return false;
