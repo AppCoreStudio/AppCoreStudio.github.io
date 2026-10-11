@@ -373,7 +373,7 @@ function render(){
       const topRank=POPULAR_APP_IDS.indexOf(app.id);
       if(topRank>=0 && topRank<3){
         badge.className="app-popular-badge top-rank top-"+(topRank+1);
-        badge.textContent=["🥇 ТОП-1","🥈 ТОП-2","🥉 ТОП-3"][topRank];
+        badge.textContent=["♛ ТОП-1","◆ ТОП-2","◆ ТОП-3"][topRank];
         badge.setAttribute("aria-label","Топ "+(topRank+1)+" популярных приложений");
         card.classList.add("app-top-"+(topRank+1));
       }else{
