@@ -79,3 +79,54 @@ body.modal-open{overflow:hidden}
 .review-reply-mini span{display:block!important;color:#ded8ff!important;font-size:10px!important;line-height:1.4!important;white-space:pre-wrap;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .review-like-mini{color:#ff3b5f;font-weight:800}
 @media(max-width:520px){.all-review-item{padding:14px}.all-review-text{font-size:13px}.detail-modal .review-detail-card{width:100%;border-radius:0}}
+
+
+/* AppCore home refresh */
+:root{--bg:#080a10;--card:#121722;--muted:#9aa4b8;--line:rgba(255,255,255,.09)}
+body{background:radial-gradient(ellipse at 50% -12%,rgba(113,83,255,.27),transparent 48%),radial-gradient(circle at 100% 35%,rgba(43,170,255,.09),transparent 28%),#080a10}
+.page{max-width:580px;min-height:calc(100dvh - 68px);padding:clamp(20px,4vh,42px) 18px calc(92px + env(safe-area-inset-bottom));justify-content:flex-start;gap:clamp(16px,2.8vh,25px)}
+.hero{text-align:left;padding:5px 2px 2px}
+.hero-mark{display:flex;align-items:center;gap:9px;margin-bottom:17px}
+.hero-orbit{width:35px;height:35px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#9b86ff,#6548e8);box-shadow:0 7px 24px rgba(116,83,255,.28);font-size:20px;font-weight:900;color:#fff}
+.hero-kicker{font-size:9px;letter-spacing:1.8px;font-weight:800;color:#a9a2ff}
+h1{font-size:clamp(30px,8.2vw,43px);line-height:1.08;letter-spacing:-1.65px;font-weight:850}
+h1 span{color:#aaa0ff}
+.sub{max-width:440px;margin:13px 0 0;color:#aab2c3;font-size:14px;line-height:1.55}
+.hero-points{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.hero-points span{padding:7px 10px;border:1px solid rgba(255,255,255,.09);border-radius:99px;background:rgba(255,255,255,.04);color:#d8dced;font-size:10px;font-weight:650}
+.reviews{padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:21px;background:linear-gradient(145deg,rgba(23,28,41,.94),rgba(14,17,25,.9));box-shadow:0 15px 40px rgba(0,0,0,.16)}
+.review-title-row{margin:0 2px 10px;align-items:baseline}
+.review-title-row strong{text-transform:none;font-size:15px;letter-spacing:-.2px}
+.review-title-row span{font-size:10px;color:#858fa4}
+.rating-summary{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.07)}
+.slider{padding-bottom:5px}
+.review{background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025));border-color:rgba(255,255,255,.08);border-radius:15px}
+.steps{gap:8px}
+.step{padding:12px;border-radius:15px;background:linear-gradient(110deg,rgba(255,255,255,.05),rgba(255,255,255,.025));border-color:rgba(255,255,255,.075)}
+.step b{flex-basis:31px;height:31px;font-size:12px;box-shadow:0 4px 14px rgba(111,78,255,.2)}
+.step strong{font-size:13px}
+.step span{font-size:11px;margin-top:3px}
+.actions{gap:7px}
+.actions .btn.primary{height:55px;min-height:55px;border-radius:16px;background:linear-gradient(110deg,#f8f7ff,#dcd7ff);box-shadow:0 10px 30px rgba(112,82,255,.22);font-size:15px}
+.actions .btn.primary span{font-size:21px}
+.cta-note{margin:0;text-align:center;color:#7f899d;font-size:10px}
+.actions .row{gap:8px}
+.actions .row .btn{min-height:43px;height:auto;border-radius:13px;font-size:11px;background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.08)}
+.actions .row .referral-link{color:#d6ceff;background:rgba(126,99,255,.09);border-color:rgba(151,128,255,.18)}
+.tabbar{padding-top:9px;background:rgba(8,10,16,.88);border-color:rgba(255,255,255,.07)}
+.tabbar a{padding:6px;border-radius:12px}
+@media(max-height:740px){
+ .page{gap:13px;padding-top:15px}
+ .hero-mark{margin-bottom:11px}
+ h1{font-size:clamp(28px,7.6vw,37px)}
+ .sub{font-size:12px;margin-top:9px}
+ .hero-points{margin-top:10px}
+ .reviews{padding:11px}
+ .step{padding:9px 10px}
+ .actions .btn.primary{height:48px;min-height:48px}
+}
+@media(min-width:560px){
+ .page{padding-left:24px;padding-right:24px}
+ .hero{padding:12px 5px 3px}
+ .reviews{padding:17px}
+}
