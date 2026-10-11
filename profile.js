@@ -173,7 +173,10 @@ function activationWhatsapp(o) {
 function orderCard(o) {
   const [label, cls] = STATUS[o.status] || [o.status, "wait"];
   const paid = o.status === "paid" || o.status === "completed";
-  const card = make("div", "order");
+  const cardClass = paid ? "order order-paid" :
+    o.status === "awaiting_review" ? "order order-awaiting" :
+    o.status === "cancelled" ? "order order-cancelled" : "order";
+  const card = make("div", cardClass);
 
   const top = make("div", "order-top");
   top.append(make("div", "order-num", o.order_number), make("span", "badge " + cls, label));
