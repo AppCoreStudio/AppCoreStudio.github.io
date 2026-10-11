@@ -233,7 +233,7 @@ function orderCard(o) {
 
       if (typeof url === "string" && (url.startsWith("https://") || url.startsWith("itms-services://"))) {
         const link = make("a", "install-btn" + (installedIds.has(a.id) ? " installed" : ""), installedIds.has(a.id) ? "✓ Установлено" : "Установить");
-        link.href = a.id === "rave" ? "install-rave.html" : url;
+        link.href = "install-" + a.id + ".html";
         link.target = "_blank";
         link.rel = "noopener noreferrer";
 
