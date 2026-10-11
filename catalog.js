@@ -991,6 +991,10 @@ async function createOrder(){
 
   const price=calculatePrice(selectedList.length);
 
+  // Открываем отдельную вкладку сразу по нажатию, чтобы не закрывать AppCore.
+  let whatsappWindow = null;
+  try { whatsappWindow = window.open("about:blank", "_blank"); } catch (e) {}
+
   isCreatingOrder=true;
 
   paymentDone.disabled=true;
@@ -1105,16 +1109,23 @@ async function createOrder(){
       "После проверки чека заказ будет подтверждён.\n\n" +
       "==================";
 
-    window.location.href =
+    const whatsappUrl =
       "whatsapp://send?phone=" +
       encodeURIComponent(WHATSAPP_NUMBER) +
       "&text=" +
       encodeURIComponent(whatsappText);
 
+    if (whatsappWindow && !whatsappWindow.closed) {
+      whatsappWindow.location.href = whatsappUrl;
+    } else {
+      showToast("Заказ сохранён. AppCore остался открыт — нажмите «Перейти в поддержку» в статусе заказа, чтобы открыть WhatsApp.");
+    }
+
     return true;
 
   }catch(error){
 
+    if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
     console.error(error);
 
     showToast(
