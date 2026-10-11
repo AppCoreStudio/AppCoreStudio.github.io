@@ -15,7 +15,85 @@ function renderAllReviews(){const list=$("allReviewsList");if(!list)return;if(!c
 function openAllReviews(){if(!currentReviews.length)return;renderAllReviews();const modal=$("reviewDetailModal");modal.classList.add("show");modal.setAttribute("aria-hidden","false");document.body.classList.add("modal-open");$("reviewDetailClose")?.focus()}
 function closeDetail(){const modal=$("reviewDetailModal");modal.classList.remove("show");modal.setAttribute("aria-hidden","true");document.body.classList.remove("modal-open")}
 function card(r,i){const e=document.createElement("button");e.type="button";e.className="review";e.dataset.reviewIndex=String(i);e.setAttribute("aria-label","Открыть все отзывы");const st=document.createElement("div");st.className="stars";st.textContent=stars(r.rating);const p=document.createElement("p");p.textContent=r.text||"";const meta=document.createElement("span");meta.className="review-meta";meta.append(document.createTextNode((r.author||"Клиент")+" · "+date(r.created_at)));if(Number(r.likes||0)){meta.append(document.createTextNode(" · "));const like=document.createElement("b");like.className="review-like-mini";like.textContent="❤️ "+Number(r.likes||0);meta.append(like)}e.append(st,p,meta);if(r.admin_reply){const reply=document.createElement("div");reply.className="review-reply-mini";const title=document.createElement("strong");title.textContent="💬 Ответ администрации";const body=document.createElement("span");body.textContent=r.admin_reply;reply.append(title,body);e.append(reply)}return e}
-async function loadReviews(sb){const slider=$("reviewsSlider");try{const {data,error}=await sb.from("reviews").select("id,author,rating,text,created_at,admin_reply,likes,is_pinned").eq("status","approved").order("created_at",{ascending:false}).limit(50);if(error)throw error;currentReviews=(data||[]).sort((a,b)=>Number(b.is_pinned)-Number(a.is_pinned)||Number(b.rating)-Number(a.rating)||Number(b.likes)-Number(a.likes)||new Date(b.created_at)-new Date(a.created_at));renderSummary(currentReviews.map(r=>Number(r.rating)));slider.replaceChildren(...(currentReviews.length?currentReviews.map(card):[(()=>{const n=document.createElement("div");n.className="note";n.textContent="Пока нет отзывов — станьте первым!";return n})()]));dots();slider.onscroll=()=>{if(currentReviews.length)setDot(Math.max(0,Math.min(currentReviews.length-1,Math.round(slider.scrollLeft/(slider.clientWidth+10)))))};}catch(e){console.error(e);slider.replaceChildren((()=>{const n=document.createElement("div");n.className="note";n.textContent="Не удалось загрузить отзывы";return n})())}}
+let reviewsLoading = false;
+let reviewsLoaded = false;
+
+function showReviewsMessage(message, retry) {
+  const slider = $("reviewsSlider");
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = message;
+  slider.replaceChildren(note);
+
+  if (retry) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn";
+    button.textContent = "Повторить загрузку";
+    button.addEventListener("click", () => loadReviews(retry));
+    slider.append(button);
+  }
+}
+
+async function loadReviews(sb) {
+  const slider = $("reviewsSlider");
+  if (!slider || reviewsLoading) return;
+  reviewsLoading = true;
+
+  const timeout = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error("REVIEWS_TIMEOUT")), 9000);
+  });
+
+  try {
+    const request = sb.from("reviews")
+      .select("id,author,rating,text,created_at,admin_reply,likes,is_pinned")
+      .eq("status", "approved")
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    const { data, error } = await Promise.race([request, timeout]);
+    if (error) throw error;
+
+    currentReviews = (data || []).sort((a, b) =>
+      Number(b.is_pinned) - Number(a.is_pinned) ||
+      Number(b.rating) - Number(a.rating) ||
+      Number(b.likes) - Number(a.likes) ||
+      new Date(b.created_at) - new Date(a.created_at)
+    );
+
+    renderSummary(currentReviews.map(r => Number(r.rating)));
+    slider.replaceChildren(...(
+      currentReviews.length
+        ? currentReviews.map(card)
+        : [(() => {
+            const n = document.createElement("div");
+            n.className = "note";
+            n.textContent = "Пока нет отзывов — станьте первым!";
+            return n;
+          })()]
+    ));
+    dots();
+    slider.onscroll = () => {
+      if (currentReviews.length) {
+        setDot(Math.max(0, Math.min(
+          currentReviews.length - 1,
+          Math.round(slider.scrollLeft / (slider.clientWidth + 10))
+        )));
+      }
+    };
+    reviewsLoaded = true;
+  } catch (e) {
+    console.error("Reviews loading failed:", e);
+    showReviewsMessage(
+      e && e.message === "REVIEWS_TIMEOUT"
+        ? "Отзывы загружаются дольше обычного. Проверьте соединение и попробуйте ещё раз."
+        : "Не удалось загрузить отзывы. Проверьте соединение и попробуйте ещё раз.",
+      sb
+    );
+  } finally {
+    reviewsLoading = false;
+  }
+}
 function initDetail(sb){const modal=$("reviewDetailModal"),close=$("reviewDetailClose"),slider=$("reviewsSlider"),list=$("allReviewsList");if(!modal||!close||!slider||!list)return;slider.addEventListener("click",e=>{if(e.target.closest(".review"))openAllReviews()});close.onclick=closeDetail;modal.onclick=e=>{if(e.target===modal)closeDetail()};list.addEventListener("click",async e=>{const like=e.target.closest(".all-review-like");if(!like||like.disabled)return;const i=Number(like.dataset.reviewIndex),r=currentReviews[i];if(!r)return;like.disabled=true;try{const {data,error}=await sb.rpc("like_review",{p_review_id:r.id});if(error)throw error;r.likes=Number(data||r.likes||0);localStorage.setItem(likedKey+r.id,"1");like.setAttribute("aria-pressed","true");like.querySelector(".all-review-like-label").textContent="Понравилось";like.querySelector(".all-review-like-count").textContent=String(r.likes);updateHomepageCard(r,i)}catch(err){console.error(err);like.disabled=false}});document.addEventListener("keydown",e=>{if(e.key==="Escape"&&modal.classList.contains("show"))closeDetail()})}
 function initForm(sb){const m=$("reviewModal"),f=$("reviewForm"),sp=[...document.querySelectorAll("#starPick button")];let rating=5;const paint=()=>sp.forEach((b,i)=>b.classList.toggle("on",i<rating));sp.forEach((b,i)=>b.onclick=()=>{rating=i+1;paint()});paint();$("reviewOpen").onclick=()=>m.classList.add("show");$("reviewClose").onclick=()=>m.classList.remove("show");m.onclick=e=>{if(e.target===m)m.classList.remove("show")};f.onsubmit=async e=>{e.preventDefault();const author=f.elements.author.value.trim()||"Клиент",text=f.elements.text.value.trim();if(text.length<10)return toast("Напишите хотя бы 10 символов");const b=f.querySelector("[type=submit]");b.disabled=true;try{const {error}=await sb.rpc("submit_review",{p_author:author.slice(0,40),p_rating:rating,p_text:text.slice(0,500)});if(error)throw error;f.reset();rating=5;paint();m.classList.remove("show");toast("Спасибо! Отзыв опубликован");await loadReviews(sb)}catch(err){console.error(err);toast("Не удалось отправить отзыв. Попробуйте ещё раз")}finally{b.disabled=false}}}
 export function initReviews(sb){loadReviews(sb);initForm(sb);initDetail(sb)}
