@@ -1116,48 +1116,15 @@ async function createOrder(){
       "После проверки чека заказ будет подтверждён.\n\n" +
       "==================";
 
-    // Два способа запуска: сначала схема приложения, ниже — официальный HTTPS fallback.
-    // Оба запускаются только по явному нажатию пользователя; пустое окно не создаётся.
+    // После сохранения заказа сразу передаём готовый текст в WhatsApp.
+    // Дополнительную кнопку в каталоге не создаём.
     const encodedText = encodeURIComponent(whatsappText);
-    const whatsappAppUrl =
-      "whatsapp://send?phone=" + WHATSAPP_NUMBER +
-      "&text=" + encodedText;
-    const whatsappWebUrl =
+    const whatsappUrl =
       "https://wa.me/" + WHATSAPP_NUMBER +
       "?text=" + encodedText;
 
-    const supportContainer = statusPanel.querySelector(".status-support") || statusPanel;
-    let orderWhatsappButton = document.getElementById("orderSubmitWhatsApp");
-    if (!orderWhatsappButton) {
-      orderWhatsappButton = document.createElement("a");
-      orderWhatsappButton.id = "orderSubmitWhatsApp";
-      orderWhatsappButton.className = "status-support-button";
-      orderWhatsappButton.style.display = "flex";
-      orderWhatsappButton.style.marginTop = "10px";
-      orderWhatsappButton.textContent = "💬 Открыть приложение WhatsApp";
-      supportContainer.appendChild(orderWhatsappButton);
-    }
-    orderWhatsappButton.href = whatsappAppUrl;
-    orderWhatsappButton.target = "_self";
-    orderWhatsappButton.rel = "nofollow";
-    orderWhatsappButton.style.display = "flex";
-
-    let fallbackButton = document.getElementById("orderSubmitWhatsAppFallback");
-    if (!fallbackButton) {
-      fallbackButton = document.createElement("a");
-      fallbackButton.id = "orderSubmitWhatsAppFallback";
-      fallbackButton.className = "status-support-button";
-      fallbackButton.style.display = "flex";
-      fallbackButton.style.marginTop = "8px";
-      fallbackButton.textContent = "Не открылось? Открыть через WhatsApp Web";
-      supportContainer.appendChild(fallbackButton);
-    }
-    fallbackButton.href = whatsappWebUrl;
-    fallbackButton.target = "_self";
-    fallbackButton.rel = "nofollow";
-    fallbackButton.style.display = "flex";
-
-    showToast("Заказ сохранён. Нажмите «Открыть приложение WhatsApp». Если не сработает — используйте вторую кнопку.");
+    showToast("Заказ создан. Открываем WhatsApp…");
+    window.location.href = whatsappUrl;
 
     return true;
 
