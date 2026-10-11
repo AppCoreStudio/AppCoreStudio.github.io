@@ -277,6 +277,37 @@ function updatePrice(){
 
   continueButton.disabled=false;
   continueButton.textContent=count===1?"Заказать приложение":"Заказать приложения";
+
+  syncCardSelection();
+}
+
+function syncCardSelection(){
+  const count=selected.size;
+  const discountPercent=getDiscount(count);
+  const unitPrice=PRICE*(1-discountPercent/100);
+
+  document.querySelectorAll(".app-card[data-app-id]").forEach(card=>{
+    const appId=card.dataset.appId;
+    const isSelected=selected.has(appId);
+    card.classList.toggle("selected",isSelected);
+    card.setAttribute("aria-pressed",isSelected ? "true" : "false");
+
+    const oldPrice=card.querySelector(".app-card-old-price");
+    const currentPrice=card.querySelector(".app-card-current-price");
+    if(!oldPrice || !currentPrice) return;
+
+    if(isSelected && discountPercent>0){
+      oldPrice.textContent=money(PRICE);
+      oldPrice.hidden=false;
+      currentPrice.textContent=money(unitPrice);
+      currentPrice.classList.add("discounted");
+    }else{
+      oldPrice.textContent="";
+      oldPrice.hidden=true;
+      currentPrice.textContent=money(isSelected ? PRICE : PRICE);
+      currentPrice.classList.remove("discounted");
+    }
+  });
 }
 
 function render(){
@@ -367,17 +398,25 @@ function render(){
 
     const price=document.createElement("div");
     price.className="app-card-price";
-    price.textContent=PRICE.toLocaleString("ru-RU") + " ₽";
 
+    const oldPrice=document.createElement("span");
+    oldPrice.className="app-card-old-price";
+
+    const currentPrice=document.createElement("span");
+    currentPrice.className="app-card-current-price";
+
+    price.append(oldPrice,currentPrice);
+    card.dataset.appId=app.id;
     card.append(check,icon,name,type,price);
 
     card.addEventListener("click",()=>{
+      if(selected.has(app.id)){
+        selected.delete(app.id);
+      }else{
+        selected.add(app.id);
+      }
 
-      selected.has(app.id)
-        ?selected.delete(app.id)
-        :selected.add(app.id);
-
-      render();
+      syncCardSelection();
       updatePrice();
     });
 
