@@ -1224,3 +1224,80 @@ filter:brightness(.9);
 .install-panel{
   display:none !important;
 }
+
+
+/* Обновлённая карточка подтверждения оплаты и заметная кнопка профиля */
+.status-panel.show{
+  position:relative;
+  overflow:hidden;
+  padding:22px 18px 20px;
+  border:1px solid rgba(70,225,143,.32);
+  border-radius:24px;
+  background:
+    radial-gradient(ellipse at 100% 0%,rgba(45,220,128,.16),transparent 48%),
+    linear-gradient(145deg,rgba(21,31,29,.99),rgba(15,17,24,.99));
+  box-shadow:0 18px 48px rgba(0,0,0,.32),0 0 0 1px rgba(65,225,143,.05);
+}
+.status-panel.show .status-title{
+  font-size:21px;
+  line-height:1.3;
+  letter-spacing:-.35px;
+  color:#f5fff8;
+}
+.status-panel.show .status-text{
+  margin-top:11px;
+  color:#d5e6dc;
+  font-size:15px;
+  line-height:1.6;
+}
+.status-panel.show .order-number-display{
+  margin-top:16px;
+  padding:13px 14px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:14px;
+  background:rgba(0,0,0,.22);
+  color:#d9e5de;
+  font-size:13px;
+}
+.profile-order-button{
+  display:flex;
+  width:100%;
+  min-height:58px;
+  margin-top:18px;
+  padding:15px 14px;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:17px;
+  background:linear-gradient(135deg,#65f0a0 0%,#29d879 52%,#14b866 100%);
+  box-shadow:0 8px 0 rgba(9,113,57,.28),0 12px 28px rgba(34,216,117,.24);
+  color:#062313;
+  text-align:center;
+  text-decoration:none;
+  font-size:15px;
+  line-height:1.25;
+  font-weight:950;
+  letter-spacing:.2px;
+  cursor:pointer;
+  transition:transform .18s ease,filter .18s ease,box-shadow .18s ease;
+  animation:profileButtonPulse 2.4s ease-in-out 2;
+}
+.profile-order-button:hover{
+  filter:brightness(1.06);
+  box-shadow:0 8px 0 rgba(9,113,57,.28),0 15px 34px rgba(34,216,117,.34);
+}
+.profile-order-button:active{
+  transform:translateY(4px) scale(.99);
+  box-shadow:0 3px 0 rgba(9,113,57,.28),0 6px 16px rgba(34,216,117,.2);
+}
+@keyframes profileButtonPulse{
+  0%,100%{filter:brightness(1)}
+  50%{filter:brightness(1.1)}
+}
+@media(max-width:420px){
+  .status-panel.show{padding:20px 15px 18px;border-radius:21px}
+  .status-panel.show .status-title{font-size:19px}
+  .status-panel.show .status-text{font-size:14px}
+  .profile-order-button{min-height:58px;font-size:14px}
+}
