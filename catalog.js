@@ -1150,13 +1150,16 @@ async function createOrder(){
 }
 
 function hidePaymentSupport(){
+  const supportBox=document.querySelector(".status-support");
+  if(supportBox) supportBox.style.display="none";
   if(statusSupportButton) statusSupportButton.style.display="none";
   const supportLink=document.getElementById("orderWhatsapp");
   if(supportLink) supportLink.style.display="none";
-  if(statusSupportButton) statusSupportButton.style.display="none";
 }
 
 function showPaymentSupport(){
+  const supportBox=document.querySelector(".status-support");
+  if(supportBox) supportBox.style.display="block";
   if(statusSupportButton) statusSupportButton.style.display="flex";
 }
 
