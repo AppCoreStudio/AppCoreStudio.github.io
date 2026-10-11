@@ -231,7 +231,7 @@ function orderCard(o) {
       row.append(make("span", "", a.name));
       const url = links[a.id];
 
-      if (typeof url === "string" && url.startsWith("https://")) {
+      if (typeof url === "string" && (url.startsWith("https://") || url.startsWith("itms-services://"))) {
         const link = make("a", "install-btn" + (installedIds.has(a.id) ? " installed" : ""), installedIds.has(a.id) ? "✓ Установлено" : "Установить");
         link.href = url;
         link.target = "_blank";
