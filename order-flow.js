@@ -125,8 +125,8 @@
   }
 
   function waUrl(order) {
-    return "https://wa.me/" + WHATSAPP_NUMBER +
-      "?text=" + encodeURIComponent(orderMessage(order));
+    return "whatsapp://send?phone=" + WHATSAPP_NUMBER +
+      "&text=" + encodeURIComponent(orderMessage(order));
   }
 
   function ensureWhatsappButton(order) {
@@ -298,7 +298,7 @@
 
       showToast("Заказ " + order.order_number + " создан");
 
-      // Переход в WhatsApp с готовым текстом
+      // Открываем приложение WhatsApp напрямую, не отправляя Safari в WhatsApp Web.
       setTimeout(function () {
         window.location.href = waUrl(order);
       }, 700);
