@@ -40,18 +40,15 @@ async function loadReviews(sb) {
   if (!slider || reviewsLoading) return;
   reviewsLoading = true;
 
-  const timeout = new Promise((_, reject) => {
-    setTimeout(() => reject(new Error("REVIEWS_TIMEOUT")), 9000);
-  });
-
   try {
     const request = sb.from("reviews")
       .select("id,author,rating,text,created_at,admin_reply,likes,is_pinned")
       .eq("status", "approved")
       .order("created_at", { ascending: false })
-      .limit(50);
+      .limit(50)
+      .timeout(8000);
 
-    const { data, error } = await Promise.race([request, timeout]);
+    const { data, error } = await request;
     if (error) throw error;
 
     currentReviews = (data || []).sort((a, b) =>
