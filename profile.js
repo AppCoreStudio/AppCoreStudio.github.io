@@ -177,12 +177,14 @@ function orderCard(o) {
 
   const top = make("div", "order-top");
   top.append(make("div", "order-num", o.order_number), make("span", "badge " + cls, label));
-  card.append(top, make("div", "order-sum", "Сумма: " + money(o.total)));
+  card.append(top);
 
-  if (o.status !== "cancelled") {
+  // Таймер показываем только для заказа, ожидающего проверки/оплаты.
+  // Срок установки оплаченного заказа проверяется внутренней логикой, без вывода таймера.
+  if (o.status === "awaiting_review") {
     const timer = make("div", "order-left");
     timer.dataset.expires = o.expires_at;
-    timer.dataset.kind = paid ? "paid" : "wait";
+    timer.dataset.kind = "wait";
     card.append(timer);
   }
 
