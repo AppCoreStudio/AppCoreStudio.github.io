@@ -296,7 +296,7 @@ function syncCardSelection(){
     const currentPrice=card.querySelector(".app-card-current-price");
     if(!oldPrice || !currentPrice) return;
 
-    if(isSelected && discountPercent>0){
+    if(discountPercent>0){
       oldPrice.textContent=money(PRICE);
       oldPrice.hidden=false;
       currentPrice.textContent=money(unitPrice);
@@ -304,7 +304,7 @@ function syncCardSelection(){
     }else{
       oldPrice.textContent="";
       oldPrice.hidden=true;
-      currentPrice.textContent=money(isSelected ? PRICE : PRICE);
+      currentPrice.textContent=money(PRICE);
       currentPrice.classList.remove("discounted");
     }
   });
