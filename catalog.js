@@ -1168,7 +1168,7 @@ function showPaymentConfirmed(order,autoScroll=false){
 
   hidePaymentSupport();
   statusTitle.textContent="✅ Оплата подтверждена";
-  statusText.textContent="Ваш заказ подтверждён. Приложения доступны в вашем профиле.";
+  statusText.textContent="Оплата прошла успешно! Теперь откройте профиль — там вас ждут приложения для установки.";
 
   orderNumberDisplay.textContent=
     "Номер заказа: "+order.order_number;
@@ -1178,8 +1178,8 @@ function showPaymentConfirmed(order,autoScroll=false){
   if(!profileButton){
     profileButton=document.createElement("a");
     profileButton.id="profileOrderButton";
-    profileButton.className="new-order-button";
-    profileButton.textContent="👤 Перейти в профиль →";
+    profileButton.className="profile-order-button";
+    profileButton.textContent="🚀 ОТКРЫТЬ МОЙ ПРОФИЛЬ";
     profileButton.style.display="block";
     profileButton.style.textAlign="center";
     profileButton.style.textDecoration="none";
