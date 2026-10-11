@@ -30,7 +30,13 @@ function showReviewsMessage(message, retry) {
     button.type = "button";
     button.className = "btn";
     button.textContent = "Повторить загрузку";
-    button.addEventListener("click", () => loadReviews(retry));
+    button.addEventListener("click", async () => {
+      if (reviewsLoading) return;
+      button.disabled = true;
+      button.textContent = "Загружаем…";
+      reviewsLoading = false;
+      await loadReviews(retry);
+    });
     slider.append(button);
   }
 }
@@ -84,7 +90,7 @@ async function loadReviews(sb) {
     showReviewsMessage(
       e && e.message === "REVIEWS_TIMEOUT"
         ? "Отзывы загружаются дольше обычного. Проверьте соединение и попробуйте ещё раз."
-        : "Не удалось загрузить отзывы. Проверьте соединение и попробуйте ещё раз.",
+        : "Не удалось загрузить отзывы. Проверьте соединение и попробуйте ещё раз. (" + String(e && e.message || "ошибка запроса").slice(0, 100) + ")",
       sb
     );
   } finally {
