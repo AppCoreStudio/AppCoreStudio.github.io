@@ -894,7 +894,7 @@ function buildWhatsAppMessage(type){
 function updateWhatsAppLinks(){
 
   const supportUrl=
-    "https://wa.me/"+
+    "whatsapp://send?phone="+
     WHATSAPP_NUMBER+
     "?text="+
     encodeURIComponent(
@@ -904,7 +904,7 @@ function updateWhatsAppLinks(){
   supportTopButton.href=supportUrl;
 
   statusSupportButton.href=
-    "https://wa.me/"+
+    "whatsapp://send?phone="+
     WHATSAPP_NUMBER+
     "?text="+
     encodeURIComponent(
@@ -912,7 +912,7 @@ function updateWhatsAppLinks(){
     );
 
   activationWhatsapp.href=
-    "https://wa.me/"+
+    "whatsapp://send?phone="+
     WHATSAPP_NUMBER+
     "?text="+
     encodeURIComponent(
@@ -1076,9 +1076,7 @@ async function createOrder(){
         ? createdOrder.apps.map(app=>app.name).filter(Boolean).join(", ")
         : selectedList.map(app=>app.name).join(", ");
 
-    // ВАЖНО: текст строится только из ASCII + \uXXXX escape-последовательностей.
-    // Это исключает повреждение emoji в исходнике JS. Для WhatsApp используем
-    // официальный api.whatsapp.com/send URL и encodeURIComponent (UTF-8).
+    // Текст кодируется в UTF-8; открываем приложение WhatsApp напрямую, без WhatsApp Web.
     let whatsappText =
       "Здравствуйте! Хочу оформить заказ.\n\n" +
       "[ ЗАКАЗ ]\n" +
@@ -1108,7 +1106,7 @@ async function createOrder(){
       "==================";
 
     window.location.href =
-      "https://api.whatsapp.com/send/?phone=" +
+      "whatsapp://send?phone=" +
       encodeURIComponent(WHATSAPP_NUMBER) +
       "&text=" +
       encodeURIComponent(whatsappText);
