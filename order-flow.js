@@ -140,8 +140,6 @@
       link.id = "orderWhatsapp";
       link.className = "status-support-button";
       link.style.marginTop = "14px";
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
       link.textContent = "💬 Продолжить заказ в WhatsApp";
 
       panel.insertBefore(link, panel.querySelector(".status-support"));
