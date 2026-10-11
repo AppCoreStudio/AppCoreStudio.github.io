@@ -163,7 +163,7 @@ function isOrderInstalled(orderNumber) {
 }
 
 function activationWhatsapp(o) {
-  const text = "Здравствуйте! Прошу активировать заказ № " + o.order_number + ".";
+  const text = "Здравствуйте! Готов(а) приступить к активации. Пришлите, пожалуйста, инструкцию по активации приложений. Заказ № " + o.order_number + ".";
   return waLink(text);
 }
 
