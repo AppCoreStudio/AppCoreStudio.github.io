@@ -313,8 +313,11 @@ function render(){
 
   filtered.forEach(app=>{
 
-    const card=document.createElement("div");
+    const card=document.createElement("button");
+    card.type="button";
     card.className="app-card";
+    card.setAttribute("aria-pressed",selected.has(app.id) ? "true" : "false");
+    card.setAttribute("aria-label",app.name + ", " + app.type + ", " + PRICE + " рублей");
 
     if(selected.has(app.id)){
       card.classList.add("selected");
@@ -358,7 +361,15 @@ function render(){
     name.className="app-name";
     name.textContent=app.name;
 
-    card.append(check,icon,name);
+    const type=document.createElement("div");
+    type.className="app-type";
+    type.textContent=app.type;
+
+    const price=document.createElement("div");
+    price.className="app-card-price";
+    price.textContent=PRICE.toLocaleString("ru-RU") + " ₽";
+
+    card.append(check,icon,name,type,price);
 
     card.addEventListener("click",()=>{
 
