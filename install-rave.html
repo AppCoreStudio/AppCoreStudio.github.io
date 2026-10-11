@@ -18,7 +18,7 @@ a{color:inherit}.wrap{width:min(100%,520px);margin:auto;padding:calc(18px + env(
 h1{position:relative;margin:0;font-size:34px;letter-spacing:-1.2px}.version{margin:8px 0 0;color:#d2d2df;font-size:14px}.chips{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin:17px 0 21px}.chip{padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:rgba(0,0,0,.16);color:#e8e8f0;font-size:11px}
 .install{display:flex;justify-content:center;align-items:center;gap:9px;width:100%;min-height:56px;padding:14px 15px;border:0;border-radius:16px;background:linear-gradient(110deg,#ff76ad,#ff3f8b 48%,#a15cff);box-shadow:0 10px 32px rgba(255,65,143,.24);color:white;text-decoration:none;font-size:16px;font-weight:850;letter-spacing:-.2px;transition:transform .15s}.install:active{transform:scale(.985)}.note{margin:12px 0 0;color:#b9b9cc;font-size:11px;line-height:1.5}
 .section{margin-top:13px;padding:18px;border:1px solid var(--line);border-radius:21px;background:var(--card);backdrop-filter:blur(14px)}.section h2{margin:0 0 12px;font-size:15px;letter-spacing:-.2px}.tip{display:flex;align-items:flex-start;gap:11px;margin-top:12px}.tip:first-of-type{margin-top:0}.tip-icon{flex:0 0 34px;height:34px;display:grid;place-items:center;border-radius:11px;background:rgba(255,255,255,.07);font-size:16px}.tip strong{display:block;font-size:12px;margin:1px 0 4px}.tip p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
-.qrrow{display:flex;align-items:center;gap:15px}.qr{flex:0 0 108px;width:108px;height:108px;padding:6px;border-radius:13px;background:#fff;object-fit:contain}.qrtext strong{display:block;font-size:12px;margin-bottom:6px}.qrtext p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+.qrrow{display:flex;align-items:center;gap:15px}.qr{flex:0 0 108px;width:108px;height:108px;padding:6px;border-radius:13px;background:#fff;object-fit:contain}.qr-large{flex:0 0 auto;width:min(280px,75vw);height:min(280px,75vw);padding:10px;border-radius:18px;box-shadow:0 12px 35px rgba(0,0,0,.28)}.other-device{display:block;width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer}.other-device:active{transform:scale(.99)}.qrtext strong{display:block;font-size:12px;margin-bottom:6px}.qrtext p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
 .links{display:flex;gap:8px;margin-top:13px}.links a{flex:1;text-align:center;padding:12px 9px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);font-size:11px;font-weight:750;text-decoration:none}.footer{display:flex;justify-content:center;gap:18px;margin:19px 0 2px}.footer a{color:#bcbdd0;font-size:11px;text-decoration:none}.brandline{text-align:center;margin-top:12px;color:#77798e;font-size:10px}
 @media(min-height:850px){.wrap{padding-top:28px}.top{margin-bottom:28px}}
 </style>
@@ -36,13 +36,16 @@ h1{position:relative;margin:0;font-size:34px;letter-spacing:-1.2px}.version{marg
 </section>
 <section class="section">
 <h2>📶 Установка зависает?</h2>
-<div class="tip"><span class="tip-icon">📡</span><div><strong>Попробуйте другую сеть</strong><p>Если Wi‑Fi зависает, переключитесь на мобильный интернет и нажмите «Установить» ещё раз.</p></div></div>
-<div class="tip"><span class="tip-icon">🛡️</span><div><strong>Загрузка всё ещё не начинается?</strong><p>Попробуйте включить VPN и повторить установку.</p></div></div>
-<div class="tip"><span class="tip-icon">✅</span><div><strong>Подтвердите установку</strong><p>Если iPhone покажет системное подтверждение, нажмите «Установить» и дождитесь появления иконки на рабочем столе.</p></div></div>
+<p style="margin:0;color:var(--muted);font-size:13px;line-height:1.65">📶 Wi‑Fi зависает — ставьте через мобильный интернет. Мобильный тоже виснет — включите VPN и снова «Установить».</p>
 </section>
 <section class="section">
-<h2>📱 Открыть на другом iPhone</h2>
-<div class="qrrow"><img class="qr" id="qr" alt="QR-код страницы установки Rave"><div class="qrtext"><strong>Отсканируйте QR-код</strong><p>Наведите камеру другого iPhone на код, откройте страницу в Safari и нажмите «Установить».</p></div></div>
+<button class="other-device" id="otherDeviceButton" type="button" aria-expanded="false" aria-controls="otherDeviceQr">📱 Установить на другом устройстве</button>
+<div id="otherDeviceQr" hidden style="margin-top:18px">
+  <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px">
+    <img class="qr qr-large" id="qr" alt="QR-код страницы установки Rave">
+    <div class="qrtext"><strong>Отсканируйте QR-код</strong><p>Наведите камеру другого iPhone на код, откройте страницу в Safari и нажмите «Установить».</p></div>
+  </div>
+</div>
 </section>
 <section class="section">
 <h2>💬 Помощь и контакты</h2>
@@ -63,8 +66,16 @@ h1{position:relative;margin:0;font-size:34px;letter-spacing:-1.2px}.version{marg
   });
   const pageUrl = window.location.href.split("#")[0];
   const qr = document.getElementById("qr");
-  qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=" + encodeURIComponent(pageUrl);
+  qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=480x480&margin=12&data=" + encodeURIComponent(pageUrl);
   qr.referrerPolicy = "no-referrer";
+  const otherDeviceButton = document.getElementById("otherDeviceButton");
+  const otherDeviceQr = document.getElementById("otherDeviceQr");
+  otherDeviceButton.addEventListener("click", function(){
+    const willOpen = otherDeviceQr.hidden;
+    otherDeviceQr.hidden = !willOpen;
+    otherDeviceButton.setAttribute("aria-expanded", String(willOpen));
+    otherDeviceButton.textContent = willOpen ? "✕ Скрыть QR-код" : "📱 Установить на другом устройстве";
+  });
 })();
 </script>
 </body>
