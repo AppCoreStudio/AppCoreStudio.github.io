@@ -82,7 +82,7 @@ function show(which) {
 }
 
 function waLink(text) {
-  return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text);
+  return "https://api.whatsapp.com/send?phone=" + WHATSAPP_NUMBER + "&text=" + encodeURIComponent(text);
 }
 
 function orderText(o, intro, closing) {
@@ -252,8 +252,6 @@ function orderCard(o) {
 
     const wa = make("a", "wa-btn", "💬 АКТИВИРОВАТЬ ЧЕРЕЗ WHATSAPP");
     wa.href = activationWhatsapp(o);
-    wa.target = "_blank";
-    wa.rel = "noopener noreferrer";
     activationPane.append(wa);
 
     card.append(activationPane);
