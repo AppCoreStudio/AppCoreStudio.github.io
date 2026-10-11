@@ -163,8 +163,11 @@ function isOrderInstalled(orderNumber) {
 }
 
 function activationWhatsapp(o) {
-  const text = "Все приложения установлены и полностью загрузились. Пришлите инструкцию по активации";
-  return waLink(text);
+  return waLink(orderText(
+    o,
+    "Здравствуйте! Я установил приложения и готов к активации.",
+    "Пожалуйста, активируйте приложения по этому заказу."
+  ));
 }
 
 function orderCard(o) {
@@ -195,10 +198,6 @@ function orderCard(o) {
       return card;
     }
 
-    const tabs = make("div", "order-tabs");
-    const savedTab = selectedOrderTabs.get(o.order_number) || "apps";
-    const activationSelected = savedTab === "activation";
-    const appsTab = make("button", "order-tab" + (activationSelected ? "" : " active"), "1. ПРИЛОЖЕНИЯ");
     const installedIds = new Set();
 
     try {
@@ -206,22 +205,6 @@ function orderCard(o) {
       const saved = raw ? JSON.parse(raw) : [];
       if (Array.isArray(saved)) saved.forEach(id => installedIds.add(id));
     } catch (e) {}
-
-    const allInstalled = (o.apps || []).length > 0 &&
-      (o.apps || []).every(a => installedIds.has(a.id));
-
-    const activationTab = make(
-      "button",
-      "order-tab activation-tab" + (allInstalled ? " ready" : "") + (activationSelected && allInstalled ? " active" : ""),
-      "2. 🔐 АКТИВАЦИЯ"
-    );
-    activationTab.innerHTML = '2. <span>🔐 АКТИВАЦИЯ</span><small>⚠️ ОБЯЗАТЕЛЬНО</small>';
-    activationTab.disabled = !allInstalled;
-    tabs.append(appsTab, activationTab);
-    card.append(tabs);
-
-    const appsPane = make("div", "order-pane" + (activationSelected && allInstalled ? "" : " active"));
-    const activationPane = make("div", "order-pane activation-pane" + (activationSelected && allInstalled ? " active" : ""));
 
     const links = {};
     (o.install_links || []).forEach(l => { links[l.id] = l.install; });
@@ -254,51 +237,29 @@ function orderCard(o) {
         row.append(link);
       }
 
-      appsPane.append(row);
+      card.append(row);
     });
 
-    const hint = make(
+    card.append(make(
       "div",
       "order-hint",
-      allInstalled
-        ? "✅ Все приложения отмечены как установленные. Теперь доступна активация."
-        : "Установите каждое купленное приложение. После нажатия всех кнопок «Установить» станет доступна активация."
-    );
-    appsPane.append(hint);
+      "Установите нужные приложения. Когда закончите, нажмите кнопку активации ниже — одной активации достаточно для всех приложений в заказе."
+    ));
 
+    const activationPane = make("div", "activation-pane active");
     activationPane.append(
-      make("div", "activation-title", "⚠️ ВНИМАТЕЛЬНО ОЗНАКОМЬТЕСЬ С ИНСТРУКЦИЕЙ"),
-      make("div", "activation-copy", "Инструкция по активации выдаётся там, где вы получили заказ."),
-      make("div", "activation-copy", "Если вы получили заказ через WhatsApp, нажмите кнопку ниже — откроется чат с готовым сообщением.")
+      make("div", "activation-title", "🔐 АКТИВАЦИЯ ПРИЛОЖЕНИЙ"),
+      make("div", "activation-copy", "После установки нажмите кнопку ниже, чтобы активировать приложения."),
+      make("div", "activation-warning", "⚠️ Без активации приложения не будут работать.")
     );
 
-    const wa = make("a", "wa-btn", "💬 ПОЛУЧИТЬ ИНСТРУКЦИЮ");
+    const wa = make("a", "wa-btn", "💬 АКТИВИРОВАТЬ ЧЕРЕЗ WHATSAPP");
     wa.href = activationWhatsapp(o);
-
+    wa.target = "_blank";
+    wa.rel = "noopener noreferrer";
     activationPane.append(wa);
 
-    appsTab.addEventListener("click", () => {
-      selectedOrderTabs.set(o.order_number, "apps");
-      appsTab.classList.add("active");
-      activationTab.classList.remove("active");
-      appsPane.classList.add("active");
-      activationPane.classList.remove("active");
-    });
-
-    activationTab.addEventListener("click", () => {
-      const currentInstalled = (o.apps || []).every(a => installedIds.has(a.id));
-      if (!currentInstalled) {
-        toast("Сначала установите все приложения");
-        return;
-      }
-      selectedOrderTabs.set(o.order_number, "activation");
-      appsTab.classList.remove("active");
-      activationTab.classList.add("active");
-      appsPane.classList.remove("active");
-      activationPane.classList.add("active");
-    });
-
-    card.append(appsPane, activationPane);
+    card.append(activationPane);
 
   } else if (o.status === "awaiting_review") {
     const names = (o.apps || []).map(a => a.name).join(", ");
