@@ -115,6 +115,15 @@ const INSTALLED_ORDER_KEY="appcore_installed_order";
 
 const WHATSAPP_NUMBER="79289480706";
 
+// Ручной рейтинг популярности для порядка каталога; первые 8 приложений отмечены бейджем.
+const POPULAR_APP_IDS=[
+  "sberbank","tbank","alfa","vtb","vk","max","avito","chatgpt",
+  "sber-invest","t-invest","alfa-invest","vtb-invest","yandex-pay",
+  "gazprom","vk-video","rutube","vk-messenger","v2raytun","happ",
+  "gazprom-invest","rshb","psb","rave"
+];
+const POPULAR_APP_SET=new Set(POPULAR_APP_IDS.slice(0,8));
+
 const apps=[
 {id:"sberbank",name:"Сбербанк",type:"Банк",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#21a366",gradient:"linear-gradient(135deg,#25b86c,#08783e)"},
 {id:"sber-invest",name:"СберИнвестиции",type:"Инвестиции",category:"finance",logo:"https://cdn.simpleicons.org/sberbank",color:"#18a765",gradient:"linear-gradient(135deg,#2ac979,#087c46)"},
@@ -327,7 +336,7 @@ function render(){
       app.type.toLowerCase().includes(searchText);
 
     return categoryOk&&searchOk;
-  });
+  }).sort((a,b)=>POPULAR_APP_IDS.indexOf(a.id)-POPULAR_APP_IDS.indexOf(b.id));
 
   appList.innerHTML="";
 
@@ -356,6 +365,14 @@ function render(){
 
     card.style.setProperty("--app-color",app.color);
     card.style.setProperty("--app-gradient",app.gradient);
+
+    if(POPULAR_APP_SET.has(app.id)){
+      const badge=document.createElement("span");
+      badge.className="app-popular-badge";
+      badge.textContent="★ Популярное";
+      badge.setAttribute("aria-label","Популярное приложение");
+      card.appendChild(badge);
+    }
 
     const check=document.createElement("div");
     check.className="check";
