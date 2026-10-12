@@ -203,3 +203,8 @@ h2{margin:20px 0 10px;font-size:17px}
 .order.order-paid{border-color:rgba(255,75,95,.5);box-shadow:inset 3px 0 0 #ff4057,inset 0 1px 0 rgba(255,120,130,.12),0 10px 28px rgba(0,0,0,.24),0 0 20px rgba(255,35,55,.1)}
 .order.order-awaiting{border-color:rgba(255,105,110,.55);box-shadow:inset 3px 0 0 #ff6972,inset 0 1px 0 rgba(255,120,130,.12),0 10px 28px rgba(0,0,0,.24),0 0 20px rgba(255,35,55,.1)}
 .order.order-cancelled{border-color:rgba(190,50,65,.5);box-shadow:inset 3px 0 0 #c83245,inset 0 1px 0 rgba(255,120,130,.08),0 10px 28px rgba(0,0,0,.24)}
+
+/* Prevent iOS Safari from auto-zooming on profile form fields. */
+@media (max-width: 767px) {
+  .p-form input, .p-form textarea, .p-form select { font-size: 16px !important; }
+}
