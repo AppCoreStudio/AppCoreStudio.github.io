@@ -153,7 +153,7 @@ const apps=[
 {id:"chatgpt",name:"ChatGPT",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/openai",color:"#10a37f",gradient:"linear-gradient(135deg,#20c997,#087c60)"},
 {id:"lenta",name:"Лента",type:"Магазин",category:"useful",logo:"https://appcorestudio.github.io/logos/lenta.png",logo2x:"https://appcorestudio.github.io/logos/lenta@2x.png",logo3x:"https://appcorestudio.github.io/logos/lenta@3x.png",color:"#e52e2e",gradient:"linear-gradient(135deg,#ff7a35,#e52e2e 65%,#a51e4a)"},
 {id:"yota",name:"Йота",type:"Связь",category:"useful",logo:"https://appcorestudio.github.io/logos/yota.png",logo2x:"https://appcorestudio.github.io/logos/yota@2x.png",logo3x:"https://appcorestudio.github.io/logos/yota@3x.png",color:"#7b61ff",gradient:"linear-gradient(135deg,#a083ff,#5230d9)"},
-{id:"vk-music",name:"VK Музыка",type:"Музыка",category:"social",logo:"https://appcorestudio.github.io/logos/vkmusic.png",logo2x:"https://appcorestudio.github.io/logos/vkmusic@2x.png",logo3x:"https://appcorestudio.github.io/logos/vkmusic@3x.png",color:"#7658ff",gradient:"linear-gradient(135deg,#957cff,#5540d6)"},
+{id:"vk-music",name:"VK Музыка",type:"Музыка",category:"social",logo:"https://appcorestudio.github.io/logos/vkmusic.png?v=20261013e",color:"#7658ff",gradient:"linear-gradient(135deg,#957cff,#5540d6)"},
 {id:"sberkids",name:"SberKids",type:"Детский банк",category:"finance",logo:"https://appcorestudio.github.io/logos/sberkids.png",logo2x:"https://appcorestudio.github.io/logos/sberkids@2x.png",logo3x:"https://appcorestudio.github.io/logos/sberkids@3x.png",color:"#21a366",gradient:"linear-gradient(135deg,#65e7b1,#23bd85 65%,#128f83)"}
 ];
 
