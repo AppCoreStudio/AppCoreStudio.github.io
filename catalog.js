@@ -119,7 +119,7 @@ const WHATSAPP_NUMBER="79289480706";
 const POPULAR_APP_IDS=[
   "sberbank","tbank","max","vk","vk-video","avito",
   "rshb","psb","alfa","vtb","gazprom","yandex-pay","vk-messenger",
-  "rutube","rave","lenta","yota","vk-music","sberkids",
+  "rutube","rave","lenta","yota","vk-music","sberkids","t2",
   "sber-invest","t-invest","alfa-invest","vtb-invest",
   "gazprom-invest","happ","v2raytun","chatgpt"
 ];
@@ -154,7 +154,8 @@ const apps=[
 {id:"lenta",name:"Лента",type:"Магазин",category:"useful",logo:"https://appcorestudio.github.io/logos/lenta.png",logo2x:"https://appcorestudio.github.io/logos/lenta@2x.png",logo3x:"https://appcorestudio.github.io/logos/lenta@3x.png",color:"#e52e2e",gradient:"linear-gradient(135deg,#ff7a35,#e52e2e 65%,#a51e4a)"},
 {id:"yota",name:"Йота",type:"Связь",category:"useful",logo:"https://appcorestudio.github.io/logos/yota.png",logo2x:"https://appcorestudio.github.io/logos/yota@2x.png",logo3x:"https://appcorestudio.github.io/logos/yota@3x.png",color:"#7b61ff",gradient:"linear-gradient(135deg,#a083ff,#5230d9)"},
 {id:"vk-music",name:"VK Музыка",type:"Музыка",category:"social",logo:"https://appcorestudio.github.io/logos/vkmusic.png?v=20261013e",color:"#7658ff",gradient:"linear-gradient(135deg,#957cff,#5540d6)"},
-{id:"sberkids",name:"SberKids",type:"Детский банк",category:"finance",logo:"https://appcorestudio.github.io/logos/sberkids.png",logo2x:"https://appcorestudio.github.io/logos/sberkids@2x.png",logo3x:"https://appcorestudio.github.io/logos/sberkids@3x.png",color:"#21a366",gradient:"linear-gradient(135deg,#65e7b1,#23bd85 65%,#128f83)"}
+{id:"sberkids",name:"SberKids",type:"Детский банк",category:"finance",logo:"https://appcorestudio.github.io/logos/sberkids.png",logo2x:"https://appcorestudio.github.io/logos/sberkids@2x.png",logo3x:"https://appcorestudio.github.io/logos/sberkids@3x.png",color:"#21a366",gradient:"linear-gradient(135deg,#65e7b1,#23bd85 65%,#128f83)"},
+{id:"t2",name:"T2",type:"Связь",category:"useful",logo:"",color:"#00bfae",gradient:"linear-gradient(135deg,#45ead5,#00a99a 65%,#08766f)"}
 ];
 
 let selected=new Set();
