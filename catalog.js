@@ -120,7 +120,8 @@ const POPULAR_APP_IDS=[
   "sberbank","tbank","max","vk","avito","rshb","vk-video","psb",
   "alfa","vtb","gazprom","yandex-pay","vk-messenger","rutube","rave",
   "happ","v2raytun","chatgpt",
-  "sber-invest","t-invest","alfa-invest","vtb-invest","gazprom-invest"
+  "sber-invest","t-invest","alfa-invest","vtb-invest","gazprom-invest",
+  "lenta","yota","vk-music","sberkids"
 ];
 const POPULAR_APP_SET=new Set([
   "sberbank","tbank","max","vk","avito","rshb","vk-video","psb"
@@ -149,7 +150,11 @@ const apps=[
 {id:"rutube",name:"Rutube",type:"Видео",category:"social",logo:"https://cdn.simpleicons.org/rutube",color:"#ff3b30",gradient:"linear-gradient(135deg,#ff665e,#cf160e)"},
 {id:"happ",name:"Happ",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/happ",color:"#815cff",gradient:"linear-gradient(135deg,#a083ff,#5230d9)"},
 {id:"v2raytun",name:"v2RayTun",type:"Сервис",category:"useful",logo:"",color:"#5d65ff",gradient:"linear-gradient(135deg,#7984ff,#3b42d8)"},
-{id:"chatgpt",name:"ChatGPT",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/openai",color:"#10a37f",gradient:"linear-gradient(135deg,#20c997,#087c60)"}
+{id:"chatgpt",name:"ChatGPT",type:"Сервис",category:"useful",logo:"https://cdn.simpleicons.org/openai",color:"#10a37f",gradient:"linear-gradient(135deg,#20c997,#087c60)"},
+{id:"lenta",name:"Лента",type:"Магазин",category:"useful",logo:"",color:"#e52e2e",gradient:"linear-gradient(135deg,#ff7a35,#e52e2e 65%,#a51e4a)"},
+{id:"yota",name:"Йота",type:"Связь",category:"useful",logo:"",color:"#7b61ff",gradient:"linear-gradient(135deg,#a083ff,#5230d9)"},
+{id:"vk-music",name:"VK Музыка",type:"Музыка",category:"social",logo:"",color:"#7658ff",gradient:"linear-gradient(135deg,#957cff,#5540d6)"},
+{id:"sberkids",name:"SberKids",type:"Детский банк",category:"finance",logo:"",color:"#21a366",gradient:"linear-gradient(135deg,#65e7b1,#23bd85 65%,#128f83)"}
 ];
 
 let selected=new Set();
