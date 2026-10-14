@@ -46,6 +46,8 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const POLL_MS = 20000;
 const INSTALLED_ORDER_KEY = "appcore_installed_order";
 const GUIDE_SEEN_KEY = "appcore_first_profile_install_guide";
+const GUIDE_ORDER_KEY_PREFIX = "appcore_paid_order_guide_passed_";
+let activeGuideOrder = null;
 
 const $ = id => document.getElementById(id);
 
@@ -106,8 +108,34 @@ function showRecover(ended) {
 }
 
 $("guideClose").addEventListener("click", () => {
-  try { localStorage.setItem(GUIDE_SEEN_KEY, "1"); } catch (e) {}
+  if (!activeGuideOrder) return;
+  const selected = document.querySelector('input[name="guideAnswer"]:checked');
+  const feedback = $("guideFeedback");
+  if (!selected || selected.value !== "c") {
+    if (feedback) feedback.textContent = "❌ Ответ неверный. Прочитайте инструкцию и попробуйте ещё раз.";
+    document.querySelectorAll('input[name="guideAnswer"]').forEach(input => {
+      input.checked = false;
+    });
+    return;
+  }
+
+  try { localStorage.setItem(GUIDE_ORDER_KEY_PREFIX + activeGuideOrder, "1"); } catch (e) {}
   $("firstInstallGuide").hidden = true;
+  activeGuideOrder = null;
+  if (feedback) feedback.textContent = "";
+  document.querySelectorAll('input[name="guideAnswer"]').forEach(input => { input.checked = false; });
+  $("guideClose").disabled = true;
+  $("guideClose").textContent = "ОТВЕТЬТЕ ПРАВИЛЬНО, ЧТОБЫ ПРОДОЛЖИТЬ";
+  maybeShowFirstGuide();
+});
+
+document.querySelectorAll('input[name="guideAnswer"]').forEach(input => {
+  input.addEventListener("change", () => {
+    const feedback = $("guideFeedback");
+    if (feedback) feedback.textContent = "";
+    $("guideClose").disabled = false;
+    $("guideClose").textContent = "ПРОВЕРИТЬ ОТВЕТ";
+  });
 });
 
 $("recForm").addEventListener("submit", async e => {
@@ -267,11 +295,31 @@ function orderCard(o) {
 }
 
 function maybeShowFirstGuide() {
-  const paidOrders = (profile.orders || []).some(o => o.status === "paid" || o.status === "completed");
-  if (!paidOrders) return;
+  if (!profile || activeGuideOrder) return;
+
+  let passed = new Set();
   try {
-    if (localStorage.getItem(GUIDE_SEEN_KEY) === "1") return;
+    (profile.orders || []).forEach(o => {
+      if (localStorage.getItem(GUIDE_ORDER_KEY_PREFIX + o.order_number) === "1") passed.add(o.order_number);
+    });
   } catch (e) {}
+
+  const pendingOrder = (profile.orders || []).find(o =>
+    (o.status === "paid" || o.status === "completed") &&
+    !passed.has(o.order_number)
+  );
+
+  if (!pendingOrder) {
+    $("firstInstallGuide").hidden = true;
+    return;
+  }
+
+  activeGuideOrder = pendingOrder.order_number;
+  $("guideOrderLabel").textContent = "Проверка для оплаченного заказа № " + pendingOrder.order_number;
+  $("guideFeedback").textContent = "";
+  document.querySelectorAll('input[name="guideAnswer"]').forEach(input => { input.checked = false; });
+  $("guideClose").disabled = true;
+  $("guideClose").textContent = "ОТВЕТЬТЕ ПРАВИЛЬНО, ЧТОБЫ ПРОДОЛЖИТЬ";
   $("firstInstallGuide").hidden = false;
 }
 
