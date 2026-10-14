@@ -407,6 +407,8 @@ function render(){
 
       const img=document.createElement("img");
 
+      img.loading="lazy";
+      img.decoding="async";
       img.src=app.logo;
       if(app.logo2x && app.logo3x){
         img.srcset=app.logo + " 1x, " + app.logo2x + " 2x, " + app.logo3x + " 3x";
@@ -1785,6 +1787,16 @@ function initTelegram(){
     }
   }
 }
+
+/* Локальные логотипы: не зависим от внешних CDN и не перерисовываем каталог повторно. */
+apps.forEach(function(a){
+  const fileName = a.id === "vk-music" ? "vkmusic" : a.id;
+  a.logo = "logos/" + fileName + ".png";
+  if (["t2", "yandex-pay", "t-invest"].includes(a.id)) {
+    a.logo2x = "logos/" + fileName + "@2x.png";
+    a.logo3x = "logos/" + fileName + "@3x.png";
+  }
+});
 
 /*
  * Восстанавливаем последний заказ ДО render(),
