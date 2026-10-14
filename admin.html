@@ -642,7 +642,7 @@ button:active{
 
 .order-info{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(5,minmax(0,1fr));
   gap:8px;
   margin-top:13px;
 }
@@ -1857,6 +1857,16 @@ function renderOrder(order,{draft=false}={}){
 
             <div class="info">
               <div class="info-label">
+                Клиент
+              </div>
+
+              <div class="info-value">
+                ${escapeHtml(order.client_name || 'Имя не указано')}
+              </div>
+            </div>
+
+            <div class="info">
+              <div class="info-label">
                 Телефон
               </div>
 
@@ -2017,9 +2027,14 @@ function matchesSearch(order){
     String(order.client_phone || "")
       .toLowerCase();
 
+  const name =
+    String(order.client_name || "")
+      .toLowerCase();
+
   return (
     number.includes(query) ||
-    phone.includes(query)
+    phone.includes(query) ||
+    name.includes(query)
   );
 }
 
