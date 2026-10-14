@@ -56,8 +56,8 @@
   var note = modal.querySelector(".payment-note");
   if (note) {
     note.textContent =
-      "💬 После нажатия откроется WhatsApp с готовым сообщением. " +
-      "Реквизиты для оплаты мы пришлём там.";
+      "После нажатия откроется WhatsApp с готовым сообщением. " +
+      "Проверьте заказ и нажмите «Отправить».";
   }
 
   // Поле «Ваше имя» над телефоном
@@ -81,7 +81,7 @@
   button.id = "paymentDone";
   button.className = oldButton.className;
   button.type = "button";
-  button.textContent = "Оформить заказ";
+  button.textContent = "💬 Отправить заказ в WhatsApp";
   oldButton.replaceWith(button);
 
   /* ---------- 2. Кнопка внизу ---------- */
