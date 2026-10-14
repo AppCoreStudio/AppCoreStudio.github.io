@@ -1233,7 +1233,7 @@ async function createOrder(){
     paymentDone.disabled=false;
 
     paymentDone.textContent=
-      "Оформить заказ";
+      "💬 Отправить заказ в WhatsApp";
   }
 }
 
