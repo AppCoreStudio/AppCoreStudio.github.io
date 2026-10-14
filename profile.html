@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Профиль — AppCore</title>
 <link rel="stylesheet" href="main.css?v=20261012c">
-<link rel="stylesheet" href="profile.css?v=20261012e">
+<link rel="stylesheet" href="profile.css?v=20261014a">
 </head>
 <body>
 
@@ -46,7 +46,15 @@
         <div class="guide-step"><b>1.</b><span><strong>УСТАНОВИТЕ ПРИЛОЖЕНИЯ.</strong> Нажмите «Установить» возле нужных приложений и дождитесь их появления на главном экране iPhone.</span></div>
         <div class="guide-step"><b>2.</b><span><strong>АКТИВИРУЙТЕ ПРИЛОЖЕНИЯ.</strong> После установки нажмите кнопку «💬 АКТИВИРОВАТЬ ЧЕРЕЗ WHATSAPP» под списком приложений и отправьте готовое сообщение.</span></div>
         <div class="guide-warning">⚠️ ВАЖНО<br><span>Одной активации достаточно для всех приложений в вашем заказе. Без активации приложения работать не будут.</span></div>
-        <button id="guideClose" class="btn primary" type="button">ПОНЯТНО, ПЕРЕЙТИ К ЗАКАЗУ</button>
+        <div class="guide-quiz" aria-labelledby="guideQuestion">
+          <p id="guideOrderLabel" class="guide-order-label"></p>
+          <h3 id="guideQuestion">Что нужно сделать после установки приложений, чтобы они заработали?</h3>
+          <label class="guide-answer"><input type="radio" name="guideAnswer" value="a"><span>А) Просто открыть приложение.</span></label>
+          <label class="guide-answer"><input type="radio" name="guideAnswer" value="b"><span>Б) Удалить и установить приложение заново.</span></label>
+          <label class="guide-answer"><input type="radio" name="guideAnswer" value="c"><span>В) Нажать «АКТИВИРОВАТЬ ЧЕРЕЗ WHATSAPP» и отправить готовое сообщение.</span></label>
+          <p id="guideFeedback" class="guide-feedback" role="status" aria-live="polite"></p>
+        </div>
+        <button id="guideClose" class="btn primary" type="button" disabled>ОТВЕТЬТЕ ПРАВИЛЬНО, ЧТОБЫ ПРОДОЛЖИТЬ</button>
       </div>
     </div>
 
@@ -95,6 +103,6 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="profile.js?v=20261012j"></script>
+<script src="profile.js?v=20261014a"></script>
 </body>
 </html>
