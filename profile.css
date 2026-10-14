@@ -208,3 +208,13 @@ h2{margin:20px 0 10px;font-size:17px}
 @media (max-width: 767px) {
   .p-form input, .p-form textarea, .p-form select { font-size: 16px !important; }
 }
+
+
+/* Required knowledge check for each paid order */
+.guide-quiz{margin-top:15px;padding-top:14px;border-top:1px solid var(--line)}
+.guide-order-label{margin:0 0 8px;color:#c8baff;font-size:11px;font-weight:800}
+.guide-quiz h3{margin:0 0 10px;font-size:14px;line-height:1.4}
+.guide-answer{display:flex;align-items:flex-start;gap:9px;margin-top:8px;padding:10px 11px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.04);font-size:12px;line-height:1.4;cursor:pointer}
+.guide-answer input{flex:0 0 auto;margin:2px 0 0;accent-color:#8b73ff}
+.guide-feedback{min-height:0;margin:8px 0 0;color:#ff9ca5;font-size:12px;line-height:1.4}
+.guide-modal .btn:disabled{opacity:.6;cursor:not-allowed}
