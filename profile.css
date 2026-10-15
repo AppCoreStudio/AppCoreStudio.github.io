@@ -61,9 +61,9 @@ h2{margin:20px 0 10px;font-size:17px}
 .activation-pane{padding:15px 2px 2px}
 .activation-title{font-size:13px;font-weight:900;text-align:center}
 .activation-copy{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.5;text-align:center}
-.guide-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(3,4,8,.78);backdrop-filter:blur(8px)}
+.guide-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px;background:rgba(3,4,8,.78);backdrop-filter:blur(8px);overscroll-behavior:contain}
 .guide-overlay[hidden]{display:none}
-.guide-modal{width:min(100%,390px);padding:20px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 20px 70px rgba(0,0,0,.5)}
+.guide-modal{box-sizing:border-box;width:min(100%,390px);max-height:calc(100vh - 36px);max-height:calc(100dvh - 36px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:20px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 20px 70px rgba(0,0,0,.5)}
 .guide-icon{font-size:30px}
 .guide-modal h2{margin:8px 0 8px}
 .guide-modal p{margin:0 0 14px;color:#aeb4c4;font-size:13px;line-height:1.5}
