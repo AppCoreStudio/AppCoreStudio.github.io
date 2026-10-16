@@ -247,6 +247,30 @@
     button.textContent = "Оформляем заказ…";
 
     try {
+      // Сначала привязываем клиента к рефереру, затем создаём заказ.
+      // Telegram-уведомление срабатывает при вставке заказа и должно уже
+      // видеть реферальную связь, иначе в сообщении отображается «нет реферала».
+      try {
+        var code =
+          localStorage.getItem(REFERRAL_CODE_KEY) ||
+          localStorage.getItem("referral_code");
+
+        if (isValidReferralCode(code)) {
+          var ref = await supabaseClient.rpc("register_referral", {
+            p_referral_code: code.trim(),
+            p_referred_user_id: phone
+          });
+
+          if (ref.error) {
+            console.error("Referral registration error:", ref.error);
+          } else if (ref.data === false) {
+            console.warn("Referral registration was not created; check code and existing client link.");
+          }
+        }
+      } catch (e) {
+        console.error("Referral error:", e);
+      }
+
       var result = await supabaseClient.from("orders").insert([order]);
 
       if (result.error) {
@@ -261,26 +285,6 @@
         }
 
         return;
-      }
-
-      // Привязка к рефереру — как раньше
-      try {
-        var code =
-          localStorage.getItem(REFERRAL_CODE_KEY) ||
-          localStorage.getItem("referral_code");
-
-        if (isValidReferralCode(code)) {
-          var ref = await supabaseClient.rpc("register_referral", {
-            p_referral_code: code.trim(),
-            p_referred_user_id: phone
-          });
-
-          if (ref.error) {
-            console.error("Referral registration error:", ref.error);
-          }
-        }
-      } catch (e) {
-        console.error("Referral error:", e);
       }
 
       currentOrder = order;
