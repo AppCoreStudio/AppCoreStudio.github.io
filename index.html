@@ -50,6 +50,26 @@
   const code = new URLSearchParams(window.location.search).get("ref");
   if (!code) return;
 
+  // Сохраняем реферальный код на первой странице, чтобы он не потерялся
+  // при переходе с главной страницы в каталог и оформлении заказа.
+  const normalizedCode = code.trim();
+  if (/^[A-Za-z0-9_-]{3,64}$/.test(normalizedCode)) {
+    try {
+      const primaryKey = "appcore_referral_code";
+      const legacyKey = "referral_code";
+      const existingCode =
+        localStorage.getItem(primaryKey) ||
+        localStorage.getItem(legacyKey);
+
+      if (!existingCode || !/^[A-Za-z0-9_-]{3,64}$/.test(existingCode.trim())) {
+        localStorage.setItem(primaryKey, normalizedCode);
+        localStorage.setItem(legacyKey, normalizedCode);
+      }
+    } catch (error) {
+      console.warn("Referral code could not be saved:", error);
+    }
+  }
+
   const visitorKey = "appcore_referral_visitor_id";
   let visitorId = null;
 
