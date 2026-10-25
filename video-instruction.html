@@ -4,18 +4,50 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08090d">
-<title>AppCore — Видеоинструкция</title>
+<title>AppCore — Видеоинструкция по установке</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:#08090d;color:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:flex;justify-content:center;align-items:center;padding:24px}
-main{width:100%;max-width:560px}
-.brand{font-size:13px;letter-spacing:.16em;color:#a9a9b5;font-weight:700;margin-bottom:12px}
-h1{font-size:25px;line-height:1.2;margin:0 0 10px}
-p{color:#b9bac5;font-size:15px;line-height:1.55;margin:0 0 20px}
-.player{overflow:hidden;border-radius:18px;background:#14151c;border:1px solid #292a35;box-shadow:0 18px 60px #0008}
-video{display:block;width:100%;max-height:72vh;background:#000}
-footer{font-size:12px;color:#777986;text-align:center;margin-top:16px}
+:root{color-scheme:dark}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 42%,#101b35 0%,#090d17 42%,#08090d 78%);color:#f5f7ff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:42px 20px;display:flex;justify-content:center}
+main{width:100%;max-width:920px;margin:auto}
+.brand{text-align:center;font-size:clamp(28px,5vw,48px);letter-spacing:.04em;font-weight:850;margin:0 0 48px;color:#f8faff}
+.brand span{color:#35a8ff}
+h1{text-align:center;font-size:clamp(28px,5vw,46px);line-height:1.12;letter-spacing:-.035em;margin:0 0 22px}
+.intro{text-align:center;color:#b9c9e6;font-size:clamp(15px,2.2vw,21px);line-height:1.5;margin:0 0 32px}
+.warning{display:flex;gap:22px;align-items:flex-start;padding:28px 30px;margin:0 0 36px;border:1px solid #0756a1;border-radius:22px;background:linear-gradient(120deg,#0b1b32e8,#0b1426e8);box-shadow:inset 0 0 32px #0c3c7020}
+.warning-icon{flex:0 0 54px;width:54px;height:54px;border:3px solid #35a8ff;border-radius:50%;display:grid;place-items:center;color:#35a8ff;font-size:34px;font-weight:600;line-height:1}
+.warning h2{color:#35a8ff;font-size:clamp(19px,2.8vw,27px);margin:0 0 10px}
+.warning p{color:#b9c9e6;font-size:clamp(15px,2vw,20px);line-height:1.5;margin:0 0 8px}
+.warning strong{color:#e1eaff}
+.warning .icloud{color:#35a8ff;font-weight:800;margin-bottom:0}
+.player{overflow:hidden;border-radius:22px;background:#05070d;border:1px solid #2b3d5b;box-shadow:0 22px 70px #0008}
+video{display:block;width:100%;max-height:72vh;aspect-ratio:16/9;background:#000;object-fit:contain}
+footer{text-align:center;color:#91a5c7;font-size:15px;margin:42px 0 8px}
+footer strong{color:#cbd8f0}
+@media(max-width:560px){body{padding:28px 14px}.brand{margin-bottom:34px}.warning{gap:14px;padding:20px 16px;border-radius:18px}.warning-icon{flex-basis:42px;width:42px;height:42px;font-size:27px;border-width:2px}.intro{margin-bottom:24px}.player{border-radius:16px}footer{font-size:12px;margin-top:30px}}
 </style>
 </head>
-<body><main><div class="brand">APPCORE</div><h1>Видеоинструкция по установке</h1><p>Нажмите ▶, чтобы посмотреть видео. Скачивать файл не требуется.</p><div class="player"><video controls playsinline preload="metadata"><source src="https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video?raw=1" type="video/mp4">Ваш браузер не поддерживает воспроизведение видео.</video></div><footer>AppCore · Дистанционная установка приложений</footer></main></body>
+<body>
+<main>
+<div class="brand">APP<span>CORE</span></div>
+<h1>Видеоинструкция по установке</h1>
+<p class="intro">Нажмите ▶, чтобы посмотреть видео.<br>Скачивать файл не требуется.</p>
+<section class="warning" aria-label="Важный момент">
+<div class="warning-icon" aria-hidden="true">!</div>
+<div>
+<h2>Важный момент</h2>
+<p>Повторяйте действия точно так же, как показано на видео.</p>
+<p><strong>Выходим только из учётной записи «Контент и покупки».</strong></p>
+<p class="icloud">Из iCloud выходить НЕ нужно!</p>
+</div>
+</section>
+<div class="player">
+<video controls playsinline preload="metadata">
+<source src="https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video?raw=1" type="video/mp4">
+Ваш браузер не поддерживает воспроизведение видео.
+</video>
+</div>
+<footer><strong>AppCore</strong> · Дистанционная установка приложений</footer>
+</main>
+</body>
 </html>
