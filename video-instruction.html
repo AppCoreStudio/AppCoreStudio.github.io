@@ -20,11 +20,21 @@ h1{text-align:center;font-size:clamp(28px,5vw,46px);line-height:1.12;letter-spac
 .warning p{color:#b9c9e6;font-size:clamp(15px,2vw,20px);line-height:1.5;margin:0 0 8px}
 .warning strong{color:#e1eaff}
 .warning .icloud{color:#35a8ff;font-weight:800;margin-bottom:0}
+.credentials{margin:0 0 36px;padding:26px 28px;border:1px solid #174d83;border-radius:22px;background:linear-gradient(120deg,#0b1b32e8,#0b1426e8);box-shadow:inset 0 0 32px #0c3c7020}
+.credentials h2{margin:0 0 8px;color:#35a8ff;font-size:clamp(20px,3vw,27px)}
+.credentials-note{margin:0 0 20px;color:#b9c9e6;font-size:14px;line-height:1.5}
+.credential-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0;border-top:1px solid #263b58}
+.credential-info{min-width:0}
+.credential-label{display:block;color:#91a5c7;font-size:13px;margin-bottom:6px}
+.credential-value{display:block;color:#f5f7ff;font-size:clamp(14px,2.4vw,17px);overflow-wrap:anywhere;user-select:text}
+.copy-button{border:1px solid #2478bd;border-radius:12px;background:#102b49;color:#d9edff;padding:11px 14px;font:inherit;font-size:14px;font-weight:650;cursor:pointer;white-space:nowrap}
+.copy-button:active{transform:scale(.98)}
+.copy-status{min-height:20px;margin:12px 0 0;color:#67dba2;font-size:14px}
 .player{overflow:hidden;border-radius:22px;background:#05070d;border:1px solid #2b3d5b;box-shadow:0 22px 70px #0008}
 video{display:block;width:100%;max-height:72vh;aspect-ratio:16/9;background:#000;object-fit:contain}
 footer{text-align:center;color:#91a5c7;font-size:15px;margin:42px 0 8px}
 footer strong{color:#cbd8f0}
-@media(max-width:560px){body{padding:28px 14px}.brand{margin-bottom:34px}.warning{gap:14px;padding:20px 16px;border-radius:18px}.warning-icon{flex-basis:42px;width:42px;height:42px;font-size:27px;border-width:2px}.intro{margin-bottom:24px}.player{border-radius:16px}footer{font-size:12px;margin-top:30px}}
+@media(max-width:560px){body{padding:28px 14px}.brand{margin-bottom:34px}.warning{gap:14px;padding:20px 16px;border-radius:18px}.warning-icon{flex-basis:42px;width:42px;height:42px;font-size:27px;border-width:2px}.intro{margin-bottom:24px}.credentials{padding:20px 16px;border-radius:18px}.credential-row{grid-template-columns:minmax(0,1fr);gap:10px}.copy-button{width:100%}.player{border-radius:16px}footer{font-size:12px;margin-top:30px}}
 </style>
 </head>
 <body>
@@ -41,6 +51,25 @@ footer strong{color:#cbd8f0}
 <p class="icloud">Из iCloud выходить НЕ нужно!</p>
 </div>
 </section>
+<section class="credentials" aria-label="Данные для входа">
+<h2>Данные для входа</h2>
+<p class="credentials-note">Нажмите кнопку рядом с нужным полем, чтобы скопировать данные.</p>
+<div class="credential-row">
+<div class="credential-info">
+<span class="credential-label">Логин</span>
+<span class="credential-value" id="loginValue">muradmegidaw@icloud.com</span>
+</div>
+<button class="copy-button" type="button" data-copy="loginValue">Скопировать логин</button>
+</div>
+<div class="credential-row">
+<div class="credential-info">
+<span class="credential-label">Пароль</span>
+<span class="credential-value" id="passwordValue">Region12345</span>
+</div>
+<button class="copy-button" type="button" data-copy="passwordValue">Скопировать пароль</button>
+</div>
+<p class="copy-status" id="copyStatus" role="status" aria-live="polite"></p>
+</section>
 <div class="player">
 <video controls playsinline preload="metadata">
 <source src="https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video?raw=1" type="video/mp4">
@@ -49,5 +78,43 @@ footer strong{color:#cbd8f0}
 </div>
 <footer><strong>AppCore</strong> · Дистанционная установка приложений</footer>
 </main>
+<script>
+(function(){
+  const status = document.getElementById('copyStatus');
+  async function copyText(value) {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(value);
+      return;
+    }
+    const field = document.createElement('textarea');
+    field.value = value;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    document.body.appendChild(field);
+    field.select();
+    field.setSelectionRange(0, field.value.length);
+    const copied = document.execCommand('copy');
+    field.remove();
+    if (!copied) throw new Error('copy failed');
+  }
+  document.querySelectorAll('[data-copy]').forEach(function(button){
+    button.addEventListener('click', async function(){
+      const value = document.getElementById(button.dataset.copy).textContent.trim();
+      try {
+        await copyText(value);
+        status.textContent = 'Скопировано ✓';
+        button.textContent = 'Скопировано ✓';
+        window.setTimeout(function(){
+          button.textContent = button.dataset.copy === 'loginValue' ? 'Скопировать логин' : 'Скопировать пароль';
+          status.textContent = '';
+        }, 2200);
+      } catch (error) {
+        status.textContent = 'Не удалось скопировать автоматически. Выделите данные и скопируйте вручную.';
+      }
+    });
+  });
+})();
+</script>
 </body>
 </html>
