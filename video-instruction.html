@@ -19,8 +19,9 @@ h1{text-align:center;font-size:clamp(28px,5vw,46px);line-height:1.12;letter-spac
 .warning h2{color:#35a8ff;font-size:clamp(19px,2.8vw,27px);margin:0 0 10px}
 .warning p{color:#b9c9e6;font-size:clamp(15px,2vw,20px);line-height:1.5;margin:0 0 8px}
 .warning strong{color:#e1eaff}
-.warning .icloud{color:#35a8ff;font-weight:800;margin-bottom:0}
-.credentials{margin:0 0 22px;padding:22px 28px;border:1px solid #174d83;border-radius:22px;background:linear-gradient(120deg,#0b1b32e8,#0b1426e8);box-shadow:inset 0 0 32px #0c3c7020}
+.warning .account-name{color:#42e9a0;font-weight:800}
+.warning .icloud{color:#ff4058;font-weight:850;margin-bottom:0}
+.credentials{margin:0 0 20px;padding:22px 28px;border:1px solid #174d83;border-radius:22px;background:linear-gradient(120deg,#0b1b32e8,#0b1426e8);box-shadow:inset 0 0 32px #0c3c7020}
 .credentials h2{margin:0 0 8px;color:#35a8ff;font-size:clamp(20px,3vw,27px)}
 .credentials-note{margin:0 0 20px;color:#b9c9e6;font-size:14px;line-height:1.5}
 .credential-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0;border-top:1px solid #263b58}
@@ -30,8 +31,26 @@ h1{text-align:center;font-size:clamp(28px,5vw,46px);line-height:1.12;letter-spac
 .copy-button{border:1px solid #2478bd;border-radius:12px;background:#102b49;color:#d9edff;padding:11px 14px;font:inherit;font-size:14px;font-weight:650;cursor:pointer;white-space:nowrap}
 .copy-button:active{transform:scale(.98)}
 .copy-status{min-height:20px;margin:12px 0 0;color:#67dba2;font-size:14px}
-.player{overflow:hidden;border-radius:22px;background:#05070d;border:1px solid #2b3d5b;box-shadow:0 22px 70px #0008}
-video{display:block;width:100%;max-height:72vh;aspect-ratio:16/9;background:#000;object-fit:contain}
+.player{position:relative;overflow:hidden;border-radius:22px;background:#05070d;border:1px solid #0756a1;box-shadow:0 22px 70px #0008;isolation:isolate}
+.video-poster{position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;min-height:clamp(250px,43vw,440px);overflow:hidden;padding:clamp(22px,5vw,58px);background:radial-gradient(ellipse at 72% 65%,#075be9a8 0%,transparent 35%),linear-gradient(145deg,#050b1a 0%,#071b42 55%,#08091a 100%);cursor:pointer}
+.video-poster:before,.video-poster:after{content:"";position:absolute;inset:auto -15% 12% -15%;height:35%;border-radius:50%;transform:rotate(-12deg);pointer-events:none}
+.video-poster:before{border-top:3px solid #126cff;box-shadow:0 -8px 28px #075dffb0;filter:blur(1px)}
+.video-poster:after{bottom:2%;border-top:3px solid #8b35ff;box-shadow:0 -8px 32px #6735ffb0;transform:rotate(-18deg)}
+.poster-copy{position:relative;z-index:2;align-self:center}
+.poster-brand{font-size:clamp(28px,5vw,54px);font-weight:900;letter-spacing:-.04em;white-space:nowrap}
+.poster-brand span{color:#168fff}
+.poster-subtitle{margin-top:18px;color:#b9d1ff;font-size:clamp(14px,2.2vw,22px);line-height:1.35;max-width:250px}
+.poster-phone{position:absolute;z-index:1;width:39%;height:115%;right:8%;top:12%;border:3px solid #8db8ff;border-radius:42px 42px 22px 22px;transform:rotate(15deg);background:linear-gradient(145deg,#071a43,#020611 65%);box-shadow:0 0 24px #0875ff88,inset 0 0 24px #1658ff55}
+.poster-phone:before{content:"";position:absolute;top:10px;left:30%;width:40%;height:18px;border-radius:12px;background:#02040a}
+.poster-apple{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);font-size:clamp(52px,9vw,100px);color:#9fcaff;text-shadow:0 0 20px #168fff,0 0 45px #075dff}
+.poster-play{position:absolute;z-index:3;left:50%;top:58%;transform:translate(-50%,-50%);width:clamp(76px,14vw,132px);height:clamp(76px,14vw,132px);border-radius:50%;border:4px solid #21bfff;background:#031127eF;box-shadow:0 0 30px #006aff80;display:grid;place-items:center;color:white;font-size:clamp(32px,6vw,62px);padding-left:7px}
+.poster-controls{display:flex;align-items:center;gap:18px;padding:15px 22px;background:#030711;color:#f5f7ff;font-size:15px}
+.poster-controls .track{height:6px;border-radius:9px;background:#344b76;flex:1;position:relative}
+.poster-controls .track:before{content:"";position:absolute;left:0;top:0;bottom:0;width:1%;border-radius:9px;background:#35a8ff}
+.video-element{display:none;width:100%;max-height:72vh;aspect-ratio:16/9;background:#000;object-fit:contain}
+.player.playing .video-poster{display:none}
+.player.playing .video-element{display:block}
+@media(max-width:560px){.video-poster{min-height:250px;padding:20px}.poster-phone{right:3%;width:43%;border-radius:28px}.poster-subtitle{max-width:160px}.poster-controls{padding:12px;gap:12px;font-size:13px}}
 footer{text-align:center;color:#91a5c7;font-size:15px;margin:42px 0 8px}
 footer strong{color:#cbd8f0}
 @media(max-width:560px){body{padding:28px 14px}.brand{margin-bottom:34px}.warning{gap:14px;padding:20px 16px;border-radius:18px}.warning-icon{flex-basis:42px;width:42px;height:42px;font-size:27px;border-width:2px}.intro{margin-bottom:24px}.credentials{padding:20px 16px;border-radius:18px}.credential-row{grid-template-columns:minmax(0,1fr);gap:10px}.copy-button{width:100%}.player{border-radius:16px}footer{font-size:12px;margin-top:30px}}
@@ -47,7 +66,7 @@ footer strong{color:#cbd8f0}
 <div>
 <h2>Важный момент</h2>
 <p>Повторяйте действия точно так же, как показано на видео.</p>
-<p><strong>Выходим только из учётной записи «Контент и покупки».</strong></p>
+<p><strong>Выходим только из учётной записи <span class="account-name">«Контент и покупки»</span>.</strong></p>
 <p class="icloud">Из iCloud выходить НЕ нужно!</p>
 </div>
 </section>
@@ -70,8 +89,17 @@ footer strong{color:#cbd8f0}
 </div>
 <p class="copy-status" id="copyStatus" role="status" aria-live="polite"></p>
 </section>
-<div class="player">
-<video controls playsinline preload="metadata">
+<div class="player" id="videoPlayer">
+<div class="video-poster" id="videoPoster" role="button" tabindex="0" aria-label="Воспроизвести видеоинструкцию">
+<div class="poster-copy">
+<div class="poster-brand">APP<span>CORE</span></div>
+<div class="poster-subtitle">Дистанционная установка приложений</div>
+</div>
+<div class="poster-phone" aria-hidden="true"><div class="poster-apple">●</div></div>
+<div class="poster-play" aria-hidden="true">▶</div>
+</div>
+<div class="poster-controls" aria-hidden="true"><span>▶</span><span>0:00</span><span class="track"></span><span>🔊</span><span>⛶</span><span>⋮</span></div>
+<video class="video-element" id="instructionVideo" controls playsinline preload="metadata">
 <source src="https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video?raw=1" type="video/mp4">
 Ваш браузер не поддерживает воспроизведение видео.
 </video>
@@ -81,6 +109,17 @@ footer strong{color:#cbd8f0}
 <script>
 (function(){
   const status = document.getElementById('copyStatus');
+  const player = document.getElementById('videoPlayer');
+  const video = document.getElementById('instructionVideo');
+  const poster = document.getElementById('videoPoster');
+  async function startVideo(){
+    player.classList.add('playing');
+    try { await video.play(); } catch (e) { video.setAttribute('controls',''); }
+  }
+  poster.addEventListener('click', startVideo);
+  poster.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); startVideo(); }
+  });
   async function copyText(value) {
     if (navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(value);
