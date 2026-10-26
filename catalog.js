@@ -690,12 +690,6 @@ function restoreOrderLock(){
   currentOrder=order;
 }
 
-function openNewOrderConfirmation(){
-
-  confirmOverlay.classList.add("show");
-
-  document.body.style.overflow="hidden";
-}
 
 function closeNewOrderConfirmation(){
 
