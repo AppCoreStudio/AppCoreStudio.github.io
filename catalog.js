@@ -1516,9 +1516,9 @@ async function checkOrderStatus(){
         updatedOrder
       );
 
-      statusTitle.textContent="⏳ Ожидание оплаты";
-  showPaymentSupport();
-      statusText.textContent="Заказ принят. Ожидайте подтверждения оплаты. После подтверждения здесь появится кнопка перехода в профиль.";
+      statusTitle.textContent="✅ Заказ успешно оформлен!";
+      showPaymentSupport();
+      statusText.textContent="Нажмите кнопку «Перейти в WhatsApp». В готовом сообщении будут реквизиты для оплаты. Отправьте сообщение в чат, чтобы продолжить оформление заказа.";
 
       return;
     }
