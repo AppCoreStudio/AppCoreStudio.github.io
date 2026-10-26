@@ -509,18 +509,6 @@ function getProfileToken(){
   return token;
 }
 
-function generateOrderNumber(){
-  const alphabet="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const bytes=new Uint8Array(10);
-  if(window.crypto && crypto.getRandomValues){
-    crypto.getRandomValues(bytes);
-  }else{
-    for(let i=0;i<bytes.length;i++) bytes[i]=Math.floor(Math.random()*256);
-  }
-  let value="";
-  for(const byte of bytes) value+=alphabet[byte%alphabet.length];
-  return "AC-"+value;
-}
 
 function normalizePhone(value){
   return value.replace(/[^\d+]/g,"").trim();
@@ -624,9 +612,6 @@ function markAppsInstalled(order){
   }
 }
 
-function isAppsInstalled(order){
-  return getInstalledOrders().includes(order.order_number);
-}
 
 function saveClientOrder(order,createdAt=Date.now()){
 
@@ -693,25 +678,6 @@ function clearOrderStorage(){
   }catch(error){}
 }
 
-function resetExpiredOrder(){
-  if(statusTimer){
-    clearInterval(statusTimer);
-    statusTimer=null;
-  }
-  clearTimeout(lockTimer);
-  lockTimer=null;
-  currentOrder=null;
-  selected.clear();
-  statusPanel.classList.remove("show");
-  cancelledPanel.classList.remove("show");
-  installPanel.classList.remove("show");
-  activationPanel.classList.remove("show");
-  clearOrderStorage();
-  render();
-  updatePrice();
-  updateWhatsAppLinks();
-  showToast("Заказ завершён — можно оформить новый.");
-}
 
 function restoreOrderLock(){
   // Повторные покупки не блокируются. Восстанавливаем только последний заказ,
