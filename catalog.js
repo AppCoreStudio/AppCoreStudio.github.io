@@ -1115,8 +1115,8 @@ function buildOrderWhatsAppText(createdOrder, selectedList){
 
 function ensureOrderWhatsAppButton(order, selectedList){
   const whatsappUrl =
-    "https://wa.me/" + WHATSAPP_NUMBER +
-    "?text=" + encodeURIComponent(buildOrderWhatsAppText(order, selectedList || order.apps || []));
+    "whatsapp://send?phone=" + WHATSAPP_NUMBER +
+    "&text=" + encodeURIComponent(buildOrderWhatsAppText(order, selectedList || order.apps || []));
 
   let orderWhatsapp=document.getElementById("orderWhatsapp");
   if(!orderWhatsapp){
