@@ -1113,11 +1113,34 @@ function buildOrderWhatsAppText(createdOrder, selectedList){
   return whatsappText;
 }
 
-function showSubmissionSuccess(createdOrder, selectedList){
+function ensureOrderWhatsAppButton(order, selectedList){
   const whatsappUrl =
-    "whatsapp://send?phone=" + WHATSAPP_NUMBER +
-    "&text=" + encodeURIComponent(buildOrderWhatsAppText(createdOrder, selectedList));
+    "https://wa.me/" + WHATSAPP_NUMBER +
+    "?text=" + encodeURIComponent(buildOrderWhatsAppText(order, selectedList || order.apps || []));
 
+  let orderWhatsapp=document.getElementById("orderWhatsapp");
+  if(!orderWhatsapp){
+    orderWhatsapp=document.createElement("a");
+    orderWhatsapp.id="orderWhatsapp";
+    orderWhatsapp.className="status-support-button";
+    orderWhatsapp.style.marginTop="14px";
+    orderWhatsapp.style.display="flex";
+    orderWhatsapp.style.justifyContent="center";
+    orderWhatsapp.style.textAlign="center";
+    orderWhatsapp.style.textDecoration="none";
+    orderWhatsapp.textContent="📲 Перейти в WhatsApp";
+    const support=statusPanel.querySelector(".status-support");
+    if(support) statusPanel.insertBefore(orderWhatsapp,support);
+    else statusPanel.appendChild(orderWhatsapp);
+  }
+  orderWhatsapp.href=whatsappUrl;
+  orderWhatsapp.target="_blank";
+  orderWhatsapp.rel="noopener";
+  orderWhatsapp.style.display="flex";
+  return orderWhatsapp;
+}
+
+function showSubmissionSuccess(createdOrder, selectedList){
   currentOrder=createdOrder;
   saveClientOrder(createdOrder,Date.now());
   closePaymentModal();
@@ -1129,20 +1152,7 @@ function showSubmissionSuccess(createdOrder, selectedList){
   statusTitle.textContent="✅ Заказ успешно оформлен!";
   statusText.textContent="Нажмите кнопку «Перейти в WhatsApp». В готовом сообщении будут реквизиты для оплаты. Отправьте сообщение в чат, чтобы продолжить оформление заказа.";
 
-  let orderWhatsapp=document.getElementById("orderWhatsapp");
-  if(!orderWhatsapp){
-    orderWhatsapp=document.createElement("a");
-    orderWhatsapp.id="orderWhatsapp";
-    orderWhatsapp.className="status-support-button";
-    orderWhatsapp.style.marginTop="14px";
-    orderWhatsapp.style.display="flex";
-    orderWhatsapp.style.justifyContent="center";
-    orderWhatsapp.style.textAlign="center";
-    orderWhatsapp.textContent="📲 Перейти в WhatsApp";
-    statusPanel.insertBefore(orderWhatsapp,statusPanel.querySelector(".status-support"));
-  }
-  orderWhatsapp.href=whatsappUrl;
-  orderWhatsapp.style.display="flex";
+  ensureOrderWhatsAppButton(createdOrder, selectedList);
   startStatusChecking();
   updateWhatsAppLinks();
   try{localStorage.removeItem(ORDER_REQUEST_KEY);}catch(error){}
@@ -1524,6 +1534,7 @@ async function checkOrderStatus(){
       statusTitle.textContent="✅ Заказ успешно оформлен!";
       showPaymentSupport();
       statusText.textContent="Нажмите кнопку «Перейти в WhatsApp». В готовом сообщении будут реквизиты для оплаты. Отправьте сообщение в чат, чтобы продолжить оформление заказа.";
+      ensureOrderWhatsAppButton(updatedOrder, updatedOrder.apps || []);
 
       return;
     }
