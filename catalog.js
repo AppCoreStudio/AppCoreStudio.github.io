@@ -4,29 +4,38 @@ const SUPABASE_KEY="sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
 let supabaseClient=null;
 
 async function rpc(functionName, params){
-  const response = await fetch(
-    SUPABASE_URL + "/rest/v1/rpc/" + encodeURIComponent(functionName),
-    {
-      method: "POST",
-      headers: {
-        "apikey": SUPABASE_KEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(params || {})
-    }
-  );
-  const raw = await response.text();
-  let data = null;
-  try { data = raw ? JSON.parse(raw) : null; } catch (e) {}
-  if (!response.ok) {
-    return {
-      data: null,
-      error: {
-        message: (data && (data.message || data.error || data.hint)) || ("HTTP " + response.status)
+  const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+  const timeout = controller ? setTimeout(() => controller.abort(), 6000) : null;
+  try{
+    const response = await fetch(
+      SUPABASE_URL + "/rest/v1/rpc/" + encodeURIComponent(functionName),
+      {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(params || {}),
+        signal: controller ? controller.signal : undefined
       }
-    };
+    );
+    const raw = await response.text();
+    let data = null;
+    try { data = raw ? JSON.parse(raw) : null; } catch (e) {}
+    if (!response.ok) {
+      return {
+        data: null,
+        error: {
+          message: (data && (data.message || data.error || data.hint)) || ("HTTP " + response.status)
+        }
+      };
+    }
+    return { data, error: null };
+  }catch(error){
+    return {data:null,error:{message:error && error.name==="AbortError" ? "TIMEOUT" : (error && error.message || "NETWORK_ERROR")}};
+  }finally{
+    if(timeout) clearTimeout(timeout);
   }
-  return { data, error: null };
 }
   const referralUserId =
   localStorage.getItem("referral_user_id") ||
@@ -1189,6 +1198,7 @@ async function createOrder(){
   paymentDone.textContent="Проверяем заказ…";
 
   const startedAt=Date.now();
+  let keepProgress=false;
   let createResult=null;
   let rpcFinished=false;
   setCheckoutProgress("Проверяем заказ: до 30 секунд. Не закрывайте страницу…");
@@ -1244,6 +1254,7 @@ async function createOrder(){
     lastStatus=await getSubmissionStatus(requestId,phone);
 
     if(lastStatus && lastStatus.order_exists){
+      keepProgress=true;
       setCheckoutProgress("Заказ уже сохранён, но подтверждение Telegram ещё не получено. Повторный заказ не создаём — проверяем дальше. Нажмите кнопку ниже, чтобы проверить снова.");
       paymentDone.textContent="🔄 Проверить статус заказа";
       paymentDone.disabled=false;
@@ -1252,6 +1263,7 @@ async function createOrder(){
       return false;
     }
 
+    keepProgress=true;
     setCheckoutProgress("Заказ пока не найден в Supabase и Telegram. Можно безопасно повторить попытку — система проверит тот же запрос и не создаст дубликат.");
     paymentDone.textContent="🔄 Повторить заказ";
     paymentDone.disabled=false;
@@ -1260,6 +1272,7 @@ async function createOrder(){
     return false;
   }catch(error){
     console.error("Order submission check failed:",error);
+    keepProgress=true;
     setCheckoutProgress("Не удалось завершить проверку. Повторная попытка будет выполнена с тем же идентификатором, чтобы избежать дубликата.");
     paymentDone.textContent="🔄 Повторить проверку";
     paymentDone.disabled=false;
@@ -1270,7 +1283,7 @@ async function createOrder(){
       paymentDone.disabled=false;
       paymentDone.textContent="Заказать приложение";
     }
-    if(!isCreatingOrder) clearCheckoutProgress();
+    if(!keepProgress) clearCheckoutProgress();
   }
 }
 
