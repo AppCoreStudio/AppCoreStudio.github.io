@@ -190,6 +190,7 @@ const paymentDone=$("paymentDone");
 if(paymentDone){
   paymentDone.addEventListener("click", function(event){
     event.preventDefault();
+    paymentDone.dataset.checkOnly="false";
     createOrder();
   });
 }
@@ -1016,224 +1017,260 @@ function updateWhatsAppLinks(){
     );
 }
 
+const ORDER_REQUEST_KEY="appcore_pending_request_id";
+const CHECKOUT_TIMEOUT_MS=30000;
+
+function makeRequestId(){
+  try{
+    if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  }catch(error){}
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(c){
+    const r=Math.random()*16|0;
+    return (c==="x"?r:(r&0x3|0x8)).toString(16);
+  });
+}
+
+function getPendingRequestId(){
+  try{
+    const value=localStorage.getItem(ORDER_REQUEST_KEY);
+    if(value && /^[0-9a-f-]{36}$/i.test(value)) return value;
+  }catch(error){}
+  const value=makeRequestId();
+  try{localStorage.setItem(ORDER_REQUEST_KEY,value);}catch(error){}
+  return value;
+}
+
+function setCheckoutProgress(message){
+  let node=document.getElementById("checkoutProgress");
+  if(!node){
+    node=document.createElement("div");
+    node.id="checkoutProgress";
+    node.className="payment-note checkout-progress";
+    paymentDone.parentNode.insertBefore(node,paymentDone);
+  }
+  node.textContent=message;
+  node.style.display="block";
+}
+
+function clearCheckoutProgress(){
+  const node=document.getElementById("checkoutProgress");
+  if(node) node.style.display="none";
+}
+
+async function getSubmissionStatus(requestId, phone){
+  const result=await rpc("get_order_submission_status",{
+    p_client_request_id:requestId,
+    p_client_phone:phone
+  });
+  if(result.error) return null;
+  const value=Array.isArray(result.data)?result.data[0]:result.data;
+  return value && typeof value.order_exists==="boolean" ? value : null;
+}
+
+function buildOrderWhatsAppText(createdOrder, selectedList){
+  const orderApps =
+    Array.isArray(createdOrder.apps)
+      ? createdOrder.apps.map(app=>app.name).filter(Boolean).join(", ")
+      : selectedList.map(app=>app.name).join(", ");
+
+  let whatsappText =
+    "Здравствуйте! Хочу оформить заказ.\\n\\n" +
+    "[ ЗАКАЗ ]\\n" +
+    `Номер заказа: ${createdOrder.order_number}\\n` +
+    `Приложение: ${orderApps}\\n` +
+    `Клиент: ${createdOrder.client_name}\\n` +
+    `Телефон: ${createdOrder.client_phone}\\n\\n` +
+    `Стоимость: ${createdOrder.original || 0} ₽\\n`;
+
+  if(Number(createdOrder.discount || 0) > 0){
+    whatsappText += `Скидка: ${createdOrder.discount} ₽\\n`;
+  }
+
+  whatsappText +=
+    `Итого к оплате: ${createdOrder.total || 0} ₽\\n\\n` +
+    "==================\\n" +
+    "[ ОПЛАТА ЗАКАЗА ]\\n" +
+    "==================\\n\\n" +
+    "Т-Банк\\n" +
+    "Мурат Межидов Х\\n" +
+    "+79289480706\\n\\n" +
+    `К оплате: ${createdOrder.total || 0} ₽\\n\\n` +
+    "==================\\n" +
+    "[ ЧЕК ОБ ОПЛАТЕ ОБЯЗАТЕЛЕН ]\\n" +
+    "==================\\n\\n" +
+    "После проверки чека заказ будет подтверждён.\\n\\n" +
+    "==================";
+
+  return whatsappText;
+}
+
+function showSubmissionSuccess(createdOrder, selectedList){
+  const whatsappUrl =
+    "whatsapp://send?phone=" + WHATSAPP_NUMBER +
+    "&text=" + encodeURIComponent(buildOrderWhatsAppText(createdOrder, selectedList));
+
+  currentOrder=createdOrder;
+  saveClientOrder(createdOrder,Date.now());
+  closePaymentModal();
+  selected.clear();
+  render();
+  updatePrice();
+  showOrderStatus(createdOrder,true);
+
+  statusTitle.textContent="✅ Заказ успешно оформлен!";
+  statusText.textContent="Нажмите кнопку «Перейти в WhatsApp». В готовом сообщении будут реквизиты для оплаты. Отправьте сообщение в чат, чтобы продолжить оформление заказа.";
+
+  let orderWhatsapp=document.getElementById("orderWhatsapp");
+  if(!orderWhatsapp){
+    orderWhatsapp=document.createElement("a");
+    orderWhatsapp.id="orderWhatsapp";
+    orderWhatsapp.className="status-support-button";
+    orderWhatsapp.style.marginTop="14px";
+    orderWhatsapp.style.display="flex";
+    orderWhatsapp.style.justifyContent="center";
+    orderWhatsapp.style.textAlign="center";
+    orderWhatsapp.textContent="📲 Перейти в WhatsApp";
+    statusPanel.insertBefore(orderWhatsapp,statusPanel.querySelector(".status-support"));
+  }
+  orderWhatsapp.href=whatsappUrl;
+  orderWhatsapp.style.display="flex";
+  startStatusChecking();
+  updateWhatsAppLinks();
+  try{localStorage.removeItem(ORDER_REQUEST_KEY);}catch(error){}
+}
+
 async function createOrder(){
-
   if(isCreatingOrder){
-
-    showToast(
-      "Заказ уже отправляется…"
-    );
-
+    showToast("Заказ уже проверяется…");
     return false;
   }
 
   const name=nameInput.value.trim().slice(0,60);
-
   if(!name){
-
     showToast("Введите имя");
-
     nameInput.focus();
-
     return false;
   }
 
-  const phone=
-    normalizePhone(
-      phoneInput.value
-    );
-
+  const phone=normalizePhone(phoneInput.value);
   if(!isValidPhone(phone)){
-
-    showToast(
-      "Введите корректный номер телефона"
-    );
-
+    showToast("Введите корректный номер телефона");
     phoneInput.focus();
-
     return false;
   }
 
-  const selectedList=
-    getSafeSelectedApps();
-
+  const selectedList=getSafeSelectedApps();
   if(!selectedList){
-
-    showToast(
-      "Некорректное количество приложений"
-    );
-
+    showToast("Некорректное количество приложений");
     selected.clear();
     render();
     updatePrice();
-
     return false;
   }
 
-  /*
-   * Дополнительная проверка перед отправкой.
-   */
-  if(
-    selectedList.length<1||
-    selectedList.length>apps.length
-  ){
-
-    showToast(
-      "Некорректное количество приложений"
-    );
-
+  if(selectedList.length<1 || selectedList.length>apps.length){
+    showToast("Некорректное количество приложений");
     return false;
   }
 
-  const price=calculatePrice(selectedList.length);
-
-  // WhatsApp открывается только по отдельному нажатию после сохранения заказа.
-  // Не создаём about:blank/Safari-вкладку: AppCore остаётся на экране.
+  const requestId=getPendingRequestId();
+  const savedReferralCode=localStorage.getItem(REFERRAL_CODE_KEY) || localStorage.getItem("referral_code") || null;
+  const params={
+    p_client_name:name,
+    p_client_phone:phone,
+    p_app_ids:selectedList.map(app=>app.id),
+    p_profile_token:getProfileToken(),
+    p_referral_code:isValidReferralCode(savedReferralCode)?savedReferralCode.trim():null,
+    p_client_request_id:requestId
+  };
 
   isCreatingOrder=true;
-
   paymentDone.disabled=true;
+  paymentDone.textContent="Проверяем заказ…";
 
-  paymentDone.textContent=
-    "Сохраняем заказ…";
+  const startedAt=Date.now();
+  let createResult=null;
+  let rpcFinished=false;
+  setCheckoutProgress("Проверяем заказ: до 30 секунд. Не закрывайте страницу…");
+
+  const rpcPromise=rpc("create_order_idempotent",params).then(result=>{
+    rpcFinished=true;
+    createResult=result;
+    return result;
+  }).catch(error=>{
+    rpcFinished=true;
+    return {data:null,error:{message:error && error.message || "Ошибка соединения"}};
+  });
 
   try{
+    // Не ждём бесконечно ответа RPC: сам запрос может завершиться на сервере позже.
+    await Promise.race([
+      rpcPromise,
+      new Promise(resolve=>setTimeout(resolve,8000))
+    ]);
 
-    const savedOrderReferralCode =
-      localStorage.getItem(REFERRAL_CODE_KEY) ||
-      localStorage.getItem("referral_code") ||
-      null;
+    let lastStatus=null;
+    while(Date.now()-startedAt<CHECKOUT_TIMEOUT_MS){
+      const secondsLeft=Math.max(0,Math.ceil((CHECKOUT_TIMEOUT_MS-(Date.now()-startedAt))/1000));
+      setCheckoutProgress("Проверяем сохранение заказа и уведомление в Telegram… Осталось "+secondsLeft+" сек.");
 
-    const {
-      data: createdOrder,
-      error
-    } = await rpc(
-      "create_order",
-      {
-        p_client_name: name,
-        p_client_phone: phone,
-        p_app_ids: selectedList.map(app=>app.id),
-        p_profile_token: getProfileToken(),
-        p_referral_code: isValidReferralCode(savedOrderReferralCode)
-          ? savedOrderReferralCode.trim()
-          : null
-      }
-    );
-
-    if(error){
-
-      console.error(error);
-
-      const message=error.message||"";
-
-      if(message.includes("RATE_LIMIT:")){
-        showToast(
-          "Лимит заказов достигнут. Попробуйте снова через 10 минут."
-        );
-      }else{
-        showToast(
-          "Ошибка создания заказа: "+
-          (message||"неизвестная ошибка")
-        );
+      if(createResult && createResult.data && !createResult.error){
+        const createdOrder=Array.isArray(createResult.data)?createResult.data[0]:createResult.data;
+        if(createdOrder && createdOrder.order_number){
+          lastStatus=await getSubmissionStatus(requestId,phone);
+          if(lastStatus && lastStatus.order_exists && lastStatus.telegram_notified){
+            showSubmissionSuccess(createdOrder,selectedList);
+            return true;
+          }
+        }
       }
 
+      lastStatus=await getSubmissionStatus(requestId,phone);
+      if(lastStatus && lastStatus.order_exists && lastStatus.telegram_notified){
+        // Повторный вызов с тем же request id безопасно вернёт уже созданный заказ.
+        const existing=await rpc("create_order_idempotent",params);
+        const existingOrder=existing && !existing.error
+          ? (Array.isArray(existing.data)?existing.data[0]:existing.data)
+          : null;
+        if(existingOrder && existingOrder.order_number){
+          showSubmissionSuccess(existingOrder,selectedList);
+          return true;
+        }
+      }
+
+      await new Promise(resolve=>setTimeout(resolve,2000));
+    }
+
+    lastStatus=await getSubmissionStatus(requestId,phone);
+
+    if(lastStatus && lastStatus.order_exists){
+      setCheckoutProgress("Заказ уже сохранён, но подтверждение Telegram ещё не получено. Повторный заказ не создаём — проверяем дальше. Нажмите кнопку ниже, чтобы проверить снова.");
+      paymentDone.textContent="🔄 Проверить статус заказа";
+      paymentDone.disabled=false;
+      paymentDone.dataset.checkOnly="true";
+      showToast("Заказ найден в системе. Дубликат не создаём.");
       return false;
     }
 
-    const createdAt=Date.now();
-    currentOrder=createdOrder;
-
-    saveClientOrder(
-      createdOrder,
-      createdAt
-    );
-
-    closePaymentModal();
-
-    selected.clear();
-
-    render();
-    updatePrice();
-
-    showOrderStatus(
-      createdOrder,
-      true
-    );
-
-    startStatusChecking();
-
-    updateWhatsAppLinks();
-
-    showToast(
-      "Заказ "+
-      createdOrder.order_number+
-      " создан"
-    );
-
-    const orderApps =
-      Array.isArray(createdOrder.apps)
-        ? createdOrder.apps.map(app=>app.name).filter(Boolean).join(", ")
-        : selectedList.map(app=>app.name).join(", ");
-
-    // Текст кодируется в UTF-8; открываем приложение WhatsApp напрямую, без WhatsApp Web.
-    let whatsappText =
-      "Здравствуйте! Хочу оформить заказ.\n\n" +
-      "[ ЗАКАЗ ]\n" +
-      `Номер заказа: ${createdOrder.order_number}\n` +
-      `Приложение: ${orderApps}\n` +
-      `Клиент: ${createdOrder.client_name}\n` +
-      `Телефон: ${createdOrder.client_phone}\n\n` +
-      `Стоимость: ${createdOrder.original || 0} ₽\n`;
-
-    if(Number(createdOrder.discount || 0) > 0){
-      whatsappText += `Скидка: ${createdOrder.discount} ₽\n`;
-    }
-
-    whatsappText +=
-      `Итого к оплате: ${createdOrder.total || 0} ₽\n\n` +
-      "==================\n" +
-      "[ ОПЛАТА ЗАКАЗА ]\n" +
-      "==================\n\n" +
-      "Т-Банк\n" +
-      "Мурат Межидов Х\n" +
-      "+79289480706\n\n" +
-      `К оплате: ${createdOrder.total || 0} ₽\n\n` +
-      "==================\n" +
-      "[ ЧЕК ОБ ОПЛАТЕ ОБЯЗАТЕЛЕН ]\n" +
-      "==================\n\n" +
-      "После проверки чека заказ будет подтверждён.\n\n" +
-      "==================";
-
-    // После сохранения заказа сразу передаём готовый текст в WhatsApp.
-    // Дополнительную кнопку в каталоге не создаём.
-    const encodedText = encodeURIComponent(whatsappText);
-    const whatsappUrl =
-      "whatsapp://send?phone=" + WHATSAPP_NUMBER +
-      "&text=" + encodedText;
-
-    showToast("Заказ создан. Открываем приложение WhatsApp…");
-    window.location.href = whatsappUrl;
-
-    return true;
-
-  }catch(error){
-
-    console.error(error);
-
-    showToast(
-      "Ошибка соединения с сервером"
-    );
-
-    return false;
-
-  }finally{
-
-    isCreatingOrder=false;
-
+    setCheckoutProgress("Заказ пока не найден в Supabase и Telegram. Можно безопасно повторить попытку — система проверит тот же запрос и не создаст дубликат.");
+    paymentDone.textContent="🔄 Повторить заказ";
     paymentDone.disabled=false;
-
-    paymentDone.textContent=
-      "💬 Отправить заказ в WhatsApp";
+    paymentDone.dataset.checkOnly="false";
+    showToast("Не удалось подтвердить заказ за 30 секунд. Можно повторить попытку.");
+    return false;
+  }catch(error){
+    console.error("Order submission check failed:",error);
+    setCheckoutProgress("Не удалось завершить проверку. Повторная попытка будет выполнена с тем же идентификатором, чтобы избежать дубликата.");
+    paymentDone.textContent="🔄 Повторить проверку";
+    paymentDone.disabled=false;
+    return false;
+  }finally{
+    isCreatingOrder=false;
+    if(paymentDone.textContent==="Проверяем заказ…"){
+      paymentDone.disabled=false;
+      paymentDone.textContent="Заказать приложение";
+    }
+    if(!isCreatingOrder) clearCheckoutProgress();
   }
 }
 
