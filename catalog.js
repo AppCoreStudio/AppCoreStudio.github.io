@@ -1083,31 +1083,31 @@ function buildOrderWhatsAppText(createdOrder, selectedList){
       : selectedList.map(app=>app.name).join(", ");
 
   let whatsappText =
-    "Здравствуйте! Хочу оформить заказ.\\n\\n" +
-    "[ ЗАКАЗ ]\\n" +
-    `Номер заказа: ${createdOrder.order_number}\\n` +
-    `Приложение: ${orderApps}\\n` +
-    `Клиент: ${createdOrder.client_name}\\n` +
-    `Телефон: ${createdOrder.client_phone}\\n\\n` +
-    `Стоимость: ${createdOrder.original || 0} ₽\\n`;
+    "Здравствуйте! Хочу оформить заказ.\n\n" +
+    "[ ЗАКАЗ ]\n" +
+    `Номер заказа: ${createdOrder.order_number}\n` +
+    `Приложение: ${orderApps}\n` +
+    `Клиент: ${createdOrder.client_name}\n` +
+    `Телефон: ${createdOrder.client_phone}\n\n` +
+    `Стоимость: ${createdOrder.original || 0} ₽\n`;
 
   if(Number(createdOrder.discount || 0) > 0){
-    whatsappText += `Скидка: ${createdOrder.discount} ₽\\n`;
+    whatsappText += `Скидка: ${createdOrder.discount} ₽\n`;
   }
 
   whatsappText +=
-    `Итого к оплате: ${createdOrder.total || 0} ₽\\n\\n` +
-    "==================\\n" +
-    "[ ОПЛАТА ЗАКАЗА ]\\n" +
-    "==================\\n\\n" +
-    "Т-Банк\\n" +
-    "Мурат Межидов Х\\n" +
-    "+79289480706\\n\\n" +
-    `К оплате: ${createdOrder.total || 0} ₽\\n\\n` +
-    "==================\\n" +
-    "[ ЧЕК ОБ ОПЛАТЕ ОБЯЗАТЕЛЕН ]\\n" +
-    "==================\\n\\n" +
-    "После проверки чека заказ будет подтверждён.\\n\\n" +
+    `Итого к оплате: ${createdOrder.total || 0} ₽\n\n` +
+    "==================\n" +
+    "[ ОПЛАТА ЗАКАЗА ]\n" +
+    "==================\n\n" +
+    "Т-Банк\n" +
+    "Мурат Межидов Х\n" +
+    "+79289480706\n\n" +
+    `К оплате: ${createdOrder.total || 0} ₽\n\n` +
+    "==================\n" +
+    "[ ЧЕК ОБ ОПЛАТЕ ОБЯЗАТЕЛЕН ]\n" +
+    "==================\n\n" +
+    "После проверки чека заказ будет подтверждён.\n\n" +
     "==================";
 
   return whatsappText;
