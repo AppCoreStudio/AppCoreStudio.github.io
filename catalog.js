@@ -1200,6 +1200,10 @@ async function createOrder(){
   const startedAt=Date.now();
   let keepProgress=false;
   let createResult=null;
+  const countdownTimer=setInterval(()=>{
+    const secondsLeft=Math.max(0,Math.ceil((CHECKOUT_TIMEOUT_MS-(Date.now()-startedAt))/1000));
+    setCheckoutProgress("Проверяем сохранение заказа и уведомление в Telegram… Осталось "+secondsLeft+" сек.");
+  },1000);
   let rpcFinished=false;
   setCheckoutProgress("Проверяем заказ: до 30 секунд. Не закрывайте страницу…");
 
@@ -1278,6 +1282,7 @@ async function createOrder(){
     paymentDone.disabled=false;
     return false;
   }finally{
+    clearInterval(countdownTimer);
     isCreatingOrder=false;
     if(paymentDone.textContent==="Проверяем заказ…"){
       paymentDone.disabled=false;
