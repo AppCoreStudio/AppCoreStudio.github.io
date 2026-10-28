@@ -56,58 +56,45 @@ localStorage.setItem(
 const REFERRAL_CODE_KEY =
   "appcore_referral_code";
 
-const savedReferralCode =
-  localStorage.getItem(
-    REFERRAL_CODE_KEY
-  ) ||
-  localStorage.getItem(
-    "referral_code"
-  );
-
 const incomingReferralCode =
   new URLSearchParams(
     window.location.search
   ).get("ref");
 
 function isValidReferralCode(code){
-
   return (
     typeof code === "string" &&
-    /^[A-Za-z0-9_-]{3,64}$/.test(
-      code.trim()
-    )
+    /^[A-Za-z0-9_-]{3,64}$/.test(code.trim())
   );
 }
 
-if(
-  savedReferralCode &&
-  isValidReferralCode(savedReferralCode)
-){
-
-  localStorage.setItem(
-    REFERRAL_CODE_KEY,
-    savedReferralCode.trim()
-  );
-
-}else if(
-  incomingReferralCode &&
-  isValidReferralCode(
-    incomingReferralCode
-  )
-){
-
-  localStorage.setItem(
-    REFERRAL_CODE_KEY,
-    incomingReferralCode.trim()
-  );
-
-  localStorage.setItem(
-    "referral_code",
-    incomingReferralCode.trim()
-  );
+// A referral code explicitly present in the current URL wins over an older
+// code stored in this browser. Otherwise retain the previously saved code.
+let savedReferralCode = null;
+try {
+  savedReferralCode =
+    localStorage.getItem(REFERRAL_CODE_KEY) ||
+    localStorage.getItem("referral_code");
+} catch (e) {
+  console.warn("Referral storage unavailable:", e);
 }
 
-
+if (incomingReferralCode && isValidReferralCode(incomingReferralCode)) {
+  const code = incomingReferralCode.trim();
+  try {
+    localStorage.setItem(REFERRAL_CODE_KEY, code);
+    localStorage.setItem("referral_code", code);
+  } catch (e) {
+    console.warn("Could not persist referral code:", e);
+  }
+} else if (savedReferralCode && isValidReferralCode(savedReferralCode)) {
+  const code = savedReferralCode.trim();
+  try {
+    localStorage.setItem(REFERRAL_CODE_KEY, code);
+  } catch (e) {
+    console.warn("Could not normalize saved referral code:", e);
+  }
+}
 
 "use strict";
 
