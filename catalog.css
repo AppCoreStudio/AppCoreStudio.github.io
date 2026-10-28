@@ -1491,8 +1491,9 @@ font-weight:800
   .app-popular-badge{top:6px;left:5px;padding:4px 6px;font-size:8px}
   .app-popular-badge.top-rank{padding:4px 6px;font-size:8px}
 }
-  .app-popular-badge.top-rank{padding:6px 7px;font-size:9px}
-}
+
+/* Keep rank badges readable on larger screens. */
+.app-popular-badge.top-rank{padding:6px 7px;font-size:9px}
 
 /* Prevent iOS Safari from auto-zooming when a form field receives focus. */
 @media (max-width: 767px) {
