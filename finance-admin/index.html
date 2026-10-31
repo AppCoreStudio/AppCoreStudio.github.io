@@ -238,7 +238,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
       <div class="section-head">
         <div>
           <div class="section-title">Динамика заработка</div>
-          <div class="section-sub">Тот же выбор периодов, что и в основной админ-панели.</div>
+          <div class="section-sub">Все три показателя и график относятся к выбранному периоду. Переключите день, неделю, месяц или год.</div>
         </div>
         <div class="period-tabs" role="group" aria-label="Период графика">
           <button class="period-tab active" data-period="days" type="button" aria-pressed="true">По дням</button>
@@ -255,12 +255,12 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
           <div class="metric-note" id="previousRange">—</div>
         </article>
         <article class="metric change neutral" id="changeMetric">
-          <div class="metric-label">Самый доходный интервал</div>
+          <div class="metric-label" id="bestLabel">Самый доходный день</div>
           <div class="metric-value" id="changeValue">—</div>
           <div class="metric-note" id="changeNote">—</div>
         </article>
         <article class="metric">
-          <div class="metric-label">Завершено заказов · справочно</div>
+          <div class="metric-label">Завершено заказов</div>
           <div class="metric-value" id="ordersValue">—</div>
           <div class="metric-note" id="ordersNote">—</div>
         </article>
@@ -288,7 +288,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
       </div>
     </section>
 
-    <p class="footnote">Денежный расчёт: сумма только завершённых заказов за вычетом действующих начислений реферальных вознаграждений. Черновики и отменённые заказы полностью исключены, поскольку не приносят доход. График и шкалы показывают только деньги в ₽; количество заказов отображается отдельно и справочно. Вывод денег рефералам повторно не вычитается. Периоды определяются по дате обновления записи о завершённом заказе; часовой пояс отчёта — Europe/Helsinki. Это чистый доход после реферальных вознаграждений, но до налогов и прочих расходов компании.</p>
+    <p class="footnote">В расчёт входят только заказы со статусом «Завершён». Черновики и отменённые заказы не учитываются. Из суммы вычитаются начисленные реферальные вознаграждения — выплаты рефералам второй раз не вычитаются. Даты считаются по часовому поясу Хельсинки. Показатель не учитывает налоги и остальные расходы компании.</p>
   </div>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -469,16 +469,44 @@ function render(data){
   const periodLabels=labels[data.period]||labels.days;
   const startText=shortDate(data.period_start);
   const endText=shortDate(data.period_end);
+  const periodCopy={
+    days:{
+      average:"Средний доход за день",
+      averageNote:"Среднее за 7 календарных дней",
+      best:"Самый доходный день",
+      countNote:"За выбранные 7 дней"
+    },
+    weeks:{
+      average:"Средний доход за неделю",
+      averageNote:"Среднее за 12 календарных недель",
+      best:"Самая доходная неделя",
+      countNote:"За выбранные 12 недель"
+    },
+    months:{
+      average:"Средний доход за месяц",
+      averageNote:"С января по текущий месяц",
+      best:"Самый доходный месяц",
+      countNote:"С начала текущего года"
+    },
+    years:{
+      average:"Средний доход за год",
+      averageNote:"Среднее по календарным годам",
+      best:"Самый доходный год",
+      countNote:"За всё время"
+    }
+  };
+  const copy=periodCopy[data.period]||periodCopy.days;
 
-  $("previousLabel").textContent="Среднее за интервал";
+  $("previousLabel").textContent=copy.average;
   $("previousValue").textContent=money(average);
-  $("previousRange").textContent="По завершённым интервалам";
+  $("previousRange").textContent=copy.averageNote;
 
+  $("bestLabel").textContent=copy.best;
   $("changeValue").textContent=money(best);
   $("changeNote").textContent=data.best_label||"—";
 
   $("ordersValue").textContent=number(data.orders_count);
-  $("ordersNote").textContent="Только завершённые заказы";
+  $("ordersNote").textContent=copy.countNote;
 
   $("chartTitle").textContent=periodLabels[0];
   $("chartRange").textContent=startText+" — "+endText+" · суммы в рублях";
@@ -487,7 +515,7 @@ function render(data){
   $("chartWrap").innerHTML=svgChart(series,data.period);
 
   $("insightIcon").textContent="₽";
-  $("insightTitle").textContent="Самый доходный интервал";
+  $("insightTitle").textContent=copy.best;
   $("insightText").textContent=(data.best_label||"Выбранный период")+": "+money(best)+". В графике учитываются только завершённые заказы без черновиков и отмен.";
 }
 async function load(period,quiet){
