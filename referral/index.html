@@ -145,6 +145,34 @@ input::placeholder{
     color:#626877;
 }
 
+.password-input-wrap{
+    position:relative;
+}
+
+.password-input-wrap input{
+    padding-right:88px;
+}
+
+.password-toggle{
+    position:absolute;
+    top:50%;
+    right:10px;
+    transform:translateY(-50%);
+    min-height:36px;
+    padding:7px 5px;
+    border:0;
+    border-radius:8px;
+    background:transparent;
+    color:#b5a5ff;
+    font-size:12px;
+    font-weight:700;
+}
+
+.password-toggle:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+}
+
 .primary{
     width:100%;
     height:50px;
@@ -812,23 +840,43 @@ input::placeholder{
             </div>
 
             <div class="field">
-                <label>Пароль</label>
-                <input
-                    id="registerPassword"
-                    type="password"
-                    autocomplete="new-password"
-                    placeholder="Минимум 6 символов"
-                >
+                <label for="registerPassword">Пароль</label>
+                <div class="password-input-wrap">
+                    <input
+                        id="registerPassword"
+                        type="password"
+                        autocomplete="new-password"
+                        placeholder="Минимум 6 символов"
+                    >
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        data-password-toggle="registerPassword"
+                        aria-controls="registerPassword"
+                        aria-pressed="false"
+                        aria-label="Показать пароль"
+                    >Показать</button>
+                </div>
             </div>
 
             <div class="field">
-                <label>Повторите пароль</label>
-                <input
-                    id="registerPassword2"
-                    type="password"
-                    autocomplete="new-password"
-                    placeholder="Повторите пароль"
-                >
+                <label for="registerPassword2">Повторите пароль</label>
+                <div class="password-input-wrap">
+                    <input
+                        id="registerPassword2"
+                        type="password"
+                        autocomplete="new-password"
+                        placeholder="Повторите пароль"
+                    >
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        data-password-toggle="registerPassword2"
+                        aria-controls="registerPassword2"
+                        aria-pressed="false"
+                        aria-label="Показать повторённый пароль"
+                    >Показать</button>
+                </div>
             </div>
 
             <button id="registerBtn" class="primary">
@@ -3175,6 +3223,23 @@ function closeWithdrawHistory(){
 /* =========================================================
    EVENTS
    ========================================================= */
+
+// Separate visibility controls for both registration password fields.
+document.querySelectorAll("[data-password-toggle]").forEach(button => {
+    const input = document.getElementById(button.dataset.passwordToggle);
+    if (!input) return;
+
+    button.addEventListener("click", () => {
+        const showPassword = input.type === "password";
+        input.type = showPassword ? "text" : "password";
+        button.textContent = showPassword ? "Скрыть" : "Показать";
+        button.setAttribute("aria-pressed", String(showPassword));
+        button.setAttribute(
+            "aria-label",
+            showPassword ? "Скрыть пароль" : "Показать пароль"
+        );
+    });
+});
 
 document.getElementById(
     "showRegister"
