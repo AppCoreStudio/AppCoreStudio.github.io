@@ -124,8 +124,8 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
 .legend{display:flex;gap:14px;flex-wrap:wrap}
 .legend-item{display:flex;align-items:center;gap:6px;color:#a5b2c1;font-size:10px;font-weight:750}
 .legend-dot{width:9px;height:9px;border-radius:50%}
-.chart-wrap{margin-top:12px;overflow:hidden}
-.chart-svg{display:block;width:100%;height:auto;min-height:220px;overflow:visible}
+.chart-wrap{margin-top:12px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-color:rgba(130,150,170,.4) transparent}
+.chart-svg{display:block;height:auto;min-height:220px;max-width:none;overflow:visible}
 .chart-empty{padding:46px 10px;text-align:center;color:var(--muted);font-size:12px}
 .insight{
   display:flex;align-items:flex-start;gap:12px;margin-top:14px;padding:15px 16px;
@@ -263,7 +263,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
           <div class="metric-note" id="changeNote">Сравнение периодов</div>
         </article>
         <article class="metric">
-          <div class="metric-label">Завершено заказов</div>
+          <div class="metric-label">Завершено заказов · справочно</div>
           <div class="metric-value" id="ordersValue">—</div>
           <div class="metric-note" id="ordersNote">За выбранный период</div>
         </article>
@@ -291,7 +291,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
       </div>
     </section>
 
-    <p class="footnote">Метод расчёта: сумма завершённых заказов без черновиков минус действующие начисления реферальных вознаграждений по этим заказам. Вывод денег рефералам повторно не вычитается. Периоды определяются по дате завершения заказа; часовой пояс отчёта — Europe/Helsinki. Это чистый доход после реферальных вознаграждений, но до налогов и прочих расходов компании.</p>
+    <p class="footnote">Денежный расчёт: сумма только завершённых заказов за вычетом действующих начислений реферальных вознаграждений. Черновики и отменённые заказы полностью исключены, поскольку не приносят доход. График и шкалы показывают только деньги в ₽; количество заказов отображается отдельно и справочно. Вывод денег рефералам повторно не вычитается. Периоды определяются по дате обновления записи о завершённом заказе; часовой пояс отчёта — Europe/Helsinki. Это чистый доход после реферальных вознаграждений, но до налогов и прочих расходов компании.</p>
   </div>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -392,44 +392,69 @@ function renderMilestone(allTime){
     el.classList.toggle("next",target===m.target);
   });
 }
+function escapeXml(value){
+  return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&apos;"}[ch]));
+}
+function niceCeiling(value){
+  const target=Math.max(1,value*1.12);
+  const magnitude=Math.pow(10,Math.floor(Math.log10(target)));
+  const fraction=target/magnitude;
+  const step=fraction<=1?1:fraction<=2?2:fraction<=5?5:10;
+  return step*magnitude;
+}
 function svgChart(series,period){
   if(!Array.isArray(series)||!series.length){
     return '<div class="chart-empty">За выбранные периоды пока нет данных.</div>';
   }
-  const W=920,H=300,L=58,R=20,T=18,B=43;
+  const L=58,R=20,T=27,B=43,H=300;
+  const W=period==="month"?Math.max(920,L+R+series.length*34):920;
   const plotW=W-L-R,plotH=H-T-B;
-  const curr=series.map(p=>Math.max(0,Number(p.current)||0));
-  const prev=series.map(p=>Math.max(0,Number(p.previous)||0));
-  const maxValue=Math.max(1,...curr,...prev);
-  const ceiling=Math.ceil(maxValue*1.18/100)*100||100;
-  const x=i=>L+(series.length===1?plotW/2:i*plotW/(series.length-1));
-  const y=v=>T+plotH-(v/ceiling)*plotH;
-  const makePath=values=>values.map((v,i)=>(i===0?"M":"L")+x(i).toFixed(1)+" "+y(v).toFixed(1)).join(" ");
-  const currentPath=makePath(curr);
-  const previousPath=makePath(prev);
-  const area=currentPath+" L "+x(series.length-1).toFixed(1)+" "+(T+plotH)+" L "+L+" "+(T+plotH)+" Z";
+  const current=series.map(p=>{
+    const value=Number(p.current);
+    return Number.isFinite(value)?Math.max(0,value):0;
+  });
+  const previous=series.map(p=>{
+    if(p.previous===null||p.previous===undefined)return null;
+    const value=Number(p.previous);
+    return Number.isFinite(value)?Math.max(0,value):null;
+  });
+  const maxValue=Math.max(0,...current,...previous.filter(value=>value!==null));
+  const ceiling=niceCeiling(maxValue);
+  const y=value=>T+plotH-(value/ceiling)*plotH;
+  const slot=plotW/series.length;
+  const barWidth=Math.min(24,Math.max(7,slot*.29));
+  const gap=Math.max(2,barWidth*.14);
+  const baseline=T+plotH;
+  const rect=(x,value,fill,title)=>{
+    const height=Math.max(1.5,(value/ceiling)*plotH);
+    return '<g><title>'+escapeXml(title)+'</title><rect x="'+x.toFixed(1)+'" y="'+(baseline-height).toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+height.toFixed(1)+'" rx="3" fill="'+fill+'"/></g>';
+  };
   const grid=[0,.25,.5,.75,1].map(r=>{
-    const v=ceiling*r, yy=y(v);
-    return '<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="rgba(255,255,255,.075)" stroke-dasharray="3 6"/>'+
-      '<text x="'+(L-10)+'" y="'+(yy+4)+'" text-anchor="end" fill="#738297" font-size="10">'+compact(v)+'</text>';
+    const value=ceiling*r,yy=y(value);
+    return '<line x1="'+L+'" y1="'+yy.toFixed(1)+'" x2="'+(W-R)+'" y2="'+yy.toFixed(1)+'" stroke="rgba(255,255,255,.075)" stroke-dasharray="3 6"/>'+
+      '<text x="'+(L-9)+'" y="'+(yy+4).toFixed(1)+'" text-anchor="end" fill="#8290a3" font-size="10">'+compact(value)+' ₽</text>';
   }).join("");
-  const step=Math.max(1,Math.ceil(series.length/7));
-  const labels=series.map((p,i)=>{
-    if(i%step!==0&&i!==series.length-1)return"";
-    return '<text x="'+x(i)+'" y="'+(H-13)+'" text-anchor="middle" fill="#8290a3" font-size="10">'+String(p.label||"")+'</text>';
+  const axisTitle='<text x="'+L+'" y="13" fill="#9aa9b9" font-size="10" font-weight="700">Чистый доход · ₽</text>';
+  const labelStep=period==="month"?5:1;
+  const bars=series.map((point,index)=>{
+    const center=L+(index+.5)*slot;
+    const left=center-barWidth-gap/2;
+    const right=center+gap/2;
+    const label=String(point.label??"");
+    const currTitle=label+" · текущий период: "+money(current[index]);
+    let result=rect(left,current[index],"#43dfa0",currTitle);
+    if(previous[index]!==null){
+      result+=rect(right,previous[index],"#ad8bff",label+" · предыдущий период: "+money(previous[index]));
+    }
+    return result;
   }).join("");
-  const dots=curr.map((v,i)=>'<circle cx="'+x(i)+'" cy="'+y(v)+'" r="'+(series.length<=12?3.5:2.1)+'" fill="#43dfa0" stroke="#10211e" stroke-width="1.5"/>').join("");
-  const last=series.length-1;
-  return '<svg class="chart-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="График чистого дохода: текущий период и предыдущий период">'+
-    '<defs><linearGradient id="financeArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#43dfa0" stop-opacity=".22"/><stop offset="100%" stop-color="#43dfa0" stop-opacity="0"/></linearGradient></defs>'+
-    grid+
-    '<path d="'+area+'" fill="url(#financeArea)"/>'+
-    '<path d="'+previousPath+'" fill="none" stroke="#ad8bff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6"/>'+
-    '<path d="'+currentPath+'" fill="none" stroke="#43dfa0" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>'+
-    dots+
-    '<circle cx="'+x(last)+'" cy="'+y(curr[last])+'" r="5.5" fill="#43dfa0" stroke="#153329" stroke-width="2.5"/>'+
-    labels+
-    '</svg>';
+  const labels=series.map((point,index)=>{
+    if(index%labelStep!==0&&index!==series.length-1)return "";
+    const center=L+(index+.5)*slot;
+    return '<text x="'+center.toFixed(1)+'" y="'+(H-13)+'" text-anchor="middle" fill="#8290a3" font-size="10">'+escapeXml(point.label??"")+'</text>';
+  }).join("");
+  return '<svg class="chart-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Парные столбцы чистого дохода в рублях: текущий и предыдущий периоды">'+
+    axisTitle+grid+bars+labels+'</svg>';
 }
 function render(data){
   const allTime=Number(data.all_time_net)||0;
