@@ -92,7 +92,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
 .track-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#1fb47c,#60e2a5,#c3ed9b);box-shadow:0 0 16px rgba(67,223,160,.3);transition:width .8s cubic-bezier(.2,.8,.2,1)}
 .target-remaining{color:#99aab9;font-size:10px}
 .target-remaining b{color:#c5f6dc}
-.levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin:14px 0 28px}
+.levels{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin:14px 0 28px}
 .level{
   position:relative;min-width:0;padding:13px 12px;border:1px solid var(--line);border-radius:15px;
   background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));opacity:.66
@@ -227,7 +227,9 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
       <div class="level" data-target="50000"><div class="level-icon">🥉</div><div class="level-name">Первый рубеж</div><div class="level-value">50 000 ₽</div></div>
       <div class="level" data-target="100000"><div class="level-icon">🥈</div><div class="level-name">Уверенный рост</div><div class="level-value">100 000 ₽</div></div>
       <div class="level" data-target="250000"><div class="level-icon">🥇</div><div class="level-name">Масштаб</div><div class="level-value">250 000 ₽</div></div>
-      <div class="level" data-target="500000"><div class="level-icon">💎</div><div class="level-name">Большая цель</div><div class="level-value">500 000 ₽ · далее 1 млн</div></div>
+      <div class="level" data-target="500000"><div class="level-icon">💎</div><div class="level-name">Большая цель</div><div class="level-value">500 000 ₽</div></div>
+      <div class="level" data-target="1000000"><div class="level-icon">👑</div><div class="level-name">Миллион</div><div class="level-value">1 000 000 ₽</div></div>
+      <div class="level" data-target="2000000"><div class="level-icon">🚀</div><div class="level-name">Новый масштаб</div><div class="level-value">2 000 000 ₽</div></div>
     </section>
 
     <section aria-label="Сравнение финансовых периодов">
@@ -352,14 +354,23 @@ function setActivePeriod(period){
   });
 }
 function milestone(allTime){
-  const targets=[50000,100000,250000,500000,1000000];
-  const names=["Первый рубеж","Уверенный рост","Масштаб","Большая цель","Миллион"];
+  const targets=[50000,100000,250000,500000,1000000,2000000];
+  const names=["Первый рубеж","Уверенный рост","Масштаб","Большая цель","Миллион","Новый масштаб"];
   let index=targets.findIndex(target=>allTime<target);
-  if(index<0)index=targets.length-1;
-  const previous=index===0?0:targets[index-1];
-  const target=targets[index];
+  let target,previous,name;
+  if(index<0){
+    const step=5000000;
+    previous=targets[targets.length-1]+Math.floor((allTime-targets[targets.length-1])/step)*step;
+    target=previous+step;
+    index=targets.length;
+    name="Следующая вершина";
+  }else{
+    previous=index===0?0:targets[index-1];
+    target=targets[index];
+    name=names[index];
+  }
   const progress=Math.max(0,Math.min(100,(allTime-previous)/(target-previous)*100));
-  return {target,previous,progress,index,name:names[index],remaining:Math.max(0,target-allTime)};
+  return {target,previous,progress,index,name,remaining:Math.max(0,target-allTime)};
 }
 function renderMilestone(allTime){
   const m=milestone(allTime);
@@ -379,10 +390,6 @@ function renderMilestone(allTime){
     el.classList.toggle("reached",target<=allTime);
     el.classList.toggle("next",target===m.target);
   });
-  if(allTime>=1000000){
-    $("targetValue").textContent="1 000 000 ₽";
-    $("targetCaption").textContent="Миллион достигнут";
-  }
 }
 function svgChart(series,period){
   if(!Array.isArray(series)||!series.length){
