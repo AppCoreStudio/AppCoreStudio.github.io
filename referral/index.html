@@ -784,13 +784,23 @@ input::placeholder{
             </div>
 
             <div class="field">
-                <label>Пароль</label>
-                <input
-                    id="loginPassword"
-                    type="password"
-                    autocomplete="current-password"
-                    placeholder="Введите пароль"
-                >
+                <label for="loginPassword">Пароль</label>
+                <div class="password-input-wrap">
+                    <input
+                        id="loginPassword"
+                        type="password"
+                        autocomplete="current-password"
+                        placeholder="Введите пароль"
+                    >
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        data-password-toggle="loginPassword"
+                        aria-controls="loginPassword"
+                        aria-pressed="false"
+                        aria-label="Показать пароль"
+                    >Показать</button>
+                </div>
             </div>
 
             <button id="loginBtn" class="primary">
@@ -3224,7 +3234,7 @@ function closeWithdrawHistory(){
    EVENTS
    ========================================================= */
 
-// Separate visibility controls for both registration password fields.
+// Independent visibility controls for login and registration password fields.
 document.querySelectorAll("[data-password-toggle]").forEach(button => {
     const input = document.getElementById(button.dataset.passwordToggle);
     if (!input) return;
