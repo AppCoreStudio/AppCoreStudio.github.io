@@ -344,6 +344,8 @@ const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 let activePeriod="days";
 let busy=false;
+let financeRealtimeChannel=null;
+let financeRefreshTimer=null;
 
 function money(value){
   const n=Number(value)||0;
@@ -613,6 +615,27 @@ async function load(period,quiet){
     setLoading(false);
   }
 }
+function scheduleFinanceRefresh(){
+  window.clearTimeout(financeRefreshTimer);
+  financeRefreshTimer=window.setTimeout(()=>{
+    if(!busy&&!document.hidden)load(activePeriod,true);
+  },250);
+}
+function startFinanceRealtime(){
+  if(financeRealtimeChannel)return;
+  financeRealtimeChannel=supabaseClient.channel("finance-unified-live")
+    .on("postgres_changes",{event:"*",schema:"public",table:"orders"},scheduleFinanceRefresh)
+    .on("postgres_changes",{event:"*",schema:"public",table:"ad_campaigns"},scheduleFinanceRefresh)
+    .on("postgres_changes",{event:"*",schema:"public",table:"referral_rewards"},scheduleFinanceRefresh)
+    .subscribe(status=>console.log("Unified finance realtime:",status));
+}
+window.addEventListener("focus",()=>{
+  if(!document.hidden&&!busy)load(activePeriod,true);
+});
+window.addEventListener("pagehide",()=>{
+  if(financeRealtimeChannel)supabaseClient.removeChannel(financeRealtimeChannel);
+});
+
 async function init(){
   if(!window.supabase||!window.supabase.createClient){
     $("loadingState").hidden=true;$("accessState").hidden=false;
@@ -626,6 +649,7 @@ async function init(){
       $("accessMessage").textContent="Сначала войдите через основную админ-панель.";
       return;
     }
+    startFinanceRealtime();
     await load("days",false);
   }catch(error){
     $("loadingState").hidden=true;$("accessState").hidden=false;
