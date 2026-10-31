@@ -62,6 +62,7 @@ h1{text-align:center;font-size:clamp(28px,5vw,46px);line-height:1.12;letter-spac
 .player.playing .video-poster{display:none}
 .player.playing .video-element{display:block}
 @media(max-width:560px){.credentials{padding:18px 14px}.credentials h2{gap:10px}.apple-mark{width:36px;height:36px;flex-basis:36px}.credential-row{grid-template-columns:minmax(0,1fr);gap:12px;padding:12px;border-radius:16px}.credential-icon{width:48px;height:48px;flex-basis:48px}.credential-icon svg{width:27px;height:27px}.credential-info{gap:12px}.copy-button{width:100%}.video-poster{min-height:250px;padding:20px}.poster-phone{right:3%;width:43%;border-radius:28px}.poster-subtitle{max-width:160px}.poster-controls{padding:12px;gap:12px;font-size:13px}}
+.access-timer{margin:0 auto 22px;text-align:center;color:#71e6a4;font-size:15px;font-weight:700;line-height:1.5}.access-timer.expired{color:#ff8996}
 footer{text-align:center;color:#91a5c7;font-size:15px;margin:42px 0 8px}
 footer strong{color:#cbd8f0}
 @media(max-width:560px){body{padding:28px 14px}.brand{margin-bottom:34px}.warning{gap:14px;padding:20px 16px;border-radius:18px}.warning-icon{flex-basis:42px;width:42px;height:42px;font-size:27px;border-width:2px}.intro{margin-bottom:24px}.credentials{padding:20px 16px;border-radius:18px}.credential-row{grid-template-columns:minmax(0,1fr);gap:10px}.copy-button{width:100%}.player{border-radius:16px}footer{font-size:12px;margin-top:30px}}
@@ -72,6 +73,7 @@ footer strong{color:#cbd8f0}
 <div class="brand">APP<span>CORE</span></div>
 <h1>Видеоинструкция по установке</h1>
 <p class="intro">Нажмите ▶, чтобы посмотреть видео.</p>
+<p class="access-timer" id="accessTimer" role="status" aria-live="polite" hidden></p>
 <section class="warning" aria-label="Важный момент">
 <div class="warning-icon" aria-hidden="true">!</div>
 <div>
@@ -123,27 +125,107 @@ footer strong{color:#cbd8f0}
   const video = document.getElementById('instructionVideo');
   const poster = document.getElementById('videoPoster');
   const source = document.getElementById('instructionVideoSource');
+  const accessTimer = document.getElementById('accessTimer');
   const accessParams = new URLSearchParams(window.location.search);
   const accessCode = accessParams.get('c') || '';
   const orderId = accessParams.get('order');
   const signature = accessParams.get('sig');
   const shortLink = /^[A-Za-z0-9_-]{12}$/.test(accessCode);
   const legacyLink = Boolean(orderId && signature && /^[0-9a-f]{64}$/i.test(signature));
-  if (shortLink) {
-    source.src = 'https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video?raw=1&code=' + encodeURIComponent(accessCode);
-    video.load();
-  } else if (legacyLink) {
-    source.src = 'https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video?raw=1&order=' + encodeURIComponent(orderId) + '&sig=' + encodeURIComponent(signature);
-    video.load();
-  } else {
-    document.querySelector('.intro').textContent = 'Видеоинструкция доступна только по персональной ссылке из сообщения AppCore о подтверждении заказа.';
-    document.querySelector('.warning').hidden = true;
-    document.querySelector('.credentials').hidden = true;
-    poster.querySelector('.poster-play').textContent = '🔒';
-    poster.setAttribute('aria-label', 'Требуется персональная ссылка');
+  const authorisedLink = shortLink || legacyLink;
+  const functionBase = 'https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video';
+  let accessExpired = false;
+  let countdownInterval = null;
+
+  function accessQuery(){
+    const params = new URLSearchParams();
+    if(shortLink) params.set('code', accessCode);
+    else {
+      params.set('order', orderId);
+      params.set('sig', signature);
+    }
+    return params.toString();
   }
 
+  function lockVideo(message){
+    accessExpired = true;
+    if(countdownInterval) window.clearInterval(countdownInterval);
+    video.pause();
+    source.removeAttribute('src');
+    video.removeAttribute('src');
+    video.load();
+    player.classList.remove('playing');
+    poster.querySelector('.poster-play').textContent = '🔒';
+    poster.setAttribute('aria-label', 'Срок доступа к видео истёк');
+    poster.style.pointerEvents = 'none';
+    accessTimer.hidden = false;
+    accessTimer.classList.add('expired');
+    accessTimer.textContent = message;
+  }
+
+  function startCountdown(expiresAt){
+    const expiryMs = Date.parse(expiresAt);
+    if(!Number.isFinite(expiryMs) || Date.now() >= expiryMs){
+      lockVideo('Время доступа к видеоинструкции истекло. Повторно открыть её по этой ссылке уже нельзя.');
+      return;
+    }
+    accessTimer.hidden = false;
+    accessTimer.classList.remove('expired');
+    const tick = function(){
+      const seconds = Math.max(0, Math.ceil((expiryMs - Date.now()) / 1000));
+      if(seconds <= 0){
+        lockVideo('Время доступа к видеоинструкции истекло. Повторно открыть её по этой ссылке уже нельзя.');
+        return;
+      }
+      const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
+      const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+      const secs = String(seconds % 60).padStart(2, '0');
+      accessTimer.textContent = 'Осталось времени доступа: ' + hours + ':' + minutes + ':' + secs;
+    };
+    tick();
+    if(countdownInterval) window.clearInterval(countdownInterval);
+    countdownInterval = window.setInterval(tick, 1000);
+  }
+
+  async function openPersonalVideoPage(){
+    if(!authorisedLink){
+      document.querySelector('.intro').textContent = 'Видеоинструкция доступна только по персональной ссылке из сообщения AppCore о подтверждении заказа.';
+      document.querySelector('.warning').hidden = true;
+      document.querySelector('.credentials').hidden = true;
+      poster.querySelector('.poster-play').textContent = '🔒';
+      poster.setAttribute('aria-label', 'Требуется персональная ссылка');
+      return;
+    }
+
+    accessTimer.hidden = false;
+    accessTimer.textContent = 'Проверяем доступ к видеоинструкции...';
+    try{
+      const response = await fetch(functionBase + '?action=activate&' + accessQuery(), {
+        method: 'POST',
+        cache: 'no-store'
+      });
+      const data = await response.json().catch(() => ({}));
+      if(!response.ok){
+        lockVideo(response.status === 410
+          ? 'Время доступа к видеоинструкции истекло. Повторно открыть её по этой ссылке уже нельзя.'
+          : 'Не удалось открыть видеоинструкцию. Проверьте персональную ссылку или обратитесь в AppCore.');
+        return;
+      }
+      startCountdown(data.expiresAt);
+      if(accessExpired) return;
+      source.src = functionBase + '?raw=1&' + accessQuery();
+      video.load();
+    }catch(error){
+      lockVideo('Не удалось подключиться для проверки доступа. Проверьте интернет и откройте ссылку ещё раз.');
+    }
+  }
+
+  // Runs in the customer's browser after opening the link. A preview that only
+  // downloads the HTML does not execute this script and does not start the timer.
+  openPersonalVideoPage();
+
   async function startVideo(){
+    if(accessExpired) return;
     player.classList.add('playing');
     try { await video.play(); } catch (e) { video.setAttribute('controls',''); }
   }
