@@ -347,9 +347,12 @@ let busy=false;
 let financeRealtimeChannel=null;
 let financeRefreshTimer=null;
 
-function money(value){
+function amount(value){
   const n=Number(value)||0;
-  return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:0}).format(Math.round(n))+" ₽";
+  return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(n);
+}
+function money(value){
+  return amount(value)+" ₽";
 }
 function number(value){
   return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:0}).format(Number(value)||0);
@@ -442,7 +445,7 @@ function moneyCompact(value){
   const n=Number(value)||0;
   if(n>=1000000)return (n/1000000).toLocaleString("ru-RU",{maximumFractionDigits:1})+" млн ₽";
   if(n>=1000)return (n/1000).toLocaleString("ru-RU",{maximumFractionDigits:1})+" тыс. ₽";
-  return number(n)+" ₽";
+  return amount(n)+" ₽";
 }
 function niceCeiling(value){
   const target=Math.max(1,value*1.12);
@@ -516,7 +519,7 @@ function svgChart(series,period){
 
 function render(data){
   const allTime=Number(data.all_time_net)||0;
-  $("allTimeValue").innerHTML=number(allTime)+' <span class="currency">₽</span>';
+  $("allTimeValue").innerHTML=amount(allTime)+' <span class="currency">₽</span>';
   $("allTimeOrders").textContent=number(data.all_time_orders)+" завершённых заказов учтено";
   $("grossRevenueValue").textContent=money(data.all_time_gross_revenue);
   $("referralRewardsValue").textContent=money(data.all_time_referral_rewards);
