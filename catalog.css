@@ -1504,3 +1504,115 @@ font-weight:800
 /* AppCore uploaded wordmark */
 .brand-wordmark{display:block;width:min(190px,48vw);height:auto;max-height:56px;object-fit:contain;object-position:left center}
 .brand{min-width:0}
+
+
+/* Compact, live discount progress inside the catalog flow. */
+.discount-progress{
+  margin:9px 0 0;
+  padding:10px 11px;
+  border-radius:14px;
+  border:1px solid rgba(135,109,255,.23);
+  background:linear-gradient(110deg,rgba(118,83,255,.13),rgba(0,180,255,.045));
+}
+.discount-progress-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.discount-progress-copy{min-width:0}
+.discount-progress-title{
+  color:#f2efff;
+  font-size:12px;
+  line-height:1.25;
+  font-weight:850;
+}
+.discount-progress-message{
+  margin-top:3px;
+  color:#aeb4c4;
+  font-size:11px;
+  line-height:1.3;
+}
+.discount-progress-value{
+  flex:0 0 auto;
+  min-width:43px;
+  padding:5px 8px;
+  border-radius:9px;
+  background:rgba(125,91,232,.19);
+  color:#c6b4ff;
+  text-align:center;
+  font-size:14px;
+  font-weight:900;
+}
+.discount-progress-track{
+  height:4px;
+  margin-top:8px;
+  overflow:hidden;
+  border-radius:8px;
+  background:rgba(255,255,255,.09);
+}
+.discount-progress-track span{
+  display:block;
+  width:0;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#7958eb,#bea7ff);
+  transition:width .2s ease;
+}
+.discount-progress-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+  margin-top:7px;
+}
+.discount-progress-levels{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+}
+.discount-progress-levels span{
+  padding:3px 5px;
+  border-radius:6px;
+  background:rgba(255,255,255,.055);
+  color:#969daf;
+  font-size:9px;
+  line-height:1.2;
+  font-weight:750;
+  white-space:nowrap;
+}
+.discount-progress-levels span.active{
+  background:rgba(125,91,232,.24);
+  color:#d4c6ff;
+}
+.discount-progress-toggle{
+  flex:0 0 auto;
+  min-height:26px;
+  padding:3px 2px 3px 5px;
+  border:0;
+  background:transparent;
+  color:#c4b3ff;
+  font-size:10px;
+  font-weight:750;
+  cursor:pointer;
+}
+.discount-progress-details{
+  margin-top:7px;
+  padding-top:7px;
+  border-top:1px solid rgba(255,255,255,.08);
+  color:#9fa6b6;
+  font-size:10px;
+  line-height:1.45;
+}
+.discount-progress-details[hidden]{display:none}
+@media(max-width:360px){
+  .discount-progress{padding:9px}
+  .discount-progress-levels{gap:4px}
+  .discount-progress-levels span{font-size:8px;padding:3px 4px}
+  .discount-progress-toggle{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  .discount-progress-track span{transition:none}
+}
