@@ -365,6 +365,7 @@ function setBusy(value){
   $("refreshButton").disabled=value;
   $("addCampaignButton").disabled=value;
   $("saveCampaignButton").disabled=value;
+  $("confirmDeleteButton").disabled=value;
   $("saveCampaignButton").textContent=value?"Сохраняем…":(editingId?"Сохранить изменения":"Сохранить рекламу");
 }
 function showAccess(message){
