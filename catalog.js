@@ -175,10 +175,10 @@ const countEl=$("count");
 const countLabelEl=$("countLabel");
 const originalEl=$("original");
 const priceArrowEl=$("priceArrow");
-const priceDueLabelEl=$("priceDueLabel");
 const priceDiscountEl=$("priceDiscount");
 const discountEl=$("discount");
 const totalEl=$("total");
+const pricePromoMessageEl=$("pricePromoMessage");
 const continueButton=$("continue");
 const toast=$("toast");
 
@@ -322,6 +322,14 @@ function getRussianAppCountLabel(count){
   return "приложений";
 }
 
+function getDiscountPrompt(count){
+  if(count===1)return "Ещё 1 приложение = скидка 5%";
+  if(count===2)return "Ещё 1 приложение = скидка 10%";
+  if(count===3)return "Ещё 1 приложение = скидка 15%";
+  if(count===4)return "Ещё 1 приложение = скидка 20%";
+  return "Максимальная скидка 20% уже применена";
+}
+
 function updatePrice(){
 
   const count=selected.size;
@@ -335,11 +343,12 @@ function updatePrice(){
     countLabelEl.textContent="приложений";
     originalEl.textContent="0 ₽";
     originalEl.hidden=false;
-    priceArrowEl.hidden=false;
-    priceDueLabelEl.hidden=true;
+    priceArrowEl.hidden=true;
     priceDiscountEl.hidden=false;
-    discountEl.textContent="0%";
+    discountEl.textContent="До −20%";
     totalEl.textContent="0 ₽";
+    totalEl.hidden=true;
+    pricePromoMessageEl.textContent="Выберите приложение и получите скидку до 20% за комплект";
 
     continueButton.disabled=true;
     continueButton.textContent="Выберите приложение";
@@ -355,12 +364,13 @@ function updatePrice(){
   countEl.textContent=count;
   countLabelEl.textContent=getRussianAppCountLabel(count);
   originalEl.textContent=money(price.original);
-  originalEl.hidden=!hasDiscount;
+  originalEl.hidden=false;
   priceArrowEl.hidden=!hasDiscount;
-  priceDueLabelEl.hidden=hasDiscount;
-  priceDiscountEl.hidden=!hasDiscount;
-  discountEl.textContent=price.discountPercent+"%";
+  priceDiscountEl.hidden=false;
+  discountEl.textContent=hasDiscount?price.discountPercent+"%":"До −20%";
   totalEl.textContent=money(price.total);
+  totalEl.hidden=!hasDiscount;
+  pricePromoMessageEl.textContent=getDiscountPrompt(count);
 
   continueButton.disabled=false;
   continueButton.textContent=count===1?"Заказать приложение":"Заказать приложения";
