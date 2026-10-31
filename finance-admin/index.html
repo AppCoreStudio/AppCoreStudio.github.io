@@ -353,7 +353,7 @@ function setActivePeriod(period){
   document.querySelectorAll(".period-tab").forEach(button=>{
     const selected=button.dataset.period===period;
     button.classList.toggle("active",selected);
-    button.setAttribute("aria-selected",String(selected));
+    button.setAttribute("aria-pressed",String(selected));
   });
 }
 function milestone(allTime){
