@@ -182,10 +182,21 @@ a{color:inherit;text-decoration:none}
       <article class="stat blue"><div class="stat-head"><div class="stat-title">Оплачено за рекламу</div><div class="stat-icon">₽</div></div><div class="stat-value" id="paidTotal">0 ₽</div><div class="stat-foot">Полная стоимость всех размещений</div></article>
       <article class="stat gold"><div class="stat-head"><div class="stat-title">Расход за прошедшие дни</div><div class="stat-icon">◷</div></div><div class="stat-value" id="allocatedTotal">0 ₽</div><div class="stat-foot">Стоимость, распределённая по календарным дням</div></article>
       <article class="stat green"><div class="stat-head"><div class="stat-title">Доход во время рекламы</div><div class="stat-icon">↗</div></div><div class="stat-value" id="revenueTotal">0 ₽</div><div class="stat-foot">Завершённые заказы за вычетом реферальных выплат</div></article>
-      <article class="stat purple"><div class="stat-head"><div class="stat-title">Результат после рекламы</div><div class="stat-icon">✦</div></div><div class="stat-value" id="profitTotal">0 ₽</div><div class="stat-foot">Доход минус расход за прошедшие дни рекламы</div></article>
+      <article class="stat purple"><div class="stat-head"><div class="stat-title">Результат рекламных периодов</div><div class="stat-icon">✦</div></div><div class="stat-value" id="profitTotal">0 ₽</div><div class="stat-foot">Завершённые заказы в рекламные окна минус расходы рекламы</div></article>
     </section>
 
-    <div class="note"><span aria-hidden="true">ⓘ</span><div><b>Как считается результат:</b> заказ попадает в рекламу, только если его время создания попало хотя бы в один активный рекламный период. При одновременной рекламе заказ учитывается один раз в общей статистике. Без персональных ссылок нельзя достоверно определить, какой именно рекламодатель привёл конкретного человека.</div></div>
+    <section class="section">
+      <div class="section-head"><div><div class="section-title">Общий финансовый результат AppCore</div><div class="section-sub">Те же суммы и формула, что в главной админ-панели и разделе «Финансовый рост».</div></div></div>
+      <div class="today-grid">
+        <div class="today-item"><div class="today-label">Выручка завершённых заказов</div><div class="today-value" id="companyGross">0 ₽</div></div>
+        <div class="today-item"><div class="today-label">Реферальные начисления</div><div class="today-value" id="companyReferrals">0 ₽</div></div>
+        <div class="today-item"><div class="today-label">Реклама за прошедшее время</div><div class="today-value" id="companyAdSpend">0 ₽</div></div>
+        <div class="today-item profit" id="companyProfitBox"><div class="today-label">Единый чистый результат</div><div class="today-value" id="companyProfit">0 ₽</div></div>
+        <div class="today-item"><div class="today-label">Завершённые заказы</div><div class="today-value" id="companyCompleted">0</div></div>
+      </div>
+    </section>
+
+    <div class="note"><span aria-hidden="true">ⓘ</span><div><b>Как считается результат:</b> заказ попадает в рекламную статистику, только если его время создания попало хотя бы в один активный рекламный период. При одновременной рекламе заказ учитывается один раз в общей статистике. Доход появляется только после выполнения заказа. Общий чистый результат выше использует ту же единую формулу, что админ-панель и финансы. Без персональных ссылок нельзя достоверно определить, какой именно рекламодатель привёл конкретного человека.</div></div>
 
     <section class="section">
       <div class="section-head"><div><div class="section-title">Результат сегодня</div><div class="section-sub" id="todayCaption">По местному времени Хельсинки</div></div></div>
@@ -425,6 +436,13 @@ function renderStats(){
   $("revenueTotal").textContent=money(a.revenue_during_ads);
   $("profitTotal").textContent=signedMoney(a.profit_to_date);
   $("futureAllocation").textContent=money(a.not_yet_allocated);
+  $("companyGross").textContent=money(a.company_gross_revenue);
+  $("companyReferrals").textContent=money(a.company_referral_rewards);
+  $("companyAdSpend").textContent=money(a.company_ad_spend_accrued);
+  $("companyProfit").textContent=signedMoney(a.company_net_profit);
+  $("companyCompleted").textContent=count(a.company_completed_orders);
+  $("companyProfitBox").classList.toggle("loss",Number(a.company_net_profit)<0);
+  $("companyProfitBox").classList.toggle("profit",Number(a.company_net_profit)>=0);
   const today=a.daily.find(function(row){return row.date===a.today;})||{ad_spend:0,orders:0,completed:0,revenue:0,profit:0};
   $("todayCaption").textContent="За "+dateOnly(a.today)+" · время Хельсинки";
   $("todaySpend").textContent=money(today.ad_spend);
