@@ -90,7 +90,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
 .target-row strong{color:#eaf8f1;font-variant-numeric:tabular-nums}
 .track{height:9px;overflow:hidden;margin:10px 0 9px;border-radius:99px;background:rgba(255,255,255,.09)}
 .track-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#1fb47c,#60e2a5,#c3ed9b);box-shadow:0 0 16px rgba(67,223,160,.3);transition:width .8s cubic-bezier(.2,.8,.2,1)}
-.target-remaining{color:#99aab9;font-size:10px}
+.scale-ends{display:flex;justify-content:space-between;gap:10px;margin-top:-3px;color:#8392a5;font-size:9px;font-weight:800;font-variant-numeric:tabular-nums}.scale-ends strong{color:#c5f6dc}.target-remaining{color:#99aab9;font-size:10px}
 .target-remaining b{color:#c5f6dc}
 .levels{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin:14px 0 28px}
 .level{
@@ -219,6 +219,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
         </div>
         <div class="target-row"><span>Текущий результат</span><strong id="targetCurrent">0 ₽</strong></div>
         <div class="track"><div class="track-fill" id="targetFill"></div></div>
+        <div class="scale-ends"><span id="scaleStart">0 ₽</span><strong id="scaleTarget">50 000 ₽</strong></div>
         <div class="target-remaining" id="targetRemaining">Осталось до цели: <b>50 000 ₽</b></div>
       </div>
     </section>
@@ -383,6 +384,8 @@ function renderMilestone(allTime){
   $("targetCaption").textContent="Цель: "+m.name;
   $("targetCurrent").textContent=money(allTime);
   $("targetFill").style.width=percent+"%";
+  $("scaleStart").textContent=money(m.previous);
+  $("scaleTarget").textContent=money(m.target);
   $("targetRemaining").innerHTML=m.remaining>0
     ?"Осталось до цели: <b>"+money(m.remaining)+"</b>"
     :"Цель достигнута — следующая вершина уже ждёт!";
