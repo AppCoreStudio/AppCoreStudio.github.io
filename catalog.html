@@ -21,7 +21,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>AppCore</title>
 
-<link rel="stylesheet" href="catalog.css?v=20261028cssfix">
+<link rel="stylesheet" href="catalog.css?v=20261101compactdiscount1">
 <style>
 .catalog-bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:500;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(8,9,13,.94);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.08)}
 .catalog-bottom-nav a{min-width:0;text-align:center;text-decoration:none;color:#aeb4c4;font-size:19px;font-weight:700;padding:6px 4px;border-radius:12px}
@@ -68,20 +68,6 @@ body{padding-bottom:150px}
   Мы подготовим установку дистанционно.
 </div>
 
-<div class="discount-box">
-  <div class="discount-title">
-    🎁 Чем больше приложений — тем больше скидка
-  </div>
-
-  <div class="discount-text">
-    1 приложение — без скидки ·
-    2 — <span class="discount-highlight">5%</span> ·
-    3 — <span class="discount-highlight">10%</span> ·
-    4 — <span class="discount-highlight">15%</span> ·
-    5+ — <span class="discount-highlight">20%</span>
-  </div>
-</div>
-
 <a id="referralBanner" class="referral-banner" href="referral/index.html">
   🎁 Приглашай друзей и зарабатывай
 </a>
@@ -107,6 +93,37 @@ body{padding-bottom:150px}
   <button class="category" data-category="finance">Банки и инвестиции</button>
   <button class="category" data-category="social">Социальные</button>
   <button class="category" data-category="useful">Сервисы</button>
+</div>
+
+<div class="discount-progress" id="discountProgress">
+  <div class="discount-progress-head">
+    <div class="discount-progress-copy" aria-live="polite">
+      <div class="discount-progress-title" id="discountProgressTitle">🎁 Скидка до 20% за комплект</div>
+      <div class="discount-progress-message" id="discountProgressMessage">Выберите 2 приложения — получите скидку 5%</div>
+    </div>
+    <span class="discount-progress-value" id="discountProgressValue">0%</span>
+  </div>
+  <div
+    class="discount-progress-track"
+    id="discountProgressTrack"
+    role="progressbar"
+    aria-label="Прогресс получения скидки"
+    aria-valuemin="0"
+    aria-valuemax="5"
+    aria-valuenow="0"
+  ><span id="discountProgressFill"></span></div>
+  <div class="discount-progress-footer">
+    <div class="discount-progress-levels" aria-label="Уровни скидки">
+      <span data-discount-level="2">2 · 5%</span>
+      <span data-discount-level="3">3 · 10%</span>
+      <span data-discount-level="4">4 · 15%</span>
+      <span data-discount-level="5">5+ · 20%</span>
+    </div>
+    <button class="discount-progress-toggle" id="discountDetailsToggle" type="button" aria-expanded="false" aria-controls="discountProgressDetails">Условия</button>
+  </div>
+  <div class="discount-progress-details" id="discountProgressDetails" hidden>
+    Скидка автоматически применяется ко всей сумме заказа: 2 приложения — 5%, 3 — 10%, 4 — 15%, 5 и более — 20%.
+  </div>
 </div>
 
 </header>
@@ -369,7 +386,7 @@ body{padding-bottom:150px}
 
 <div id="toast" class="toast"></div>
 
-<script src="catalog.js?v=20261029referralfix1"></script>
+<script src="catalog.js?v=20261101compactdiscount1"></script>
 <script src="install-enhancements.js?v=20261007"></script>
 <style>
 .install-steps{
