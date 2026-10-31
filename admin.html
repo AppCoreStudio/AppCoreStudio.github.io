@@ -1292,9 +1292,10 @@ body{
 .chart-grid-line{stroke:rgba(255,255,255,.07);stroke-width:1;stroke-dasharray:3 5}
 .chart-axis-label{fill:#718096;font-size:10px;font-family:inherit}
 .chart-x-label{fill:#8795a8;font-size:10px;font-family:inherit}
-.chart-area{fill:url(#activityAreaFill)}
-.chart-line{fill:none;stroke:#43dfa0;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.chart-point{fill:#0f171c;stroke:#73e8b6;stroke-width:2.5}
+.chart-bar{fill:url(#activityBarFill);transition:opacity .16s ease,filter .16s ease}
+.chart-bar:hover{filter:brightness(1.18)}
+.chart-bar-empty{fill:url(#activityBarMuted);opacity:.72}
+.chart-bar-value{fill:#a8e9cb;font-size:10px;font-weight:800;font-family:inherit}
 .chart-empty{fill:#8291a4;font-size:13px;font-family:inherit}
 .status-content{display:flex;align-items:center;justify-content:center;gap:22px;min-height:210px;padding:12px 0 2px}
 .status-donut{
@@ -2664,18 +2665,15 @@ function renderActivityChart(){
   }else{
     const days = activityPeriod === "month" ? 30 : 7;
     caption = activityPeriod === "month" ? "за 30 дней" : "за 7 дней";
-    const start = new Date(now.getFullYear(),now.getMonth(),now.getDate());
-    start.setDate(start.getDate() - (days - 1));
+    const startDate = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    startDate.setDate(startDate.getDate() - (days - 1));
 
     for(let i=0;i<days;i++){
-      const date = new Date(start.getFullYear(),start.getMonth(),start.getDate()+i);
+      const date = new Date(startDate.getFullYear(),startDate.getMonth(),startDate.getDate()+i);
       const key = localDateKey(date);
-      let label = "";
-      if(activityPeriod === "week"){
-        label = date.toLocaleDateString("ru-RU",{weekday:"short"}).replace(".","");
-      }else{
-        label = String(date.getDate()).padStart(2,"0");
-      }
+      const label = activityPeriod === "week"
+        ? date.toLocaleDateString("ru-RU",{weekday:"short"}).replace(".","")
+        : String(date.getDate()).padStart(2,"0");
       buckets.push({key,label});
       countByKey.set(key,0);
     }
@@ -2695,18 +2693,16 @@ function renderActivityChart(){
   activityCaption.textContent = caption;
 
   const width = 720;
-  const height = 238;
-  const left = 38;
+  const left = 42;
   const right = 18;
-  const top = 18;
-  const bottom = 198;
+  const top = 20;
+  const bottom = 190;
   const plotWidth = width-left-right;
   const plotHeight = bottom-top;
   const maxValue = Math.max(1,...values);
   const maxY = Math.max(4,Math.ceil(maxValue/4)*4);
-  const xAt = index => left + (values.length <= 1 ? plotWidth/2 : index*plotWidth/(values.length-1));
-  const yAt = value => bottom - (value/maxY)*plotHeight;
-  const points = values.map((value,index)=>({x:xAt(index),y:yAt(value),value,label:buckets[index].label}));
+  const slotWidth = plotWidth / Math.max(values.length,1);
+  const barWidth = Math.max(5,Math.min(54,slotWidth * (activityPeriod === "month" ? .62 : .58)));
 
   let grid = "";
   for(let i=0;i<=4;i++){
@@ -2716,45 +2712,51 @@ function renderActivityChart(){
     grid += `<text class="chart-axis-label" x="${left-10}" y="${(y+3).toFixed(1)}" text-anchor="end">${Math.round(value)}</text>`;
   }
 
-  const linePath = points.map((point,index)=>`${index===0?"M":"L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
-  const areaPath = `${linePath} L ${points[points.length-1].x.toFixed(1)} ${bottom} L ${points[0].x.toFixed(1)} ${bottom} Z`;
-
   const labelIndices = activityPeriod === "week"
-    ? points.map((point,index)=>index)
+    ? values.map((value,index)=>index)
     : activityPeriod === "month"
       ? [0,5,10,15,20,25,29]
-      : [0,2,4,6,8,10,11];
+      : values.map((value,index)=>index);
 
+  let bars = "";
   let xLabels = "";
-  labelIndices.forEach(index=>{
-    const point = points[index];
-    if(!point) return;
-    xLabels += `<text class="chart-x-label" x="${point.x.toFixed(1)}" y="224" text-anchor="middle">${point.label}</text>`;
-  });
 
-  let dots = "";
-  points.forEach((point,index)=>{
+  values.forEach((value,index)=>{
+    const x = left + slotWidth*index + (slotWidth-barWidth)/2;
+    const barHeight = value === 0 ? 2 : Math.max(4,(value/maxY)*plotHeight);
+    const y = bottom-barHeight;
     const fullLabel = activityPeriod === "year"
       ? new Date(buckets[index].key + "-01T12:00:00").toLocaleDateString("ru-RU",{month:"long",year:"numeric"})
       : new Date(buckets[index].key + "T12:00:00").toLocaleDateString("ru-RU",{day:"2-digit",month:"long"});
-    dots += `<circle class="chart-point" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="${activityPeriod==="month"?2.7:4}"><title>${fullLabel}: ${point.value} заказов</title></circle>`;
+    const showValue = activityPeriod !== "month" || value === maxValue || (value > 0 && index % 5 === 0);
+    const valueLabel = showValue && value > 0
+      ? `<text class="chart-bar-value" x="${(x+barWidth/2).toFixed(1)}" y="${Math.max(12,y-7).toFixed(1)}" text-anchor="middle">${value}</text>`
+      : "";
+    const barClass = value > 0 ? "chart-bar" : "chart-bar chart-bar-empty";
+
+    bars += `<rect class="${barClass}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${barHeight.toFixed(1)}" rx="${Math.min(6,barWidth/2).toFixed(1)}"><title>${fullLabel}: ${value} заказов</title></rect>${valueLabel}`;
+
+    if(labelIndices.includes(index)){
+      xLabels += `<text class="chart-x-label" x="${(x+barWidth/2).toFixed(1)}" y="218" text-anchor="middle">${buckets[index].label}</text>`;
+    }
   });
 
   activityChart.innerHTML = `
     <defs>
-      <linearGradient id="activityAreaFill" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#43dfa0" stop-opacity=".25"></stop>
-        <stop offset="100%" stop-color="#43dfa0" stop-opacity=".015"></stop>
+      <linearGradient id="activityBarFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#79e7b7"></stop>
+        <stop offset="100%" stop-color="#269b70"></stop>
+      </linearGradient>
+      <linearGradient id="activityBarMuted" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#3b4a58"></stop>
+        <stop offset="100%" stop-color="#263341"></stop>
       </linearGradient>
     </defs>
     ${grid}
-    <path class="chart-area" d="${areaPath}"></path>
-    <path class="chart-line" d="${linePath}"></path>
-    ${dots}
+    ${bars}
     ${xLabels}
   `;
 }
-
 function renderStatusDistribution(){
   const validOrders = orders.filter(order=>!order.is_draft);
   const values = [
