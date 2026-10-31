@@ -63,6 +63,18 @@ h1{text-align:center;font-size:clamp(28px,5vw,46px);line-height:1.12;letter-spac
 .player.playing .video-element{display:block}
 @media(max-width:560px){.credentials{padding:18px 14px}.credentials h2{gap:10px}.apple-mark{width:36px;height:36px;flex-basis:36px}.credential-row{grid-template-columns:minmax(0,1fr);gap:12px;padding:12px;border-radius:16px}.credential-icon{width:48px;height:48px;flex-basis:48px}.credential-icon svg{width:27px;height:27px}.credential-info{gap:12px}.copy-button{width:100%}.video-poster{min-height:250px;padding:20px}.poster-phone{right:3%;width:43%;border-radius:28px}.poster-subtitle{max-width:160px}.poster-controls{padding:12px;gap:12px;font-size:13px}}
 .access-timer{margin:0 auto 22px;text-align:center;color:#71e6a4;font-size:15px;font-weight:700;line-height:1.5}.access-timer.expired{color:#ff8996}
+
+.promo-page{margin:26px 0 20px;padding:30px 24px;border:1px solid #183b67;border-radius:22px;background:linear-gradient(145deg,#0b1b32,#080f20 70%);box-shadow:0 22px 60px #0007;text-align:center}
+.promo-page[hidden]{display:none}
+.promo-icon{width:64px;height:64px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#173d66,#0d2340);color:#35a8ff;font-size:34px;font-weight:800}
+.promo-page h2{margin:0 0 18px;font-size:clamp(25px,5vw,34px);color:#f5f7ff}
+.promo-page p{margin:0 auto 12px;max-width:540px;color:#c4d2e8;font-size:clamp(16px,2.5vw,19px);line-height:1.55}
+.promo-actions{display:grid;gap:13px;max-width:480px;margin:28px auto 20px}
+.promo-button{display:flex;align-items:center;justify-content:center;min-height:56px;padding:15px 20px;border-radius:15px;text-align:center;text-decoration:none;font-size:15px;font-weight:800;line-height:1.35}
+.promo-whatsapp{background:#13c66b;color:#041a10;box-shadow:0 8px 24px #13c66b30}
+.promo-catalog{background:linear-gradient(110deg,#6038f5,#843cff);color:#fff;box-shadow:0 8px 24px #713cff30}
+.promo-footer{margin-top:22px;color:#a9bbd6;font-size:14px}
+
 footer{text-align:center;color:#91a5c7;font-size:15px;margin:42px 0 8px}
 footer strong{color:#cbd8f0}
 @media(max-width:560px){body{padding:28px 14px}.brand{margin-bottom:34px}.warning{gap:14px;padding:20px 16px;border-radius:18px}.warning-icon{flex-basis:42px;width:42px;height:42px;font-size:27px;border-width:2px}.intro{margin-bottom:24px}.credentials{padding:20px 16px;border-radius:18px}.credential-row{grid-template-columns:minmax(0,1fr);gap:10px}.copy-button{width:100%}.player{border-radius:16px}footer{font-size:12px;margin-top:30px}}
@@ -116,6 +128,18 @@ footer strong{color:#cbd8f0}
 Ваш браузер не поддерживает воспроизведение видео.
 </video>
 </div>
+
+<section class="promo-page" id="expiredPromo" hidden aria-live="polite">
+  <div class="promo-icon" aria-hidden="true">✓</div>
+  <h2>👋 Добро пожаловать!</h2>
+  <p>Хотите установить приложения на свой iPhone?</p>
+  <p>Мы поможем подобрать приложения и провести установку.</p>
+  <div class="promo-actions">
+    <a class="promo-button promo-whatsapp" id="promoWhatsapp" href="#">🟢 ЗАКАЗАТЬ ЧЕРЕЗ WHATSAPP</a>
+    <a class="promo-button promo-catalog" href="https://appcorestudio.github.io/catalog.html">📱 Посмотреть каталог приложений</a>
+  </div>
+  <div class="promo-footer">AppCore — всегда на связи!</div>
+</section>
 <footer><strong>AppCore</strong> · Дистанционная установка приложений</footer>
 </main>
 <script>
@@ -126,6 +150,7 @@ footer strong{color:#cbd8f0}
   const poster = document.getElementById('videoPoster');
   const source = document.getElementById('instructionVideoSource');
   const accessTimer = document.getElementById('accessTimer');
+  const promo = document.getElementById('expiredPromo');
   const accessParams = new URLSearchParams(window.location.search);
   const accessCode = accessParams.get('c') || '';
   const orderId = accessParams.get('order');
@@ -134,8 +159,10 @@ footer strong{color:#cbd8f0}
   const legacyLink = Boolean(orderId && signature && /^[0-9a-f]{64}$/i.test(signature));
   const authorisedLink = shortLink || legacyLink;
   const functionBase = 'https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video';
-  let accessExpired = false;
+  let accessClosed = false;
   let countdownInterval = null;
+  let accessPollInterval = null;
+  let checkingAccess = false;
 
   function accessQuery(){
     const params = new URLSearchParams();
@@ -147,34 +174,55 @@ footer strong{color:#cbd8f0}
     return params.toString();
   }
 
-  function lockVideo(message){
-    accessExpired = true;
+  function showPromo(){
+    if(accessClosed) return;
+    accessClosed = true;
     if(countdownInterval) window.clearInterval(countdownInterval);
+    if(accessPollInterval) window.clearInterval(accessPollInterval);
     video.pause();
     source.removeAttribute('src');
     video.removeAttribute('src');
     video.load();
-    player.classList.remove('playing');
-    poster.querySelector('.poster-play').textContent = '🔒';
-    poster.setAttribute('aria-label', 'Срок доступа к видео истёк');
-    poster.style.pointerEvents = 'none';
-    accessTimer.hidden = false;
-    accessTimer.classList.add('expired');
-    accessTimer.textContent = message;
+    player.hidden = true;
+    document.querySelector('.warning').hidden = true;
+    document.querySelector('.credentials').hidden = true;
+    document.querySelector('.intro').hidden = true;
+    accessTimer.hidden = true;
+    document.querySelector('h1').hidden = true;
+    promo.hidden = false;
+
+    // Use the same direct WhatsApp app link pattern as the AppCore order page.
+    const message = 'Здравствуйте! Хочу заказать приложения для своего iPhone. Подскажите, пожалуйста.';
+    document.getElementById('promoWhatsapp').href =
+      'whatsapp://send?phone=79289480706&text=' + encodeURIComponent(message);
+  }
+
+  function showUnavailable(){
+    accessClosed = true;
+    if(countdownInterval) window.clearInterval(countdownInterval);
+    if(accessPollInterval) window.clearInterval(accessPollInterval);
+    video.pause();
+    source.removeAttribute('src');
+    video.removeAttribute('src');
+    video.load();
+    player.hidden = true;
+    document.querySelector('.warning').hidden = true;
+    document.querySelector('.credentials').hidden = true;
+    document.querySelector('.intro').textContent = 'Видеоинструкция доступна только по персональной ссылке после подтверждения оплаты.';
+    accessTimer.hidden = true;
   }
 
   function startCountdown(expiresAt){
     const expiryMs = Date.parse(expiresAt);
     if(!Number.isFinite(expiryMs) || Date.now() >= expiryMs){
-      lockVideo('Время доступа к видеоинструкции истекло. Повторно открыть её по этой ссылке уже нельзя.');
+      showPromo();
       return;
     }
     accessTimer.hidden = false;
-    accessTimer.classList.remove('expired');
     const tick = function(){
       const seconds = Math.max(0, Math.ceil((expiryMs - Date.now()) / 1000));
       if(seconds <= 0){
-        lockVideo('Время доступа к видеоинструкции истекло. Повторно открыть её по этой ссылке уже нельзя.');
+        showPromo();
         return;
       }
       const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -185,6 +233,34 @@ footer strong{color:#cbd8f0}
     tick();
     if(countdownInterval) window.clearInterval(countdownInterval);
     countdownInterval = window.setInterval(tick, 1000);
+  }
+
+  async function requestAccessState(action){
+    const response = await fetch(functionBase + '?action=' + action + '&' + accessQuery(), {
+      method: 'POST',
+      cache: 'no-store'
+    });
+    const data = await response.json().catch(() => ({}));
+    return { response, data };
+  }
+
+  async function checkAccess(){
+    if(accessClosed || checkingAccess) return;
+    checkingAccess = true;
+    try{
+      const result = await requestAccessState('check');
+      if(result.data.state === 'promo'){
+        showPromo();
+      }else if(result.data.state === 'unavailable'){
+        showUnavailable();
+      }else if(result.data.state === 'active' && result.data.expiresAt){
+        startCountdown(result.data.expiresAt);
+      }
+    }catch(error){
+      // Do not revoke access on a temporary network failure.
+    }finally{
+      checkingAccess = false;
+    }
   }
 
   async function openPersonalVideoPage(){
@@ -200,32 +276,33 @@ footer strong{color:#cbd8f0}
     accessTimer.hidden = false;
     accessTimer.textContent = 'Проверяем доступ к видеоинструкции...';
     try{
-      const response = await fetch(functionBase + '?action=activate&' + accessQuery(), {
-        method: 'POST',
-        cache: 'no-store'
-      });
-      const data = await response.json().catch(() => ({}));
-      if(!response.ok){
-        lockVideo(response.status === 410
-          ? 'Время доступа к видеоинструкции истекло. Повторно открыть её по этой ссылке уже нельзя.'
-          : 'Не удалось открыть видеоинструкцию. Проверьте персональную ссылку или обратитесь в AppCore.');
+      const result = await requestAccessState('activate');
+      if(result.data.state === 'promo'){
+        showPromo();
         return;
       }
-      startCountdown(data.expiresAt);
-      if(accessExpired) return;
+      if(result.data.state === 'unavailable' || !result.response.ok || result.data.state !== 'active'){
+        showUnavailable();
+        return;
+      }
+
+      startCountdown(result.data.expiresAt);
+      if(accessClosed) return;
       source.src = functionBase + '?raw=1&' + accessQuery();
       video.load();
+
+      // The page checks the order every 10 seconds. Completion in the bot switches
+      // the open page to the AppCore offer and stops the visible player.
+      accessPollInterval = window.setInterval(checkAccess, 10000);
     }catch(error){
-      lockVideo('Не удалось подключиться для проверки доступа. Проверьте интернет и откройте ссылку ещё раз.');
+      showUnavailable();
     }
   }
 
-  // Runs in the customer's browser after opening the link. A preview that only
-  // downloads the HTML does not execute this script and does not start the timer.
   openPersonalVideoPage();
 
   async function startVideo(){
-    if(accessExpired) return;
+    if(accessClosed) return;
     player.classList.add('playing');
     try { await video.play(); } catch (e) { video.setAttribute('controls',''); }
   }
@@ -233,6 +310,7 @@ footer strong{color:#cbd8f0}
   poster.addEventListener('keydown', function(e){
     if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); startVideo(); }
   });
+
   async function copyText(value) {
     if (navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(value);
