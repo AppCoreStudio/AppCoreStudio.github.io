@@ -1287,8 +1287,8 @@ body{
   color:#8df0c2;border-color:rgba(67,223,160,.22);
   background:rgba(67,223,160,.09)
 }
-.activity-chart-wrap{width:100%;margin-top:7px}
-.activity-chart{display:block;width:100%;height:auto;min-height:190px;overflow:visible}
+.activity-chart-wrap{width:100%;margin-top:7px;overflow-x:auto;overflow-y:hidden}
+.activity-chart{display:block;width:100%;max-width:none;height:auto;min-height:190px;overflow:visible}
 .chart-grid-line{stroke:rgba(255,255,255,.07);stroke-width:1;stroke-dasharray:3 5}
 .chart-axis-label{fill:#718096;font-size:10px;font-family:inherit}
 .chart-x-label{fill:#8795a8;font-size:10px;font-family:inherit}
@@ -1599,7 +1599,7 @@ body{
         <div class="analytics-head">
           <div>
             <div class="analytics-title">Активность заказов</div>
-            <div class="analytics-subtitle">По дате создания · без черновиков</div>
+            <div class="analytics-subtitle">Заказы без отменённых и черновиков</div>
           </div>
           <div class="activity-total">
             <strong id="activityTotal">0</strong>
@@ -1608,9 +1608,10 @@ body{
         </div>
 
         <div class="chart-periods" role="group" aria-label="Период графика">
-          <button type="button" class="chart-period active" data-activity-period="week">7 дней</button>
-          <button type="button" class="chart-period" data-activity-period="month">30 дней</button>
-          <button type="button" class="chart-period" data-activity-period="year">12 месяцев</button>
+          <button type="button" class="chart-period active" data-activity-period="days">По дням</button>
+          <button type="button" class="chart-period" data-activity-period="weeks">По неделям</button>
+          <button type="button" class="chart-period" data-activity-period="months">По месяцам</button>
+          <button type="button" class="chart-period" data-activity-period="years">По годам</button>
         </div>
 
         <div class="activity-chart-wrap">
@@ -1624,7 +1625,7 @@ body{
         <div class="analytics-head">
           <div>
             <div class="analytics-title">Статусы заказов</div>
-            <div class="analytics-subtitle">Все заказы · без черновиков</div>
+            <div class="analytics-subtitle">Только учитываемые заказы</div>
           </div>
         </div>
 
@@ -1651,11 +1652,6 @@ body{
               <span class="status-swatch completed"></span>
               <span>Завершены</span>
               <strong id="statusCompleted">0</strong>
-            </div>
-            <div class="status-legend-row">
-              <span class="status-swatch cancelled"></span>
-              <span>Отклонены</span>
-              <strong id="statusCancelled">0</strong>
             </div>
           </div>
         </div>
@@ -1988,7 +1984,7 @@ let confirmAction = null;
 let knownOrderIds = new Set();
 let notificationsEnabled = false;
 let currentTab = "active";
-let activityPeriod = "week";
+let activityPeriod = "days";
 
 /* =========================
    REALTIME
@@ -2100,9 +2096,6 @@ const statusPaid =
 
 const statusCompleted =
   document.getElementById("statusCompleted");
-
-const statusCancelled =
-  document.getElementById("statusCancelled");
 
 const confirmOverlay =
   document.getElementById("confirmOverlay");
@@ -2641,48 +2634,137 @@ function renderActivityChart(){
   const now = new Date();
   const buckets = [];
   const countByKey = new Map();
+  const eligibleOrders = orders.filter(order=>
+    !order.is_draft &&
+    order.status !== "cancelled" &&
+    ["awaiting_review","paid","completed"].includes(order.status)
+  );
   let caption = "за 7 дней";
 
-  if(activityPeriod === "year"){
-    caption = "за 12 месяцев";
-    const firstMonth = new Date(now.getFullYear(), now.getMonth() - 11, 1);
-    for(let i=0;i<12;i++){
-      const date = new Date(firstMonth.getFullYear(), firstMonth.getMonth() + i, 1);
-      const key = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`;
+  const makeLocalDate = (year,month,day) =>
+    new Date(year,month,day);
+
+  const formatShortMonth = date =>
+    date.toLocaleDateString("ru-RU",{month:"short"}).replace(".","");
+
+  const formatFullDate = date =>
+    date.toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"});
+
+  const weekStart = date => {
+    const result = makeLocalDate(date.getFullYear(),date.getMonth(),date.getDate());
+    const mondayOffset = (result.getDay()+6)%7;
+    result.setDate(result.getDate()-mondayOffset);
+    return result;
+  };
+
+  if(activityPeriod === "days"){
+    caption = "за 7 дней";
+    const firstDay = makeLocalDate(now.getFullYear(),now.getMonth(),now.getDate()-6);
+
+    for(let i=0;i<7;i++){
+      const date = makeLocalDate(firstDay.getFullYear(),firstDay.getMonth(),firstDay.getDate()+i);
+      const key = localDateKey(date);
+      const weekday = date.toLocaleDateString("ru-RU",{weekday:"short"}).replace(".","");
       buckets.push({
         key,
-        label:date.toLocaleDateString("ru-RU",{month:"short"}).replace(".","")
+        start:date,
+        end:date,
+        label:weekday+" "+String(date.getDate()).padStart(2,"0"),
+        tooltip:formatFullDate(date)
       });
       countByKey.set(key,0);
     }
-    orders.forEach(order=>{
-      if(order.is_draft || !order.created_at) return;
+
+    eligibleOrders.forEach(order=>{
+      if(!order.created_at) return;
       const date = new Date(order.created_at);
       if(Number.isNaN(date.getTime())) return;
-      const key = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`;
+      const key = localDateKey(date);
       if(countByKey.has(key)) countByKey.set(key,countByKey.get(key)+1);
     });
-  }else{
-    const days = activityPeriod === "month" ? 30 : 7;
-    caption = activityPeriod === "month" ? "за 30 дней" : "за 7 дней";
-    const startDate = new Date(now.getFullYear(),now.getMonth(),now.getDate());
-    startDate.setDate(startDate.getDate() - (days - 1));
 
-    for(let i=0;i<days;i++){
-      const date = new Date(startDate.getFullYear(),startDate.getMonth(),startDate.getDate()+i);
-      const key = localDateKey(date);
-      const label = activityPeriod === "week"
-        ? date.toLocaleDateString("ru-RU",{weekday:"short"}).replace(".","")
-        : String(date.getDate()).padStart(2,"0");
-      buckets.push({key,label});
+  }else if(activityPeriod === "weeks"){
+    caption = "за 12 недель";
+    const thisWeek = weekStart(now);
+    const firstWeek = makeLocalDate(thisWeek.getFullYear(),thisWeek.getMonth(),thisWeek.getDate()-77);
+
+    for(let i=0;i<12;i++){
+      const start = makeLocalDate(firstWeek.getFullYear(),firstWeek.getMonth(),firstWeek.getDate()+i*7);
+      const end = makeLocalDate(start.getFullYear(),start.getMonth(),start.getDate()+6);
+      const key = localDateKey(start);
+      const sameMonth = start.getMonth()===end.getMonth();
+      const startLabel = String(start.getDate()).padStart(2,"0");
+      const endLabel = String(end.getDate()).padStart(2,"0");
+      const label = sameMonth
+        ? startLabel+"–"+endLabel+" "+formatShortMonth(end)
+        : startLabel+" "+formatShortMonth(start)+"–"+endLabel+" "+formatShortMonth(end);
+      buckets.push({
+        key,
+        start,
+        end,
+        label,
+        tooltip:formatFullDate(start)+" — "+formatFullDate(end)
+      });
       countByKey.set(key,0);
     }
 
-    orders.forEach(order=>{
-      if(order.is_draft || !order.created_at) return;
+    eligibleOrders.forEach(order=>{
+      if(!order.created_at) return;
       const date = new Date(order.created_at);
       if(Number.isNaN(date.getTime())) return;
-      const key = localDateKey(date);
+      const key = localDateKey(weekStart(date));
+      if(countByKey.has(key)) countByKey.set(key,countByKey.get(key)+1);
+    });
+
+  }else if(activityPeriod === "months"){
+    caption = "за текущий год";
+    for(let month=0;month<12;month++){
+      const start = makeLocalDate(now.getFullYear(),month,1);
+      const key = `${start.getFullYear()}-${String(month+1).padStart(2,"0")}`;
+      buckets.push({
+        key,
+        start,
+        end:makeLocalDate(now.getFullYear(),month+1,0),
+        label:start.toLocaleDateString("ru-RU",{month:"short"}).replace(".",""),
+        tooltip:start.toLocaleDateString("ru-RU",{month:"long",year:"numeric"})
+      });
+      countByKey.set(key,0);
+    }
+
+    eligibleOrders.forEach(order=>{
+      if(!order.created_at) return;
+      const date = new Date(order.created_at);
+      if(Number.isNaN(date.getTime()) || date.getFullYear()!==now.getFullYear()) return;
+      const key = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`;
+      if(countByKey.has(key)) countByKey.set(key,countByKey.get(key)+1);
+    });
+
+  }else{
+    caption = "по календарным годам";
+    const years = eligibleOrders
+      .filter(order=>order.created_at)
+      .map(order=>new Date(order.created_at))
+      .filter(date=>!Number.isNaN(date.getTime()))
+      .map(date=>date.getFullYear())
+      .filter(year=>year<=now.getFullYear());
+
+    const firstYear = years.length ? Math.min(...years) : now.getFullYear();
+    for(let year=firstYear;year<=now.getFullYear();year++){
+      buckets.push({
+        key:String(year),
+        start:makeLocalDate(year,0,1),
+        end:makeLocalDate(year,11,31),
+        label:String(year),
+        tooltip:String(year)+" год"
+      });
+      countByKey.set(String(year),0);
+    }
+
+    eligibleOrders.forEach(order=>{
+      if(!order.created_at) return;
+      const date = new Date(order.created_at);
+      if(Number.isNaN(date.getTime())) return;
+      const key = String(date.getFullYear());
       if(countByKey.has(key)) countByKey.set(key,countByKey.get(key)+1);
     });
   }
@@ -2692,55 +2774,44 @@ function renderActivityChart(){
   activityTotal.textContent = total.toLocaleString("ru-RU");
   activityCaption.textContent = caption;
 
-  const width = 720;
+  const width = Math.max(720,buckets.length*62+60);
   const left = 42;
   const right = 18;
-  const top = 20;
+  const top = 22;
   const bottom = 190;
   const plotWidth = width-left-right;
   const plotHeight = bottom-top;
+  const slotWidth = plotWidth/Math.max(values.length,1);
+  const barWidth = Math.max(6,Math.min(46,slotWidth*.56));
   const maxValue = Math.max(1,...values);
   const maxY = Math.max(4,Math.ceil(maxValue/4)*4);
-  const slotWidth = plotWidth / Math.max(values.length,1);
-  const barWidth = Math.max(5,Math.min(54,slotWidth * (activityPeriod === "month" ? .62 : .58)));
 
   let grid = "";
   for(let i=0;i<=4;i++){
-    const value = maxY - i*(maxY/4);
-    const y = top + i*(plotHeight/4);
+    const value = maxY-i*(maxY/4);
+    const y = top+i*(plotHeight/4);
     grid += `<line class="chart-grid-line" x1="${left}" y1="${y.toFixed(1)}" x2="${width-right}" y2="${y.toFixed(1)}"></line>`;
     grid += `<text class="chart-axis-label" x="${left-10}" y="${(y+3).toFixed(1)}" text-anchor="end">${Math.round(value)}</text>`;
   }
-
-  const labelIndices = activityPeriod === "week"
-    ? values.map((value,index)=>index)
-    : activityPeriod === "month"
-      ? [0,5,10,15,20,25,29]
-      : values.map((value,index)=>index);
 
   let bars = "";
   let xLabels = "";
 
   values.forEach((value,index)=>{
-    const x = left + slotWidth*index + (slotWidth-barWidth)/2;
-    const barHeight = value === 0 ? 2 : Math.max(4,(value/maxY)*plotHeight);
+    const x = left+slotWidth*index+(slotWidth-barWidth)/2;
+    const barHeight = value===0 ? 2 : Math.max(4,(value/maxY)*plotHeight);
     const y = bottom-barHeight;
-    const fullLabel = activityPeriod === "year"
-      ? new Date(buckets[index].key + "-01T12:00:00").toLocaleDateString("ru-RU",{month:"long",year:"numeric"})
-      : new Date(buckets[index].key + "T12:00:00").toLocaleDateString("ru-RU",{day:"2-digit",month:"long"});
-    const showValue = activityPeriod !== "month" || value === maxValue || (value > 0 && index % 5 === 0);
-    const valueLabel = showValue && value > 0
+    const valueLabel = value>0
       ? `<text class="chart-bar-value" x="${(x+barWidth/2).toFixed(1)}" y="${Math.max(12,y-7).toFixed(1)}" text-anchor="middle">${value}</text>`
       : "";
-    const barClass = value > 0 ? "chart-bar" : "chart-bar chart-bar-empty";
+    const barClass = value>0 ? "chart-bar" : "chart-bar chart-bar-empty";
 
-    bars += `<rect class="${barClass}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${barHeight.toFixed(1)}" rx="${Math.min(6,barWidth/2).toFixed(1)}"><title>${fullLabel}: ${value} заказов</title></rect>${valueLabel}`;
-
-    if(labelIndices.includes(index)){
-      xLabels += `<text class="chart-x-label" x="${(x+barWidth/2).toFixed(1)}" y="218" text-anchor="middle">${buckets[index].label}</text>`;
-    }
+    bars += `<rect class="${barClass}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${barHeight.toFixed(1)}" rx="${Math.min(6,barWidth/2).toFixed(1)}"><title>${buckets[index].tooltip}: ${value} заказов</title></rect>${valueLabel}`;
+    xLabels += `<text class="chart-x-label" x="${(x+barWidth/2).toFixed(1)}" y="218" text-anchor="middle">${buckets[index].label}</text>`;
   });
 
+  activityChart.setAttribute("viewBox",`0 0 ${width} 238`);
+  activityChart.style.width = width>720 ? width+"px" : "100%";
   activityChart.innerHTML = `
     <defs>
       <linearGradient id="activityBarFill" x1="0" y1="0" x2="0" y2="1">
@@ -2758,36 +2829,40 @@ function renderActivityChart(){
   `;
 }
 function renderStatusDistribution(){
-  const validOrders = orders.filter(order=>!order.is_draft);
+  const eligibleOrders = orders.filter(order=>
+    !order.is_draft &&
+    order.status !== "cancelled" &&
+    ["awaiting_review","paid","completed"].includes(order.status)
+  );
+
   const values = [
-    {key:"awaiting_review",count:validOrders.filter(order=>order.status==="awaiting_review").length,color:"#f6c96a"},
-    {key:"paid",count:validOrders.filter(order=>order.status==="paid").length,color:"#69aaff"},
-    {key:"completed",count:validOrders.filter(order=>order.status==="completed").length,color:"#43dfa0"},
-    {key:"cancelled",count:validOrders.filter(order=>order.status==="cancelled").length,color:"#ff7886"}
+    {key:"awaiting_review",count:eligibleOrders.filter(order=>order.status==="awaiting_review").length,color:"#f6c96a"},
+    {key:"paid",count:eligibleOrders.filter(order=>order.status==="paid").length,color:"#69aaff"},
+    {key:"completed",count:eligibleOrders.filter(order=>order.status==="completed").length,color:"#43dfa0"}
   ];
+
   const total = values.reduce((sum,item)=>sum+item.count,0);
   statusTotal.textContent = total.toLocaleString("ru-RU");
   statusAwaiting.textContent = values[0].count.toLocaleString("ru-RU");
   statusPaid.textContent = values[1].count.toLocaleString("ru-RU");
   statusCompleted.textContent = values[2].count.toLocaleString("ru-RU");
-  statusCancelled.textContent = values[3].count.toLocaleString("ru-RU");
 
   if(!total){
     statusDonut.style.background = "conic-gradient(#273342 0deg 360deg)";
-    statusDonut.setAttribute("aria-label","Заказов пока нет");
+    statusDonut.setAttribute("aria-label","Нет заказов, учитываемых в статистике");
     return;
   }
 
   let angle = 0;
   const segments = values.map(item=>{
     const start = angle;
-    angle += item.count / total * 360;
+    angle += item.count/total*360;
     return `${item.color} ${start.toFixed(2)}deg ${angle.toFixed(2)}deg`;
   });
+
   statusDonut.style.background = `conic-gradient(${segments.join(",")})`;
   statusDonut.setAttribute("aria-label",values.map(item=>`${item.key}: ${item.count}`).join(", "));
 }
-
 function renderAnalytics(){
   renderActivityChart();
   renderStatusDistribution();
