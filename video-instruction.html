@@ -97,11 +97,16 @@ body.promo-mode .promo-catalog{background:linear-gradient(110deg,#2879ee,#6650ed
 body.promo-mode .promo-footer{margin-top:30px;color:#a9c2e2;font-size:15px;font-weight:600;letter-spacing:.02em}
 @media(max-width:560px){body.promo-mode{padding:24px 14px}body.promo-mode .brand{margin-bottom:24px}body.promo-mode .promo-page{padding:30px 20px;border-radius:22px}body.promo-mode .promo-page h2{margin-bottom:20px}body.promo-mode .promo-page p{font-size:17px}body.promo-mode .promo-actions{margin-top:28px;gap:12px}body.promo-mode .promo-button{min-height:58px;padding:15px 14px}}
 
+
+.initial-check{display:none}
+body.checking-access main>:not(.brand):not(.initial-check){display:none!important}
+body.checking-access .initial-check{display:block;margin:4px auto 0;text-align:center;color:#b9c9e6;font-size:16px;line-height:1.6}
 </style>
 </head>
-<body>
+<body class="checking-access">
 <main>
 <div class="brand">APP<span>CORE</span></div>
+<div class="initial-check" id="initialCheck" role="status">Проверяем статус заказа...</div>
 <h1>Видеоинструкция по установке</h1>
 <p class="intro">Нажмите ▶, чтобы посмотреть видео.</p>
 <p class="access-timer" id="accessTimer" role="status" aria-live="polite" hidden></p>
@@ -195,6 +200,7 @@ body.promo-mode .promo-footer{margin-top:30px;color:#a9c2e2;font-size:15px;font-
   function showPromo(){
     if(accessClosed) return;
     accessClosed = true;
+    document.body.classList.remove('checking-access');
     document.body.classList.add('promo-mode');
     if(countdownInterval) window.clearInterval(countdownInterval);
     if(accessPollInterval) window.clearInterval(accessPollInterval);
@@ -218,6 +224,7 @@ body.promo-mode .promo-footer{margin-top:30px;color:#a9c2e2;font-size:15px;font-
 
   function showUnavailable(){
     accessClosed = true;
+    document.body.classList.remove('checking-access');
     if(countdownInterval) window.clearInterval(countdownInterval);
     if(accessPollInterval) window.clearInterval(accessPollInterval);
     video.pause();
@@ -284,6 +291,7 @@ body.promo-mode .promo-footer{margin-top:30px;color:#a9c2e2;font-size:15px;font-
 
   async function openPersonalVideoPage(){
     if(!authorisedLink){
+      document.body.classList.remove('checking-access');
       document.querySelector('.intro').textContent = 'Видеоинструкция доступна только по персональной ссылке из сообщения AppCore о подтверждении заказа.';
       document.querySelector('.warning').hidden = true;
       document.querySelector('.credentials').hidden = true;
@@ -305,6 +313,7 @@ body.promo-mode .promo-footer{margin-top:30px;color:#a9c2e2;font-size:15px;font-
         return;
       }
 
+      document.body.classList.remove('checking-access');
       startCountdown(result.data.expiresAt);
       if(accessClosed) return;
       source.src = functionBase + '?raw=1&' + accessQuery();
