@@ -124,10 +124,15 @@ footer strong{color:#cbd8f0}
   const poster = document.getElementById('videoPoster');
   const source = document.getElementById('instructionVideoSource');
   const accessParams = new URLSearchParams(window.location.search);
+  const accessCode = accessParams.get('c') || '';
   const orderId = accessParams.get('order');
   const signature = accessParams.get('sig');
-  const authorizedLink = Boolean(orderId && signature && /^[0-9a-f]{64}$/i.test(signature));
-  if (authorizedLink) {
+  const shortLink = /^[A-Za-z0-9_-]{12}$/.test(accessCode);
+  const legacyLink = Boolean(orderId && signature && /^[0-9a-f]{64}$/i.test(signature));
+  if (shortLink) {
+    source.src = 'https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video?raw=1&code=' + encodeURIComponent(accessCode);
+    video.load();
+  } else if (legacyLink) {
     source.src = 'https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video?raw=1&order=' + encodeURIComponent(orderId) + '&sig=' + encodeURIComponent(signature);
     video.load();
   } else {
