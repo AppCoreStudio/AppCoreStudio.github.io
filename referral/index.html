@@ -828,9 +828,11 @@ input::placeholder{
             <div id="registerMessage" class="message"></div>
 
             <div class="field">
-                <label>Номер телефона</label>
+                <label for="registerPhone">Номер телефона</label>
                 <input
                     id="registerPhone"
+                    required
+                    aria-required="true"
                     type="tel"
                     inputmode="tel"
                     autocomplete="tel"
@@ -839,9 +841,11 @@ input::placeholder{
             </div>
 
             <div class="field">
-                <label>Имя пользователя</label>
+                <label for="registerUsername">Ваше имя</label>
                 <input
                     id="registerUsername"
+                    required
+                    aria-required="true"
                     type="text"
                     autocomplete="username"
                     maxlength="30"
@@ -856,7 +860,9 @@ input::placeholder{
                         id="registerPassword"
                         type="password"
                         autocomplete="new-password"
-                        placeholder="Минимум 6 символов"
+                        required
+                        minlength="8"
+                        placeholder="Минимум 8 символов"
                     >
                     <button
                         type="button"
@@ -876,6 +882,7 @@ input::placeholder{
                         id="registerPassword2"
                         type="password"
                         autocomplete="new-password"
+                        required
                         placeholder="Повторите пароль"
                     >
                     <button
@@ -1869,11 +1876,11 @@ async function register(){
         return;
     }
 
-    if(password.length < 6){
+    if(password.length < 8){
 
         showMessage(
             registerMessage,
-            "Пароль должен содержать минимум 6 символов."
+            "Пароль должен содержать минимум 8 символов."
         );
 
         return;
