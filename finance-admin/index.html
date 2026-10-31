@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080b11">
+<meta name="robots" content="noindex,nofollow">
+<title>AppCore — Финансовый рост</title>
+<script src="/supabase-lite.js?v=20261031finance"></script>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#080b11;
+  --panel:#111722;
+  --panel2:#151e2b;
+  --line:rgba(255,255,255,.075);
+  --text:#f5f8fc;
+  --muted:#8997aa;
+  --green:#43dfa0;
+  --green2:#20b77d;
+  --blue:#69aaff;
+  --purple:#ad8bff;
+  --gold:#f6c96a;
+  --red:#ff7886;
+  --shadow:0 22px 70px rgba(0,0,0,.26);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(ellipse at 5% -10%,rgba(66,222,161,.105),transparent 32%),
+    radial-gradient(ellipse at 95% 0%,rgba(111,128,255,.11),transparent 30%),
+    linear-gradient(180deg,#080b11,#090e16 60%,#080b11);
+}
+button{font:inherit}
+button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.page{width:min(1240px,calc(100% - 32px));margin:0 auto;padding:25px 0 56px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand-mark{width:45px;height:45px;display:grid;place-items:center;border:1px solid rgba(67,223,160,.24);border-radius:15px;background:linear-gradient(145deg,rgba(67,223,160,.18),rgba(67,223,160,.04));font-size:22px;box-shadow:0 8px 28px rgba(32,183,125,.1)}
+.brand-title{font-size:17px;font-weight:900;letter-spacing:-.35px}
+.brand-sub{margin-top:3px;color:var(--muted);font-size:11px}
+.top-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.action{
+  min-height:42px;padding:0 14px;border:1px solid var(--line);border-radius:12px;
+  color:var(--text);background:rgba(255,255,255,.035);font-size:12px;font-weight:800;
+  text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer
+}
+.action.primary{border-color:rgba(67,223,160,.22);background:rgba(67,223,160,.09);color:#8df0c2}
+.action:disabled{opacity:.45;cursor:wait}
+.eyebrow{display:flex;align-items:center;gap:9px;color:#a7b5c7;font-size:10px;letter-spacing:1.7px;text-transform:uppercase;font-weight:900}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 14px rgba(67,223,160,.7)}
+.hero{
+  position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);
+  gap:26px;padding:clamp(22px,4vw,42px);border:1px solid rgba(255,255,255,.09);border-radius:28px;
+  background:linear-gradient(115deg,rgba(20,35,37,.96),rgba(17,24,36,.96) 58%,rgba(25,24,47,.96));
+  box-shadow:var(--shadow);isolation:isolate;
+}
+.hero:before{content:"";position:absolute;z-index:-1;width:440px;height:440px;right:13%;top:-310px;border-radius:50%;background:rgba(67,223,160,.12);filter:blur(14px)}
+.hero:after{content:"";position:absolute;z-index:-1;right:-100px;bottom:-260px;width:440px;height:440px;border:1px solid rgba(173,139,255,.13);border-radius:50%;box-shadow:0 0 0 34px rgba(173,139,255,.025),0 0 0 70px rgba(173,139,255,.02)}
+.hero-main{min-width:0}
+.hero-caption{margin-top:20px;color:#9daebe;font-size:11px;letter-spacing:1.8px;font-weight:900}
+.hero-value{margin:7px 0 5px;font-size:clamp(42px,7vw,74px);line-height:1.02;letter-spacing:-3.4px;font-weight:950;font-variant-numeric:tabular-nums}
+.hero-value .currency{font-size:.54em;color:#a7b9c6;letter-spacing:-1px}
+.hero-desc{max-width:590px;color:#a8b6c7;font-size:13px;line-height:1.65}
+.hero-foot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:23px}
+.hero-chip{padding:8px 11px;border:1px solid rgba(67,223,160,.2);border-radius:100px;background:rgba(67,223,160,.08);color:#8fecc0;font-size:11px;font-weight:850}
+.hero-subtle{color:#9aa8b8;font-size:11px}
+.progress-panel{align-self:center;padding:20px 21px;border:1px solid rgba(255,255,255,.09);border-radius:22px;background:rgba(6,12,18,.38);backdrop-filter:blur(8px)}
+.progress-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.progress-title{font-size:12px;font-weight:900}
+.progress-tag{color:#9beac3;font-size:10px;font-weight:850}
+.ring-wrap{display:flex;align-items:center;gap:18px;margin:20px 0}
+.ring{
+  width:116px;height:116px;flex:0 0 116px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--green) var(--progress),rgba(255,255,255,.09) 0);
+  position:relative;box-shadow:0 0 32px rgba(67,223,160,.09)
+}
+.ring:before{content:"";position:absolute;inset:8px;border-radius:50%;background:#121c24;border:1px solid rgba(255,255,255,.06)}
+.ring-inner{position:relative;text-align:center}
+.ring-number{font-size:27px;font-weight:950;letter-spacing:-1px}
+.ring-caption{margin-top:2px;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:1px;font-weight:850}
+.ring-copy{min-width:0}
+.ring-copy strong{display:block;font-size:15px}
+.ring-copy span{display:block;margin-top:5px;color:var(--muted);font-size:11px;line-height:1.5}
+.target-row{display:flex;justify-content:space-between;gap:12px;font-size:11px}
+.target-row span{color:var(--muted)}
+.target-row strong{color:#eaf8f1;font-variant-numeric:tabular-nums}
+.track{height:9px;overflow:hidden;margin:10px 0 9px;border-radius:99px;background:rgba(255,255,255,.09)}
+.track-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#1fb47c,#60e2a5,#c3ed9b);box-shadow:0 0 16px rgba(67,223,160,.3);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.target-remaining{color:#99aab9;font-size:10px}
+.target-remaining b{color:#c5f6dc}
+.levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin:14px 0 28px}
+.level{
+  position:relative;min-width:0;padding:13px 12px;border:1px solid var(--line);border-radius:15px;
+  background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));opacity:.66
+}
+.level.reached{opacity:1;border-color:rgba(67,223,160,.2);background:linear-gradient(145deg,rgba(67,223,160,.09),rgba(255,255,255,.018))}
+.level.next{opacity:1;border-color:rgba(246,201,106,.35);box-shadow:inset 0 0 0 1px rgba(246,201,106,.06)}
+.level-icon{font-size:18px}
+.level-name{margin-top:7px;font-size:11px;font-weight:900}
+.level-value{margin-top:3px;color:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:14px}
+.section-title{font-size:19px;font-weight:950;letter-spacing:-.5px}
+.section-sub{margin-top:4px;color:var(--muted);font-size:11px;line-height:1.5}
+.period-tabs{display:flex;gap:5px;padding:4px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}
+.period-tab{min-height:36px;padding:0 15px;border:0;border-radius:10px;background:transparent;color:#97a5b7;font-size:11px;font-weight:900;cursor:pointer}
+.period-tab.active{background:linear-gradient(135deg,rgba(67,223,160,.19),rgba(67,223,160,.07));color:#9df0c6;box-shadow:inset 0 0 0 1px rgba(67,223,160,.14)}
+.period-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:16px 0}
+.metric{min-width:0;padding:17px 17px 15px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(150deg,rgba(20,28,40,.95),rgba(14,19,29,.92))}
+.metric-label{color:#91a0b2;font-size:10px;font-weight:900;letter-spacing:.75px;text-transform:uppercase}
+.metric-value{margin-top:9px;font-size:clamp(19px,2.6vw,27px);font-weight:950;letter-spacing:-.8px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.metric-note{margin-top:6px;color:var(--muted);font-size:10px;line-height:1.45}
+.metric.current .metric-value{color:#83eabd}
+.metric.change.positive .metric-value{color:#78e8b2}
+.metric.change.negative .metric-value{color:#ff909a}
+.metric.change.neutral .metric-value{color:#c5d1df}
+.chart-card{padding:19px 19px 13px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(150deg,rgba(18,25,36,.98),rgba(13,18,27,.98));box-shadow:0 12px 35px rgba(0,0,0,.12)}
+.chart-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.chart-title{font-size:14px;font-weight:950}
+.chart-range{margin-top:4px;color:var(--muted);font-size:10px}
+.legend{display:flex;gap:14px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;color:#a5b2c1;font-size:10px;font-weight:750}
+.legend-dot{width:9px;height:9px;border-radius:50%}
+.chart-wrap{margin-top:12px;overflow:hidden}
+.chart-svg{display:block;width:100%;height:auto;min-height:220px;overflow:visible}
+.chart-empty{padding:46px 10px;text-align:center;color:var(--muted);font-size:12px}
+.insight{
+  display:flex;align-items:flex-start;gap:12px;margin-top:14px;padding:15px 16px;
+  border:1px solid rgba(67,223,160,.14);border-radius:16px;background:rgba(67,223,160,.045)
+}
+.insight-icon{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:10px;background:rgba(67,223,160,.11);font-size:14px}
+.insight strong{display:block;font-size:12px}
+.insight span{display:block;margin-top:4px;color:#a0afbd;font-size:11px;line-height:1.5}
+.footnote{margin:17px 2px 0;color:#778597;font-size:10px;line-height:1.6}
+.state{margin:30px auto;max-width:560px;padding:25px;border:1px solid var(--line);border-radius:18px;background:var(--panel);text-align:center;color:var(--muted);font-size:13px;line-height:1.6}
+.state strong{display:block;margin-bottom:7px;color:var(--text);font-size:15px}
+.state a{color:#8fe9bd}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#17212c;color:#eaf8f1;font-size:11px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+@media(max-width:850px){
+  .hero{grid-template-columns:minmax(0,1fr) minmax(245px,.8fr);gap:15px}
+  .period-overview{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:640px){
+  .page{width:min(100% - 22px,1240px);padding-top:14px}
+  .topbar{align-items:flex-start}
+  .brand-mark{width:40px;height:40px}
+  .brand-title{font-size:15px}
+  .top-actions{gap:6px}
+  .action{min-height:38px;padding:0 10px;font-size:10px}
+  .hero{grid-template-columns:1fr;padding:22px 19px;border-radius:22px}
+  .hero-value{font-size:52px;letter-spacing:-2.5px}
+  .progress-panel{padding:16px}
+  .ring{width:98px;height:98px;flex-basis:98px}
+  .ring-number{font-size:24px}
+  .levels{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .level:last-child{grid-column:1/-1}
+  .section-head{align-items:flex-start;flex-direction:column}
+  .period-tabs{width:100%}
+  .period-tab{flex:1;padding:0 8px}
+  .period-overview{gap:8px}
+  .metric{padding:14px 12px}
+  .metric-value{font-size:21px}
+  .chart-card{padding:15px 10px 10px}
+  .chart-head{padding:0 5px}
+  .chart-svg{min-height:195px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">↗</div>
+      <div>
+        <div class="brand-title">AppCore <span style="color:#7fe6b0">/</span> Финансы</div>
+        <div class="brand-sub">Панель финансового роста · только для администратора</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="action" href="/admin.html">← Админ-панель</a>
+      <button class="action primary" id="refreshButton" type="button">↻ Обновить</button>
+    </div>
+  </header>
+
+  <div id="loadingState" class="state"><strong>Загружаем финансовую картину…</strong>Собираем завершённые заказы и реферальные начисления.</div>
+  <div id="accessState" class="state" hidden><strong>Доступ только для администратора</strong><span id="accessMessage">Войдите через основную админ-панель.</span><p><a href="/admin.html">Перейти ко входу в админ-панель →</a></p></div>
+
+  <div id="financeContent" hidden>
+    <section class="hero" aria-label="Общий чистый доход AppCore">
+      <div class="hero-main">
+        <div class="eyebrow"><span class="live-dot"></span> Финансовый пульс AppCoreStudio</div>
+        <div class="hero-caption">ЧИСТЫЙ ДОХОД ЗА ВСЁ ВРЕМЯ</div>
+        <div class="hero-value" id="allTimeValue">— <span class="currency">₽</span></div>
+        <div class="hero-desc">Реальный результат по завершённым заказам за вычетом начисленных реферальных вознаграждений. Каждый новый завершённый заказ приближает AppCore к следующей вершине.</div>
+        <div class="hero-foot">
+          <span class="hero-chip">✦ Движение вперёд</span>
+          <span class="hero-subtle" id="allTimeOrders">— завершённых заказов учтено</span>
+        </div>
+      </div>
+      <div class="progress-panel">
+        <div class="progress-top">
+          <div class="progress-title">Следующая вершина</div>
+          <div class="progress-tag" id="progressLevel">СТАРТ</div>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring" id="progressRing" style="--progress:0deg">
+            <div class="ring-inner"><div class="ring-number" id="progressPercent">0%</div><div class="ring-caption">прогресс</div></div>
+          </div>
+          <div class="ring-copy">
+            <strong id="targetValue">50 000 ₽</strong>
+            <span id="targetCaption">Первая большая цель</span>
+          </div>
+        </div>
+        <div class="target-row"><span>Текущий результат</span><strong id="targetCurrent">0 ₽</strong></div>
+        <div class="track"><div class="track-fill" id="targetFill"></div></div>
+        <div class="target-remaining" id="targetRemaining">Осталось до цели: <b>50 000 ₽</b></div>
+      </div>
+    </section>
+
+    <section class="levels" aria-label="Этапы роста компании" id="levels">
+      <div class="level" data-target="0"><div class="level-icon">🌱</div><div class="level-name">Старт</div><div class="level-value">0 ₽</div></div>
+      <div class="level" data-target="50000"><div class="level-icon">🥉</div><div class="level-name">Первый рубеж</div><div class="level-value">50 000 ₽</div></div>
+      <div class="level" data-target="100000"><div class="level-icon">🥈</div><div class="level-name">Уверенный рост</div><div class="level-value">100 000 ₽</div></div>
+      <div class="level" data-target="250000"><div class="level-icon">🥇</div><div class="level-name">Масштаб</div><div class="level-value">250 000 ₽</div></div>
+      <div class="level" data-target="500000"><div class="level-icon">💎</div><div class="level-name">Большая цель</div><div class="level-value">500 000 ₽ · далее 1 млн</div></div>
+    </section>
+
+    <section aria-label="Сравнение финансовых периодов">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Динамика дохода</div>
+          <div class="section-sub">Сравнивай текущий результат с таким же отрезком предыдущего периода.</div>
+        </div>
+        <div class="period-tabs" role="tablist" aria-label="Выбор периода">
+          <button class="period-tab active" data-period="week" type="button" role="tab" aria-selected="true">Неделя</button>
+          <button class="period-tab" data-period="month" type="button" role="tab" aria-selected="false">Месяц</button>
+          <button class="period-tab" data-period="year" type="button" role="tab" aria-selected="false">Год</button>
+        </div>
+      </div>
+
+      <div class="period-overview">
+        <article class="metric current">
+          <div class="metric-label" id="currentLabel">Эта неделя</div>
+          <div class="metric-value" id="currentValue">—</div>
+          <div class="metric-note" id="currentRange">—</div>
+        </article>
+        <article class="metric">
+          <div class="metric-label" id="previousLabel">Прошлая неделя</div>
+          <div class="metric-value" id="previousValue">—</div>
+          <div class="metric-note" id="previousRange">—</div>
+        </article>
+        <article class="metric change neutral" id="changeMetric">
+          <div class="metric-label">Разница</div>
+          <div class="metric-value" id="changeValue">—</div>
+          <div class="metric-note" id="changeNote">Сравнение периодов</div>
+        </article>
+        <article class="metric">
+          <div class="metric-label">Завершено заказов</div>
+          <div class="metric-value" id="ordersValue">—</div>
+          <div class="metric-note" id="ordersNote">За выбранный период</div>
+        </article>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <div>
+            <div class="chart-title" id="chartTitle">Рост по дням</div>
+            <div class="chart-range" id="chartRange">Текущий период и предыдущий</div>
+          </div>
+          <div class="legend">
+            <span class="legend-item"><i class="legend-dot" style="background:#43dfa0"></i> Текущий период</span>
+            <span class="legend-item"><i class="legend-dot" style="background:#ad8bff"></i> Предыдущий период</span>
+          </div>
+        </div>
+        <div class="chart-wrap" id="chartWrap" aria-live="polite">
+          <div class="chart-empty">Ожидаем данные графика…</div>
+        </div>
+      </div>
+
+      <div class="insight">
+        <div class="insight-icon" id="insightIcon">✦</div>
+        <div><strong id="insightTitle">Каждый период — новый шаг</strong><span id="insightText">Здесь появится сравнение текущего и предыдущего периода.</span></div>
+      </div>
+    </section>
+
+    <p class="footnote">Метод расчёта: сумма завершённых заказов без черновиков минус действующие начисления реферальных вознаграждений по этим заказам. Вывод денег рефералам повторно не вычитается. Периоды определяются по дате завершения заказа; часовой пояс отчёта — Europe/Helsinki. Это чистый доход после реферальных вознаграждений, но до налогов и прочих расходов компании.</p>
+  </div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+const SUPABASE_URL="https://dkgipfotfjntlhabakns.supabase.co";
+const SUPABASE_KEY="sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+let activePeriod="week";
+let busy=false;
+
+function money(value){
+  const n=Number(value)||0;
+  return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:0}).format(Math.round(n))+" ₽";
+}
+function number(value){
+  return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:0}).format(Number(value)||0);
+}
+function signedMoney(value){
+  const n=Number(value)||0;
+  return (n>0?"+":n<0?"−":"")+money(Math.abs(n));
+}
+function parseDate(value){
+  if(!value)return null;
+  const parts=String(value).split("-").map(Number);
+  if(parts.length!==3||parts.some(x=>!Number.isFinite(x)))return null;
+  return new Date(parts[0],parts[1]-1,parts[2],12,0,0);
+}
+function shortDate(value){
+  const d=parseDate(value);
+  return d?new Intl.DateTimeFormat("ru-RU",{day:"numeric",month:"short",timeZone:"Europe/Helsinki"}).format(d):"—";
+}
+function rangeText(start,end){
+  if(!start||!end)return"—";
+  return shortDate(start)+" — "+shortDate(end);
+}
+function compact(value){
+  const n=Number(value)||0;
+  if(n>=1000000)return (n/1000000).toLocaleString("ru-RU",{maximumFractionDigits:1})+" млн";
+  if(n>=1000)return (n/1000).toLocaleString("ru-RU",{maximumFractionDigits:1})+" тыс.";
+  return number(n);
+}
+function showToast(message){
+  const el=$("toast");el.textContent=message;el.classList.add("show");
+  window.setTimeout(()=>el.classList.remove("show"),2200);
+}
+function setLoading(value){
+  busy=value;
+  $("refreshButton").disabled=value;
+  $("refreshButton").textContent=value?"↻ Обновляем…":"↻ Обновить";
+}
+function setActivePeriod(period){
+  activePeriod=period;
+  document.querySelectorAll(".period-tab").forEach(button=>{
+    const selected=button.dataset.period===period;
+    button.classList.toggle("active",selected);
+    button.setAttribute("aria-selected",String(selected));
+  });
+}
+function milestone(allTime){
+  const targets=[50000,100000,250000,500000,1000000];
+  const names=["Первый рубеж","Уверенный рост","Масштаб","Большая цель","Миллион"];
+  let index=targets.findIndex(target=>allTime<target);
+  if(index<0)index=targets.length-1;
+  const previous=index===0?0:targets[index-1];
+  const target=targets[index];
+  const progress=Math.max(0,Math.min(100,(allTime-previous)/(target-previous)*100));
+  return {target,previous,progress,index,name:names[index],remaining:Math.max(0,target-allTime)};
+}
+function renderMilestone(allTime){
+  const m=milestone(allTime);
+  const percent=Math.round(m.progress);
+  $("progressRing").style.setProperty("--progress",(m.progress*3.6)+"deg");
+  $("progressPercent").textContent=percent+"%";
+  $("progressLevel").textContent=m.index===0?"СТАРТ":("ЭТАП "+(m.index+1));
+  $("targetValue").textContent=money(m.target);
+  $("targetCaption").textContent="Цель: "+m.name;
+  $("targetCurrent").textContent=money(allTime);
+  $("targetFill").style.width=percent+"%";
+  $("targetRemaining").innerHTML=m.remaining>0
+    ?"Осталось до цели: <b>"+money(m.remaining)+"</b>"
+    :"Цель достигнута — следующая вершина уже ждёт!";
+  document.querySelectorAll(".level").forEach((el)=>{
+    const target=Number(el.dataset.target);
+    el.classList.toggle("reached",target<=allTime);
+    el.classList.toggle("next",target===m.target);
+  });
+  if(allTime>=1000000){
+    $("targetValue").textContent="1 000 000 ₽";
+    $("targetCaption").textContent="Миллион достигнут";
+  }
+}
+function svgChart(series,period){
+  if(!Array.isArray(series)||!series.length){
+    return '<div class="chart-empty">За выбранные периоды пока нет данных.</div>';
+  }
+  const W=920,H=300,L=58,R=20,T=18,B=43;
+  const plotW=W-L-R,plotH=H-T-B;
+  const curr=series.map(p=>Math.max(0,Number(p.current)||0));
+  const prev=series.map(p=>Math.max(0,Number(p.previous)||0));
+  const maxValue=Math.max(1,...curr,...prev);
+  const ceiling=Math.ceil(maxValue*1.18/100)*100||100;
+  const x=i=>L+(series.length===1?plotW/2:i*plotW/(series.length-1));
+  const y=v=>T+plotH-(v/ceiling)*plotH;
+  const makePath=values=>values.map((v,i)=>(i===0?"M":"L")+x(i).toFixed(1)+" "+y(v).toFixed(1)).join(" ");
+  const currentPath=makePath(curr);
+  const previousPath=makePath(prev);
+  const area=currentPath+" L "+x(series.length-1).toFixed(1)+" "+(T+plotH)+" L "+L+" "+(T+plotH)+" Z";
+  const grid=[0,.25,.5,.75,1].map(r=>{
+    const v=ceiling*r, yy=y(v);
+    return '<line x1="'+L+'" y1="'+yy+'" x2="'+(W-R)+'" y2="'+yy+'" stroke="rgba(255,255,255,.075)" stroke-dasharray="3 6"/>'+
+      '<text x="'+(L-10)+'" y="'+(yy+4)+'" text-anchor="end" fill="#738297" font-size="10">'+compact(v)+'</text>';
+  }).join("");
+  const step=Math.max(1,Math.ceil(series.length/7));
+  const labels=series.map((p,i)=>{
+    if(i%step!==0&&i!==series.length-1)return"";
+    return '<text x="'+x(i)+'" y="'+(H-13)+'" text-anchor="middle" fill="#8290a3" font-size="10">'+String(p.label||"")+'</text>';
+  }).join("");
+  const dots=curr.map((v,i)=>'<circle cx="'+x(i)+'" cy="'+y(v)+'" r="'+(series.length<=12?3.5:2.1)+'" fill="#43dfa0" stroke="#10211e" stroke-width="1.5"/>').join("");
+  const last=series.length-1;
+  return '<svg class="chart-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="График чистого дохода: текущий период и предыдущий период">'+
+    '<defs><linearGradient id="financeArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#43dfa0" stop-opacity=".22"/><stop offset="100%" stop-color="#43dfa0" stop-opacity="0"/></linearGradient></defs>'+
+    grid+
+    '<path d="'+area+'" fill="url(#financeArea)"/>'+
+    '<path d="'+previousPath+'" fill="none" stroke="#ad8bff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6"/>'+
+    '<path d="'+currentPath+'" fill="none" stroke="#43dfa0" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>'+
+    dots+
+    '<circle cx="'+x(last)+'" cy="'+y(curr[last])+'" r="5.5" fill="#43dfa0" stroke="#153329" stroke-width="2.5"/>'+
+    labels+
+    '</svg>';
+}
+function render(data){
+  const allTime=Number(data.all_time_net)||0;
+  $("allTimeValue").innerHTML=number(allTime)+' <span class="currency">₽</span>';
+  $("allTimeOrders").textContent=number(data.all_time_orders)+" завершённых заказов учтено";
+  renderMilestone(allTime);
+
+  const current=Number(data.current_net)||0;
+  const previous=Number(data.previous_net)||0;
+  const delta=Number(data.delta)||0;
+  const pct=data.delta_percent===null||data.delta_percent===undefined?null:Number(data.delta_percent);
+  const names={week:["Эта неделя","Прошлая неделя","Рост по дням"],month:["Этот месяц","Прошлый месяц","Рост по дням"],year:["Этот год","Прошлый год","Рост по месяцам"]};
+  const label=names[data.period]||names.week;
+
+  $("currentLabel").textContent=label[0];
+  $("previousLabel").textContent=label[1];
+  $("currentValue").textContent=money(current);
+  $("previousValue").textContent=money(previous);
+  $("currentRange").textContent=rangeText(data.current_start,data.current_end)+" · текущий период";
+  $("previousRange").textContent=rangeText(data.previous_start,data.previous_end)+" · сопоставимый период";
+  $("changeValue").textContent=signedMoney(delta);
+  $("ordersValue").textContent=number(data.current_orders);
+  $("ordersNote").textContent=number(data.previous_orders)+" в предыдущем периоде";
+  $("chartTitle").textContent=label[2];
+  $("chartRange").textContent=rangeText(data.current_start,data.current_end)+"  ↔  "+rangeText(data.previous_start,data.previous_end);
+  $("chartWrap").innerHTML=svgChart(data.series,data.period);
+
+  const card=$("changeMetric");
+  card.classList.remove("positive","negative","neutral");
+  if(delta>0){
+    card.classList.add("positive");
+    $("changeNote").textContent=pct===null?"Выше нулевого результата":"Рост на "+Math.abs(pct).toLocaleString("ru-RU",{maximumFractionDigits:1})+"%";
+    $("insightIcon").textContent="↗";
+    $("insightTitle").textContent="AppCore прибавляет обороты";
+    $("insightText").textContent="За выбранный период чистый доход выше на "+money(delta)+". Это "+(pct===null?"положительный результат относительно нулевой базы":"на "+Math.abs(pct).toLocaleString("ru-RU",{maximumFractionDigits:1})+"% больше, чем за сопоставимую часть прошлого периода")+". Продолжай движение — следующий рубеж становится ближе.";
+  }else if(delta<0){
+    card.classList.add("negative");
+    $("changeNote").textContent=pct===null?"Ниже предыдущего периода":"Снижение на "+Math.abs(pct).toLocaleString("ru-RU",{maximumFractionDigits:1})+"%";
+    $("insightIcon").textContent="↘";
+    $("insightTitle").textContent="Есть пространство для нового рывка";
+    $("insightText").textContent="Сейчас чистый доход ниже сопоставимого периода на "+money(Math.abs(delta))+". Это ориентир для анализа: посмотри, как изменилось количество завершённых заказов и возвращай темп.";
+  }else{
+    card.classList.add("neutral");
+    $("changeNote").textContent="Результат не изменился";
+    $("insightIcon").textContent="＝";
+    $("insightTitle").textContent="Сохраняется прежний уровень";
+    $("insightText").textContent="Чистый доход совпал с сопоставимым периодом. Следующий шаг — увеличить число завершённых заказов.";
+  }
+}
+async function load(period,quiet){
+  if(busy)return;
+  setLoading(true);
+  if(!quiet)$("chartWrap").innerHTML='<div class="chart-empty">Обновляем график…</div>';
+  try{
+    const result=await supabaseClient.rpc("get_financial_growth_dashboard",{p_period:period});
+    if(result.error)throw new Error(result.error.message||"Не удалось загрузить финансовые данные");
+    const data=Array.isArray(result.data)?result.data[0]:result.data;
+    if(!data||!Array.isArray(data.series))throw new Error("Сервер вернул неполные финансовые данные");
+    setActivePeriod(period);
+    render(data);
+    $("loadingState").hidden=true;
+    $("accessState").hidden=true;
+    $("financeContent").hidden=false;
+  }catch(error){
+    console.error("Finance dashboard:",error);
+    if(!$("financeContent").hidden){
+      showToast(error.message||"Ошибка обновления");
+    }else{
+      $("loadingState").hidden=true;
+      $("accessState").hidden=false;
+      $("accessMessage").textContent=error.message==="Access denied"
+        ?"У этой учётной записи нет прав администратора."
+        :(error.message||"Не удалось получить доступ к финансовому отчёту.");
+    }
+  }finally{
+    setLoading(false);
+  }
+}
+async function init(){
+  if(!window.supabase||!window.supabase.createClient){
+    $("loadingState").hidden=true;$("accessState").hidden=false;
+    $("accessMessage").textContent="Не удалось загрузить клиент базы данных.";
+    return;
+  }
+  try{
+    const result=await supabaseClient.auth.getSession();
+    if(result.error||!result.data||!result.data.session){
+      $("loadingState").hidden=true;$("accessState").hidden=false;
+      $("accessMessage").textContent="Сначала войдите через основную админ-панель.";
+      return;
+    }
+    await load("week",false);
+  }catch(error){
+    $("loadingState").hidden=true;$("accessState").hidden=false;
+    $("accessMessage").textContent="Не удалось проверить административную сессию.";
+  }
+}
+document.querySelectorAll(".period-tab").forEach(button=>{
+  button.addEventListener("click",()=>load(button.dataset.period,false));
+});
+$("refreshButton").addEventListener("click",()=>load(activePeriod,true));
+init();
+})();
+</script>
+</body>
+</html>
