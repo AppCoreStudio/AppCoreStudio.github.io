@@ -270,6 +270,8 @@ let durationDays=1;
 let editingId=null;
 let deleteTarget=null;
 let busy=false;
+let advertisingRealtimeChannel=null;
+let advertisingRefreshTimer=null;
 
 function money(value){
   const number=Number(value)||0;
@@ -631,6 +633,27 @@ function setupEvents(){
     }
   });
 }
+function scheduleAdvertisingRefresh(){
+  window.clearTimeout(advertisingRefreshTimer);
+  advertisingRefreshTimer=window.setTimeout(()=>{
+    if(!busy&&!document.hidden)loadAll(false);
+  },250);
+}
+function startAdvertisingRealtime(){
+  if(advertisingRealtimeChannel)return;
+  advertisingRealtimeChannel=supabaseClient.channel("advertising-unified-live")
+    .on("postgres_changes",{event:"*",schema:"public",table:"orders"},scheduleAdvertisingRefresh)
+    .on("postgres_changes",{event:"*",schema:"public",table:"ad_campaigns"},scheduleAdvertisingRefresh)
+    .on("postgres_changes",{event:"*",schema:"public",table:"referral_rewards"},scheduleAdvertisingRefresh)
+    .subscribe(status=>console.log("Advertising realtime:",status));
+}
+window.addEventListener("focus",()=>{
+  if(!document.hidden&&!busy)loadAll(false);
+});
+window.addEventListener("pagehide",()=>{
+  if(advertisingRealtimeChannel)supabaseClient.removeChannel(advertisingRealtimeChannel);
+});
+
 async function init(){
   if(!window.supabase||!window.supabase.createClient){
     showAccess("Не удалось загрузить клиент базы данных.");return;
@@ -640,6 +663,7 @@ async function init(){
     if(sessionResult.error||!sessionResult.data||!sessionResult.data.session){
       showAccess("Сначала войди через основную админ-панель.");return;
     }
+    startAdvertisingRealtime();
     setupEvents();
     await loadAll(false);
   }catch(error){
