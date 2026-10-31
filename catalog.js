@@ -172,7 +172,11 @@ const clear=$("clear");
 const categories=$("categories");
 const pricePanel=$("pricePanel");
 const countEl=$("count");
+const countLabelEl=$("countLabel");
 const originalEl=$("original");
+const priceArrowEl=$("priceArrow");
+const priceDueLabelEl=$("priceDueLabel");
+const priceDiscountEl=$("priceDiscount");
 const discountEl=$("discount");
 const totalEl=$("total");
 const continueButton=$("continue");
@@ -310,6 +314,14 @@ function initials(name){
     .toUpperCase();
 }
 
+function getRussianAppCountLabel(count){
+  const mod10=count%10;
+  const mod100=count%100;
+  if(mod10===1 && mod100!==11)return "приложение";
+  if(mod10>=2 && mod10<=4 && (mod100<12 || mod100>14))return "приложения";
+  return "приложений";
+}
+
 function updatePrice(){
 
   const count=selected.size;
@@ -320,7 +332,12 @@ function updatePrice(){
     pricePanel.classList.remove("visible");
 
     countEl.textContent="0";
+    countLabelEl.textContent="приложений";
     originalEl.textContent="0 ₽";
+    originalEl.hidden=false;
+    priceArrowEl.hidden=false;
+    priceDueLabelEl.hidden=true;
+    priceDiscountEl.hidden=false;
     discountEl.textContent="0%";
     totalEl.textContent="0 ₽";
 
@@ -331,11 +348,17 @@ function updatePrice(){
   }
 
   const price=calculatePrice(count);
+  const hasDiscount=price.discountPercent>0;
 
   pricePanel.classList.add("visible");
 
   countEl.textContent=count;
+  countLabelEl.textContent=getRussianAppCountLabel(count);
   originalEl.textContent=money(price.original);
+  originalEl.hidden=!hasDiscount;
+  priceArrowEl.hidden=!hasDiscount;
+  priceDueLabelEl.hidden=hasDiscount;
+  priceDiscountEl.hidden=!hasDiscount;
   discountEl.textContent=price.discountPercent+"%";
   totalEl.textContent=money(price.total);
 
