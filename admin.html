@@ -1474,6 +1474,113 @@ body{
  .status{align-self:flex-start}
 }
 
+
+/* THREE ROTATING CLIENT CARD DESIGNS */
+.order.order-design{
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:14px;border:1px solid rgba(255,255,255,.09);border-radius:25px;
+  background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.012)),#101722;
+  box-shadow:0 18px 42px rgba(0,0,0,.2);
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+.order.order-design:hover{transform:translateY(-3px);box-shadow:0 24px 55px rgba(0,0,0,.27)}
+.order-design .order-main-row{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;align-items:start}
+.order-design .order-checkbox-wrap{position:relative;z-index:4;padding:18px 0 0 1px}
+.order-design .order-content{display:flex;flex-direction:column;gap:13px;min-width:0}
+.order-design .order-head.order-banner{
+  position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;
+  min-height:158px;padding:24px 25px;border:1px solid rgba(255,255,255,.11);
+  border-radius:20px;background:#14212a;
+}
+.order-design .order-banner-copy{position:relative;z-index:2;width:min(100%,650px);padding-right:120px}
+.order-design .order-kicker{display:flex;align-items:center;gap:8px;color:rgba(240,248,255,.68);font-size:9px;font-weight:950;letter-spacing:1.7px}
+.order-design .order-kicker span{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 13px currentColor}
+.order-design .order-client-row{display:flex;align-items:center;gap:13px;margin-top:13px;min-width:0}
+.order-design .order-avatar{
+  flex:0 0 54px;width:54px;height:54px;display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.24);border-radius:18px;
+  background:rgba(255,255,255,.13);color:#fff;font-size:17px;font-weight:950;
+  letter-spacing:.4px;box-shadow:0 9px 22px rgba(0,0,0,.17);backdrop-filter:blur(9px)
+}
+.order-design .order-person{min-width:0}
+.order-design .order-client{color:#fff;font-size:clamp(17px,2vw,21px);font-weight:950;line-height:1.15;letter-spacing:-.55px;overflow-wrap:anywhere}
+.order-design .order-number{margin-top:7px;color:rgba(245,250,255,.76);font-size:10px;font-weight:900;letter-spacing:.65px;overflow-wrap:anywhere}
+.order-design .order-date{margin-top:12px;color:rgba(241,248,255,.68);font-size:10px;font-weight:700}
+.order-design .order-date span{margin-right:5px}
+.order-design .order-illustration{position:absolute;z-index:1;right:7px;bottom:-12px;width:245px;max-width:43%;color:#fff;opacity:.95;pointer-events:none}
+.order-design .order-illustration svg{display:block;width:100%;height:auto;filter:drop-shadow(0 13px 15px rgba(0,0,0,.1))}
+.order-design .status{position:absolute;z-index:3;top:14px;right:14px;min-height:27px;padding:0 10px;border:1px solid rgba(255,255,255,.19);border-radius:999px;background:rgba(8,14,24,.23);color:#fff;font-size:9px;backdrop-filter:blur(12px)}
+.order-design .status.awaiting,.order-design .status.paid,.order-design .status.completed,.order-design .status.cancelled,.order-design .status.draft{color:#fff;background:rgba(8,14,24,.25);border-color:rgba(255,255,255,.2)}
+.order-design .order-info{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:0}
+.order-design .info{
+  display:flex;align-items:center;gap:10px;min-width:0;min-height:76px;padding:12px;
+  border:1px solid rgba(255,255,255,.07);border-radius:16px;background:rgba(255,255,255,.035)
+}
+.order-design .info-symbol{flex:0 0 32px;width:32px;height:32px;display:grid;place-items:center;border-radius:11px;background:rgba(255,255,255,.075);color:#d6e8f5;font-size:15px;font-weight:900}
+.order-design .info-copy{min-width:0}
+.order-design .info-label{color:#8393a7;font-size:8px;font-weight:900;letter-spacing:.85px;text-transform:uppercase}
+.order-design .info-value{margin-top:6px;color:#f4f7fb;font-size:12px;font-weight:900;line-height:1.25;overflow-wrap:anywhere}
+.order-design .order-apps-block{padding:12px 14px;border:1px solid rgba(255,255,255,.065);border-radius:16px;background:rgba(255,255,255,.022)}
+.order-design .order-apps-heading{display:flex;align-items:center;gap:8px;color:#8495a9;font-size:8px;font-weight:950;letter-spacing:1.1px}
+.order-design .order-apps-heading b{display:grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:7px;background:rgba(255,255,255,.08);color:#e7edf5;font-size:10px}
+.order-design .apps{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.order-design .app-tag{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.045);color:#e2e9f1;font-size:10px;font-weight:800}
+.order-design .app-tag i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.85}
+.order-design .app-tag-empty{color:#99a7b7}
+.order-design .order-bottom{margin:0;padding:0;border:0}
+.order-design .order-actions{display:flex;gap:8px;flex-wrap:wrap}
+.order-design .order-actions .btn{min-height:40px;padding:0 14px;border-radius:12px;font-size:10px;font-weight:900}
+.order-design-aurora{border-color:rgba(78,220,180,.22)!important;background:linear-gradient(145deg,rgba(61,205,168,.075),rgba(116,104,255,.035) 52%,rgba(255,255,255,.012)),#101821!important}
+.order-design-aurora .order-banner{background:radial-gradient(circle at 78% 40%,rgba(105,255,202,.35),transparent 27%),linear-gradient(112deg,#123d3d,#17505a 48%,#263c65)!important}
+.order-design-aurora .order-avatar{background:linear-gradient(145deg,#35c99c,#438ee5)}
+.order-design-aurora .info-phone .info-symbol{color:#83f0d0;background:rgba(59,221,177,.13)}
+.order-design-aurora .info-apps .info-symbol{color:#94caff;background:rgba(91,163,255,.13)}
+.order-design-aurora .info-total .info-symbol{color:#aaf2ca;background:rgba(74,211,143,.13)}
+.order-design-aurora .info-discount .info-symbol{color:#d4bbff;background:rgba(163,123,255,.13)}
+.order-design-aurora .app-tag{color:#9be8d5;background:rgba(63,220,180,.07);border-color:rgba(63,220,180,.13)}
+.order-design-sunset{border-color:rgba(255,151,112,.24)!important;background:linear-gradient(145deg,rgba(255,140,110,.075),rgba(255,197,98,.035) 52%,rgba(255,255,255,.012)),#19151a!important}
+.order-design-sunset .order-banner{background:radial-gradient(circle at 78% 42%,rgba(255,209,113,.35),transparent 28%),linear-gradient(112deg,#642e45,#9a4650 48%,#bf7048)!important}
+.order-design-sunset .order-avatar{background:linear-gradient(145deg,#ff9c70,#dc5a76);border-radius:50%}
+.order-design-sunset .info-symbol{color:#ffc0a3;background:rgba(255,143,112,.12)}
+.order-design-sunset .app-tag{color:#ffc3a9;background:rgba(255,143,112,.07);border-color:rgba(255,143,112,.14)}
+.order-design-royal{border-color:rgba(164,141,255,.25)!important;background:linear-gradient(145deg,rgba(147,115,255,.09),rgba(78,153,255,.035) 52%,rgba(255,255,255,.012)),#141624!important}
+.order-design-royal .order-banner{background:radial-gradient(circle at 78% 42%,rgba(179,152,255,.38),transparent 29%),linear-gradient(112deg,#30275f,#51418e 49%,#315783)!important}
+.order-design-royal .order-avatar{background:linear-gradient(145deg,#a98aff,#4f9dff);border-radius:15px 15px 25px 15px}
+.order-design-royal .info-symbol{color:#c5b5ff;background:rgba(165,139,255,.14)}
+.order-design-royal .app-tag{color:#c8c2ff;background:rgba(154,133,255,.08);border-color:rgba(154,133,255,.16)}
+@media(max-width:850px){
+  .order-design .order-info{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .order-design .order-banner-copy{padding-right:95px}
+  .order-design .order-illustration{width:205px;max-width:40%}
+}
+@media(max-width:600px){
+  .order.order-design{padding:11px;border-radius:21px}
+  .order-design .order-main-row{grid-template-columns:18px minmax(0,1fr);gap:8px}
+  .order-design .order-checkbox-wrap{padding-top:17px}
+  .order-design .order-content{gap:10px}
+  .order-design .order-head.order-banner{min-height:156px;padding:20px 15px;border-radius:17px}
+  .order-design .order-banner-copy{padding-right:48px}
+  .order-design .order-kicker{font-size:7px;letter-spacing:1px}
+  .order-design .order-client-row{gap:9px;margin-top:17px}
+  .order-design .order-avatar{flex-basis:43px;width:43px;height:43px;border-radius:14px;font-size:14px}
+  .order-design .order-client{font-size:16px}
+  .order-design .order-number{font-size:8px;letter-spacing:.35px}
+  .order-design .order-date{font-size:9px}
+  .order-design .order-illustration{right:-16px;bottom:-4px;width:135px;max-width:42%;opacity:.78}
+  .order-design .status{top:10px;right:10px;min-height:24px;padding:0 8px;font-size:8px}
+  .order-design .order-info{gap:7px}
+  .order-design .info{min-height:65px;padding:9px;gap:7px;border-radius:13px}
+  .order-design .info-symbol{flex-basis:27px;width:27px;height:27px;border-radius:9px;font-size:12px}
+  .order-design .info-label{font-size:7px;letter-spacing:.5px}
+  .order-design .info-value{font-size:10px;overflow-wrap:anywhere}
+  .order-design .order-apps-block{padding:10px;border-radius:13px}
+  .order-design .order-actions{width:100%}
+  .order-design .order-actions .btn{flex:1 1 100%;min-height:39px}
+}
+@media(prefers-reduced-motion:reduce){
+  .order.order-design{transition:none!important}
+}
+
 </style>
 </head>
 
@@ -2075,6 +2182,7 @@ const supabaseClient =
   );
 
 let orders = [];
+let orderDesignMap = new Map();
 let selectedIds = new Set();
 let confirmAction = null;
 let knownOrderIds = new Set();
@@ -2386,210 +2494,90 @@ document
    ORDER CARD
 ========================= */
 
+function refreshOrderDesignMap(){
+  const chronological = [...orders].sort((a,b)=>{
+    const aTime = new Date(a.created_at || 0).getTime();
+    const bTime = new Date(b.created_at || 0).getTime();
+    if(aTime !== bTime) return aTime - bTime;
+    return String(a.id || "").localeCompare(String(b.id || ""), "en", {numeric:true});
+  });
+
+  const nextMap = new Map();
+  chronological.forEach((order,index)=>{
+    nextMap.set(order.id,index % 3);
+  });
+  orderDesignMap = nextMap;
+}
+
 function renderOrder(order,{draft=false}={}){
+  const apps = getApps(order);
+  const selected = selectedIds.has(order.id);
+  const canPay = !draft && order.status === "awaiting_review";
+  const canComplete = !draft && order.status === "paid";
+  const canCancel = !draft && order.status !== "completed" && order.status !== "cancelled";
 
-  const apps =
-    getApps(order);
+  const designIndex = orderDesignMap.has(order.id) ? orderDesignMap.get(order.id) : 0;
+  const designName = ["aurora","sunset","royal"][designIndex];
+  const clientName = String(order.client_name || "Клиент без имени").trim();
+  const initials = clientName.split(/\s+/).filter(Boolean).slice(0,2).map(part=>Array.from(part)[0] || "").join("").toUpperCase() || "AC";
+  const orderId = escapeHtml(order.id);
 
-  const selected =
-    selectedIds.has(order.id);
+  const artwork = [
+    '<svg viewBox="0 0 260 170" role="presentation" focusable="false"><circle cx="177" cy="73" r="54" fill="currentColor" opacity=".16"/><circle cx="177" cy="73" r="36" fill="currentColor" opacity=".17"/><path d="M8 151 76 84l34 34 39-50 103 83Z" fill="currentColor" opacity=".18"/><path d="m77 151 65-52 39 31 29-21 42 42Z" fill="currentColor" opacity=".25"/><path d="M26 35c28-20 46-20 69 0M39 48c19-13 31-13 47 0" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".55"/></svg>',
+    '<svg viewBox="0 0 260 170" role="presentation" focusable="false"><circle cx="174" cy="76" r="46" fill="currentColor" opacity=".2"/><circle cx="174" cy="76" r="31" fill="currentColor" opacity=".24"/><g stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".5"><path d="M174 8v15M174 129v15M106 76h15M227 76h15M126 28l11 11M211 113l11 11M222 28l-11 11M137 113l-11 11"/></g><path d="M10 150q48-46 96-8t95-5q25-17 49 1v32H10Z" fill="currentColor" opacity=".2"/></svg>',
+    '<svg viewBox="0 0 260 170" role="presentation" focusable="false"><ellipse cx="174" cy="80" rx="81" ry="34" fill="none" stroke="currentColor" stroke-width="3" opacity=".32" transform="rotate(-25 174 80)"/><ellipse cx="174" cy="80" rx="58" ry="69" fill="none" stroke="currentColor" stroke-width="3" opacity=".28" transform="rotate(28 174 80)"/><circle cx="174" cy="80" r="27" fill="currentColor" opacity=".24"/><circle cx="231" cy="40" r="8" fill="currentColor" opacity=".62"/><circle cx="111" cy="122" r="5" fill="currentColor" opacity=".7"/><path d="m38 32 5 12 12 5-12 5-5 12-5-12-12-5 12-5Z" fill="currentColor" opacity=".55"/></svg>'
+  ][designIndex];
 
-  const canPay =
-    !draft &&
-    order.status === "awaiting_review";
+  const appMarkup = apps.length
+    ? apps.map(app=>'<span class="app-tag"><i aria-hidden="true"></i>'+escapeHtml(getAppName(app))+'</span>').join("")
+    : '<span class="app-tag app-tag-empty"><i aria-hidden="true"></i>Нет приложений</span>';
 
-  const canComplete =
-    !draft &&
-    order.status === "paid";
+  const statusMarkup = '<span class="status '+(draft ? "draft" : statusClass(order.status))+'">'+(draft ? "Черновик" : humanStatus(order.status))+'</span>';
 
-  const canCancel =
-    !draft &&
-    order.status !== "completed" &&
-    order.status !== "cancelled";
+  const actions = [
+    canPay ? '<button class="btn btn-green" onclick="confirmPayment(\''+orderId+'\')">💳 Оплата подтверждена</button>' : "",
+    canComplete ? '<button class="btn btn-green" onclick="confirmComplete(\''+orderId+'\')">✅ Заказ выполнен</button>' : "",
+    canCancel ? '<button class="btn btn-red" onclick="confirmCancelOrder(\''+orderId+'\')">❌ Отменить</button>' : "",
+    draft
+      ? '<button class="btn btn-blue" onclick="confirmRestore(\''+orderId+'\')">♻️ Восстановить</button>'
+      : '<button class="btn" onclick="confirmMoveToDraft(\''+orderId+'\')">🗑️ В черновики</button>'
+  ].join("");
 
-  return `
-    <article class="order">
-
-      <div class="order-main-row">
-
-        <div class="order-checkbox-wrap">
-          <input
-            class="order-checkbox"
-            type="checkbox"
-            data-id="${escapeHtml(order.id)}"
-            ${selected ? "checked" : ""}
-          >
-        </div>
-
-        <div class="order-content">
-
-          <div class="order-head">
-
-            <div class="order-person">
-              <div class="order-client">
-                ${escapeHtml(order.client_name || "Клиент без имени")}
-              </div>
-              <div class="order-number">
-                Заказ №${escapeHtml(order.order_number || "Без номера")}
-              </div>
-              <div class="order-date">
-                Создан: ${formatDate(order.created_at)}
-              </div>
-            </div>
-
-            <span class="status ${
-              draft
-                ? "draft"
-                : statusClass(order.status)
-            }">
-              ${
-                draft
-                  ? "Черновик"
-                  : humanStatus(order.status)
-              }
-            </span>
-
-          </div>
-
-          <div class="order-info">
-
-            <div class="info">
-              <div class="info-label">
-                Телефон
-              </div>
-
-              <div class="info-value">
-                ${escapeHtml(
-                  order.client_phone || "—"
-                )}
-              </div>
-            </div>
-
-            <div class="info">
-              <div class="info-label">
-                Приложения
-              </div>
-
-              <div class="info-value">
-                ${apps.length}
-              </div>
-            </div>
-
-            <div class="info">
-              <div class="info-label">
-                Сумма
-              </div>
-
-              <div class="info-value">
-                ${money(order.total)}
-              </div>
-            </div>
-
-            <div class="info">
-              <div class="info-label">
-                Скидка
-              </div>
-
-              <div class="info-value">
-                ${money(order.discount)}
-              </div>
-            </div>
-
-          </div>
-
-          <div class="apps">
-
-            ${
-              apps.length
-                ? apps.map(app=>`
-                    <span class="app-tag">
-                      ${escapeHtml(
-                        getAppName(app)
-                      )}
-                    </span>
-                  `).join("")
-                : `
-                  <span class="app-tag">
-                    Нет приложений
-                  </span>
-                `
-            }
-
-          </div>
-
-          <div class="order-bottom">
-
-            <div class="order-actions">
-
-              ${
-                canPay
-                  ? `
-                    <button
-                      class="btn btn-green"
-                      onclick="confirmPayment('${order.id}')"
-                    >
-                      💳 Оплата подтверждена
-                    </button>
-                  `
-                  : ""
-              }
-
-              ${
-                canComplete
-                  ? `
-                    <button
-                      class="btn btn-green"
-                      onclick="confirmComplete('${order.id}')"
-                    >
-                      ✅ Заказ выполнен
-                    </button>
-                  `
-                  : ""
-              }
-
-              ${
-                canCancel
-                  ? `
-                    <button
-                      class="btn btn-red"
-                      onclick="confirmCancelOrder('${order.id}')"
-                    >
-                      ❌ Отменить
-                    </button>
-                  `
-                  : ""
-              }
-
-              ${
-                draft
-                  ? `
-                    <button
-                      class="btn btn-blue"
-                      onclick="confirmRestore('${order.id}')"
-                    >
-                      ♻️ Восстановить
-                    </button>
-                  `
-                  : `
-                    <button
-                      class="btn"
-                      onclick="confirmMoveToDraft('${order.id}')"
-                    >
-                      🗑️ В черновики
-                    </button>
-                  `
-              }
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </article>
-  `;
+  return [
+    '<article class="order order-design order-design-',designName,'">',
+      '<div class="order-main-row">',
+        '<div class="order-checkbox-wrap"><input class="order-checkbox" type="checkbox" data-id="',orderId,'" ',(selected ? "checked" : ""),'></div>',
+        '<div class="order-content">',
+          '<div class="order-head order-banner">',
+            '<div class="order-banner-copy">',
+              '<div class="order-kicker"><span></span> APPCORE · КАРТОЧКА КЛИЕНТА</div>',
+              '<div class="order-client-row">',
+                '<div class="order-avatar">',escapeHtml(initials),'</div>',
+                '<div class="order-person">',
+                  '<div class="order-client">',escapeHtml(clientName),'</div>',
+                  '<div class="order-number">ЗАКАЗ №',escapeHtml(order.order_number || "Без номера"),'</div>',
+                '</div>',
+              '</div>',
+              '<div class="order-date"><span aria-hidden="true">◷</span> Создан: ',escapeHtml(formatDate(order.created_at)),'</div>',
+            '</div>',
+            '<div class="order-illustration" aria-hidden="true">',artwork,'</div>',
+            statusMarkup,
+          '</div>',
+          '<div class="order-info">',
+            '<div class="info info-phone"><span class="info-symbol" aria-hidden="true">☎</span><div class="info-copy"><div class="info-label">Телефон</div><div class="info-value">',escapeHtml(order.client_phone || "—"),'</div></div></div>',
+            '<div class="info info-apps"><span class="info-symbol" aria-hidden="true">▦</span><div class="info-copy"><div class="info-label">Приложения</div><div class="info-value">',String(apps.length),'</div></div></div>',
+            '<div class="info info-total"><span class="info-symbol" aria-hidden="true">₽</span><div class="info-copy"><div class="info-label">Сумма</div><div class="info-value">',money(order.total),'</div></div></div>',
+            '<div class="info info-discount"><span class="info-symbol" aria-hidden="true">％</span><div class="info-copy"><div class="info-label">Скидка</div><div class="info-value">',money(order.discount),'</div></div></div>',
+          '</div>',
+          '<div class="order-apps-block">',
+            '<div class="order-apps-heading"><span>ПРИЛОЖЕНИЯ В ЗАКАЗЕ</span><b>',String(apps.length),'</b></div>',
+            '<div class="apps">',appMarkup,'</div>',
+          '</div>',
+          '<div class="order-bottom"><div class="order-actions">',actions,'</div></div>',
+        '</div>',
+      '</div>',
+    '</article>'
+  ].join("");
 }
 
 /* =========================
@@ -2969,6 +2957,8 @@ document.querySelectorAll("[data-activity-period]").forEach(button=>{
 ========================= */
 
 function render(){
+
+  refreshOrderDesignMap();
 
   const allActive =
     orders.filter(order=>
