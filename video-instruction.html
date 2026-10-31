@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08090d">
+<meta name="robots" content="noindex,nofollow">
 <title>AppCore — Видеоинструкция по установке</title>
 <style>
 *{box-sizing:border-box}
@@ -109,7 +110,7 @@ footer strong{color:#cbd8f0}
 <div class="poster-play" aria-hidden="true">▶</div>
 </div>
 <video class="video-element" id="instructionVideo" controls playsinline preload="metadata">
-<source src="https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video?raw=1&v=20261031-163832" type="video/mp4">
+<source id="instructionVideoSource" src="" type="video/quicktime">
 Ваш браузер не поддерживает воспроизведение видео.
 </video>
 </div>
@@ -121,6 +122,22 @@ footer strong{color:#cbd8f0}
   const player = document.getElementById('videoPlayer');
   const video = document.getElementById('instructionVideo');
   const poster = document.getElementById('videoPoster');
+  const source = document.getElementById('instructionVideoSource');
+  const accessParams = new URLSearchParams(window.location.search);
+  const orderId = accessParams.get('order');
+  const signature = accessParams.get('sig');
+  const authorizedLink = Boolean(orderId && signature && /^[0-9a-f]{64}$/i.test(signature));
+  if (authorizedLink) {
+    source.src = 'https://dkgipfotfjntlhabakns.supabase.co/functions/v1/installation-video?raw=1&order=' + encodeURIComponent(orderId) + '&sig=' + encodeURIComponent(signature);
+    video.load();
+  } else {
+    document.querySelector('.intro').textContent = 'Видеоинструкция доступна только по персональной ссылке из сообщения AppCore о подтверждении заказа.';
+    document.querySelector('.warning').hidden = true;
+    document.querySelector('.credentials').hidden = true;
+    poster.querySelector('.poster-play').textContent = '🔒';
+    poster.setAttribute('aria-label', 'Требуется персональная ссылка');
+  }
+
   async function startVideo(){
     player.classList.add('playing');
     try { await video.play(); } catch (e) { video.setAttribute('controls',''); }
