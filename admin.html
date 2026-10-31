@@ -1202,6 +1202,193 @@ body{
   *,*::before,*::after{scroll-behavior:auto!important;transition:none!important}
 }
 
+
+/* =========================
+   STATISTICAL ADMIN DASHBOARD
+========================= */
+.container{width:min(1360px,calc(100% - 36px));padding:22px 0 60px}
+.header{padding:2px 0 17px;border-bottom:1px solid rgba(255,255,255,.065);margin-bottom:18px}
+.header-logo{
+  width:48px;height:48px;border-radius:15px;
+  background:linear-gradient(145deg,#43dfa0 0%,#25b985 48%,#765cff 100%);
+  box-shadow:0 10px 28px rgba(67,223,160,.16),0 6px 20px rgba(118,92,255,.12)
+}
+.header-title{font-size:19px;letter-spacing:-.6px}
+.header-sub{font-size:10px;letter-spacing:.2px}
+.header-actions{gap:7px}
+.header-actions .btn{min-height:41px;padding:0 12px;font-size:11px}
+.stats{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:13px;margin:0 0 15px
+}
+.stat{
+  position:relative;isolation:isolate;overflow:hidden;
+  min-width:0;min-height:142px;padding:19px 20px 16px;
+  border:1px solid rgba(255,255,255,.085);border-radius:21px;
+  background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.008)),#111722;
+  box-shadow:0 15px 38px rgba(0,0,0,.19);
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease
+}
+.stat:before{
+  content:"";position:absolute;z-index:-1;left:0;top:0;bottom:0;width:3px;
+  background:currentColor;opacity:.82
+}
+.stat:after{
+  content:"";position:absolute;z-index:-1;width:165px;height:165px;right:-73px;bottom:-105px;
+  border-radius:50%;background:currentColor;opacity:.075;filter:blur(1px)
+}
+.stat:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.16);box-shadow:0 19px 44px rgba(0,0,0,.24)}
+.stat.earned{color:#43dfa0;background:radial-gradient(ellipse at 100% 100%,rgba(67,223,160,.10),transparent 55%),#111a20}
+.stat.orders{color:#69aaff;background:radial-gradient(ellipse at 100% 100%,rgba(105,170,255,.11),transparent 55%),#111722}
+.stat.average{color:#f6c96a;background:radial-gradient(ellipse at 100% 100%,rgba(246,201,106,.10),transparent 55%),#191821}
+.stat.requests{color:#b49aff;background:radial-gradient(ellipse at 100% 100%,rgba(173,139,255,.12),transparent 55%),#171624}
+.stat-top{position:relative;z-index:1}
+.stat-title{color:#aab7c7;font-size:10px;letter-spacing:.85px;text-transform:uppercase}
+.stat-icon{
+  width:38px;height:38px;border-radius:12px;
+  background:color-mix(in srgb,currentColor 13%,transparent);
+  color:currentColor;font-size:19px;font-weight:900
+}
+.stat-value{
+  position:relative;z-index:1;margin-top:14px;
+  color:#f5f8fc;font-size:clamp(24px,2.5vw,32px);
+  line-height:1.1;letter-spacing:-1.05px;font-weight:950;
+  overflow-wrap:anywhere
+}
+.stat-bottom{
+  position:relative;z-index:1;display:flex;align-items:center;gap:7px;
+  margin-top:10px;color:#8291a4;font-size:9px;font-weight:750;letter-spacing:.15px
+}
+.stat-bottom-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex:0 0 auto}
+.analytics-grid{
+  display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,.9fr);
+  gap:13px;margin-bottom:16px
+}
+.analytics-card{
+  min-width:0;padding:19px 20px 17px;
+  border:1px solid rgba(255,255,255,.08);border-radius:21px;
+  background:linear-gradient(145deg,rgba(255,255,255,.025),rgba(255,255,255,.005)),#111722;
+  box-shadow:0 13px 35px rgba(0,0,0,.15)
+}
+.analytics-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.analytics-title{color:#f1f5fb;font-size:14px;font-weight:900;letter-spacing:-.2px}
+.analytics-subtitle{margin-top:5px;color:#718096;font-size:10px}
+.activity-total{text-align:right;white-space:nowrap}
+.activity-total strong{display:block;color:#eaf5f1;font-size:20px;line-height:1;font-weight:950;letter-spacing:-.5px}
+.activity-total span{display:block;margin-top:5px;color:#75869a;font-size:9px}
+.chart-periods{display:flex;gap:5px;margin-top:17px}
+.chart-period{
+  min-height:30px;padding:0 10px;border:1px solid rgba(255,255,255,.07);
+  border-radius:9px;background:rgba(255,255,255,.025);color:#8190a4;
+  font-size:9px;font-weight:850;cursor:pointer;transition:.18s ease
+}
+.chart-period:hover{color:#e5edf5;background:rgba(255,255,255,.06)}
+.chart-period.active{
+  color:#8df0c2;border-color:rgba(67,223,160,.22);
+  background:rgba(67,223,160,.09)
+}
+.activity-chart-wrap{width:100%;margin-top:7px}
+.activity-chart{display:block;width:100%;height:auto;min-height:190px;overflow:visible}
+.chart-grid-line{stroke:rgba(255,255,255,.07);stroke-width:1;stroke-dasharray:3 5}
+.chart-axis-label{fill:#718096;font-size:10px;font-family:inherit}
+.chart-x-label{fill:#8795a8;font-size:10px;font-family:inherit}
+.chart-area{fill:url(#activityAreaFill)}
+.chart-line{fill:none;stroke:#43dfa0;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chart-point{fill:#0f171c;stroke:#73e8b6;stroke-width:2.5}
+.chart-empty{fill:#8291a4;font-size:13px;font-family:inherit}
+.status-content{display:flex;align-items:center;justify-content:center;gap:22px;min-height:210px;padding:12px 0 2px}
+.status-donut{
+  position:relative;flex:0 0 auto;width:174px;height:174px;border-radius:50%;
+  background:conic-gradient(#24303e 0deg 360deg);
+  display:grid;place-items:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.18)
+}
+.status-donut:after{
+  content:"";position:absolute;inset:12px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.055)
+}
+.status-donut-hole{
+  width:118px;height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.07);border-radius:50%;
+  background:linear-gradient(145deg,#151e2a,#101620);box-shadow:inset 0 2px 15px rgba(0,0,0,.2)
+}
+.status-donut-hole strong{color:#f5f8fc;font-size:27px;line-height:1;font-weight:950;letter-spacing:-.8px}
+.status-donut-hole span{margin-top:6px;color:#8291a4;font-size:9px}
+.status-legend{display:flex;flex-direction:column;gap:13px;min-width:0;flex:1}
+.status-legend-row{display:grid;grid-template-columns:8px minmax(0,1fr) auto;align-items:center;gap:8px;color:#a8b4c3;font-size:10px}
+.status-legend-row strong{color:#edf2f8;font-size:11px;font-weight:900}
+.status-swatch{width:8px;height:8px;border-radius:3px}
+.status-swatch.awaiting{background:#f6c96a}
+.status-swatch.paid{background:#69aaff}
+.status-swatch.completed{background:#43dfa0}
+.status-swatch.cancelled{background:#ff7886}
+.tabs{
+  display:flex;gap:7px;overflow-x:auto;padding:5px;margin:0 0 13px;
+  border:1px solid rgba(255,255,255,.065);border-radius:16px;background:rgba(15,21,31,.82)
+}
+.tab{
+  display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 13px;
+  border:1px solid transparent;border-radius:11px;background:transparent;color:#92a0b2;
+  white-space:nowrap;transition:.18s ease
+}
+.tab:hover{background:rgba(255,255,255,.045);color:#e9eff6}
+.tab.active{border-color:rgba(67,223,160,.22);background:rgba(67,223,160,.09);color:#92efc3}
+.tab-count{
+  display:inline-flex;align-items:center;justify-content:center;min-width:21px;height:20px;padding:0 6px;
+  border:1px solid rgba(255,255,255,.075);border-radius:7px;background:rgba(255,255,255,.045);
+  color:#dce5ef;font-size:9px;font-weight:900
+}
+.section{border-color:rgba(255,255,255,.085);border-radius:20px}
+.section-head{padding:15px 18px}
+.section-count{padding:5px 8px;border:1px solid rgba(255,255,255,.07);border-radius:8px;background:rgba(255,255,255,.035)}
+@media(max-width:1050px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .analytics-grid{grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr)}
+}
+@media(max-width:760px){
+  .container{width:calc(100% - 24px);padding-top:14px}
+  .header{align-items:flex-start;flex-direction:column;gap:13px}
+  .header-actions{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .header-actions>div{display:block!important;width:100%!important}
+  .header-actions .btn{width:100%;min-width:0;padding:0 7px;font-size:10px}
+  .analytics-grid{grid-template-columns:1fr}
+  .status-content{justify-content:flex-start;gap:clamp(14px,6vw,34px)}
+}
+@media(max-width:520px){
+  .container{width:calc(100% - 18px);padding-top:11px}
+  .header-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .header-actions .btn{min-height:40px;font-size:10px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .stat,.stat:first-child{grid-column:auto;min-height:126px;padding:14px 12px 12px;border-radius:17px}
+  .stat-title{font-size:9px;letter-spacing:.45px}
+  .stat-icon{width:32px;height:32px;border-radius:10px;font-size:16px}
+  .stat-value{font-size:clamp(20px,6vw,26px);margin-top:13px}
+  .stat-bottom{font-size:8px;line-height:1.35}
+  .analytics-card{padding:15px 12px;border-radius:18px}
+  .analytics-title{font-size:13px}
+  .activity-total strong{font-size:18px}
+  .chart-period{padding:0 8px;font-size:9px}
+  .activity-chart{min-height:155px}
+  .status-content{gap:14px;min-height:185px}
+  .status-donut{width:138px;height:138px}
+  .status-donut-hole{width:94px;height:94px}
+  .status-donut-hole strong{font-size:23px}
+  .status-legend{gap:11px}
+  .status-legend-row{font-size:9px;gap:6px}
+  .status-legend-row strong{font-size:10px}
+  .tabs{border-radius:13px;padding:4px}
+  .tab{min-height:38px;padding:0 10px;font-size:9px;gap:6px}
+}
+@media(max-width:360px){
+  .stat-value{font-size:19px}
+  .status-donut{width:120px;height:120px}
+  .status-donut-hole{width:82px;height:82px}
+  .status-content{gap:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .stat,.btn,.tab,.chart-period{transition:none!important}
+}
+
 </style>
 </head>
 
@@ -1366,37 +1553,115 @@ body{
 
     </header>
 
+    <!-- KPI CARDS -->
+    <section class="stats" aria-label="Ключевые показатели">
+      <article class="stat earned">
+        <div class="stat-top">
+          <div class="stat-title">Чистый доход</div>
+          <div class="stat-icon" aria-hidden="true">₽</div>
+        </div>
+        <div id="earnedValue" class="stat-value">0 ₽</div>
+        <div class="stat-bottom"><span class="stat-bottom-dot"></span> За всё время</div>
+      </article>
 
-    <!-- PREMIUM INTRO -->
-    <section class="admin-hero" aria-label="Обзор панели управления">
-      <div class="admin-hero-copy">
-        <div class="admin-eyebrow"><span class="admin-pulse"></span> APPCORE · CONTROL CENTER</div>
-        <h1>Управление <span>AppCore</span></h1>
-        <p>Заявки, оплаты и ключевые показатели проекта — в одном рабочем пространстве.</p>
-        <div class="admin-hero-tags">
-          <span>📦 Заказы</span>
-          <span>💳 Оплаты</span>
-          <span>📊 Статистика</span>
+      <article class="stat orders">
+        <div class="stat-top">
+          <div class="stat-title">Завершено</div>
+          <div class="stat-icon" aria-hidden="true">▣</div>
         </div>
-      </div>
-      <div class="admin-hero-visual" aria-hidden="true">
-        <div class="admin-visual-card">
-          <div class="admin-visual-top">
-            <span class="admin-visual-label">APP CORE / WORKSPACE</span>
-            <span class="admin-visual-mark">✦</span>
-          </div>
-          <div class="admin-visual-title">Всё под контролем</div>
-          <div class="admin-visual-sub">Заказы · Клиенты · Результаты</div>
-          <div class="admin-visual-bars">
-            <i style="--h:34%"></i><i style="--h:55%"></i><i style="--h:43%"></i>
-            <i style="--h:76%"></i><i style="--h:62%"></i><i style="--h:92%"></i>
-            <i style="--h:70%"></i><i style="--h:100%"></i>
-          </div>
+        <div id="completedValue" class="stat-value">0</div>
+        <div class="stat-bottom"><span class="stat-bottom-dot"></span> Успешные заказы</div>
+      </article>
+
+      <article class="stat average">
+        <div class="stat-top">
+          <div class="stat-title">Средний чек</div>
+          <div class="stat-icon" aria-hidden="true">↗</div>
         </div>
-      </div>
+        <div id="averageValue" class="stat-value">0 ₽</div>
+        <div class="stat-bottom"><span class="stat-bottom-dot"></span> На один завершённый заказ</div>
+      </article>
+
+      <article class="stat requests">
+        <div class="stat-top">
+          <div class="stat-title">Новые заявки</div>
+          <div class="stat-icon" aria-hidden="true">⌁</div>
+        </div>
+        <div id="newApplicationsValue" class="stat-value">0</div>
+        <div class="stat-bottom"><span class="stat-bottom-dot"></span> Требуют обработки</div>
+      </article>
     </section>
 
-    <!-- STATS -->
+    <!-- ANALYTICS -->
+    <section class="analytics-grid" aria-label="Аналитика заказов">
+      <article class="analytics-card activity-card">
+        <div class="analytics-head">
+          <div>
+            <div class="analytics-title">Активность заказов</div>
+            <div class="analytics-subtitle">По дате создания · без черновиков</div>
+          </div>
+          <div class="activity-total">
+            <strong id="activityTotal">0</strong>
+            <span id="activityCaption">за 7 дней</span>
+          </div>
+        </div>
+
+        <div class="chart-periods" role="group" aria-label="Период графика">
+          <button type="button" class="chart-period active" data-activity-period="week">7 дней</button>
+          <button type="button" class="chart-period" data-activity-period="month">30 дней</button>
+          <button type="button" class="chart-period" data-activity-period="year">12 месяцев</button>
+        </div>
+
+        <div class="activity-chart-wrap">
+          <svg id="activityChart" class="activity-chart" viewBox="0 0 720 238" role="img" aria-label="График количества заказов">
+            <text x="360" y="118" text-anchor="middle" class="chart-empty">Загрузка данных…</text>
+          </svg>
+        </div>
+      </article>
+
+      <article class="analytics-card status-card">
+        <div class="analytics-head">
+          <div>
+            <div class="analytics-title">Статусы заказов</div>
+            <div class="analytics-subtitle">Все заказы · без черновиков</div>
+          </div>
+        </div>
+
+        <div class="status-content">
+          <div id="statusDonut" class="status-donut" role="img" aria-label="Распределение заказов по статусам">
+            <div class="status-donut-hole">
+              <strong id="statusTotal">0</strong>
+              <span>заказов</span>
+            </div>
+          </div>
+
+          <div class="status-legend">
+            <div class="status-legend-row">
+              <span class="status-swatch awaiting"></span>
+              <span>Ожидают оплаты</span>
+              <strong id="statusAwaiting">0</strong>
+            </div>
+            <div class="status-legend-row">
+              <span class="status-swatch paid"></span>
+              <span>Оплачены</span>
+              <strong id="statusPaid">0</strong>
+            </div>
+            <div class="status-legend-row">
+              <span class="status-swatch completed"></span>
+              <span>Завершены</span>
+              <strong id="statusCompleted">0</strong>
+            </div>
+            <div class="status-legend-row">
+              <span class="status-swatch cancelled"></span>
+              <span>Отклонены</span>
+              <strong id="statusCancelled">0</strong>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- TABS -->
 
     <div class="stats">
 
@@ -1475,33 +1740,13 @@ body{
 
     <div class="tabs">
 
-      <button
-        class="tab active"
-        data-tab="active"
-      >
-        🆕 Новые
-      </button>
+      <button class="tab active" data-tab="active">🆕 Новые <span class="tab-count" id="tabActiveCount">0</span></button>
 
-      <button
-        class="tab"
-        data-tab="completed"
-      >
-        ✅ Завершённые
-      </button>
+      <button class="tab" data-tab="completed">✅ Завершённые <span class="tab-count" id="tabCompletedCount">0</span></button>
 
-      <button
-        class="tab"
-        data-tab="cancelled"
-      >
-        ❌ Отклонённые
-      </button>
+      <button class="tab" data-tab="cancelled">❌ Отклонённые <span class="tab-count" id="tabCancelledCount">0</span></button>
 
-      <button
-        class="tab"
-        data-tab="draft"
-      >
-        🗑️ Черновики
-      </button>
+      <button class="tab" data-tab="draft">🗑️ Черновики <span class="tab-count" id="tabDraftCount">0</span></button>
 
     </div>
 
@@ -1817,6 +2062,7 @@ let confirmAction = null;
 let knownOrderIds = new Set();
 let notificationsEnabled = false;
 let currentTab = "active";
+let activityPeriod = "week";
 
 /* =========================
    REALTIME
@@ -1901,6 +2147,36 @@ const completedValue =
 
 const averageValue =
   document.getElementById("averageValue");
+
+const newApplicationsValue =
+  document.getElementById("newApplicationsValue");
+
+const activityChart =
+  document.getElementById("activityChart");
+
+const activityTotal =
+  document.getElementById("activityTotal");
+
+const activityCaption =
+  document.getElementById("activityCaption");
+
+const statusDonut =
+  document.getElementById("statusDonut");
+
+const statusTotal =
+  document.getElementById("statusTotal");
+
+const statusAwaiting =
+  document.getElementById("statusAwaiting");
+
+const statusPaid =
+  document.getElementById("statusPaid");
+
+const statusCompleted =
+  document.getElementById("statusCompleted");
+
+const statusCancelled =
+  document.getElementById("statusCancelled");
 
 const confirmOverlay =
   document.getElementById("confirmOverlay");
@@ -2425,6 +2701,182 @@ function filterOrders(list){
 }
 
 /* =========================
+   DASHBOARD ANALYTICS
+========================= */
+
+function localDateKey(date){
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2,"0");
+  const day = String(date.getDate()).padStart(2,"0");
+  return `${year}-${month}-${day}`;
+}
+
+function renderActivityChart(){
+  const now = new Date();
+  const buckets = [];
+  const countByKey = new Map();
+  let caption = "за 7 дней";
+
+  if(activityPeriod === "year"){
+    caption = "за 12 месяцев";
+    const firstMonth = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+    for(let i=0;i<12;i++){
+      const date = new Date(firstMonth.getFullYear(), firstMonth.getMonth() + i, 1);
+      const key = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`;
+      buckets.push({
+        key,
+        label:date.toLocaleDateString("ru-RU",{month:"short"}).replace(".","")
+      });
+      countByKey.set(key,0);
+    }
+    orders.forEach(order=>{
+      if(order.is_draft || !order.created_at) return;
+      const date = new Date(order.created_at);
+      if(Number.isNaN(date.getTime())) return;
+      const key = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`;
+      if(countByKey.has(key)) countByKey.set(key,countByKey.get(key)+1);
+    });
+  }else{
+    const days = activityPeriod === "month" ? 30 : 7;
+    caption = activityPeriod === "month" ? "за 30 дней" : "за 7 дней";
+    const start = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    start.setDate(start.getDate() - (days - 1));
+
+    for(let i=0;i<days;i++){
+      const date = new Date(start.getFullYear(),start.getMonth(),start.getDate()+i);
+      const key = localDateKey(date);
+      let label = "";
+      if(activityPeriod === "week"){
+        label = date.toLocaleDateString("ru-RU",{weekday:"short"}).replace(".","");
+      }else{
+        label = String(date.getDate()).padStart(2,"0");
+      }
+      buckets.push({key,label});
+      countByKey.set(key,0);
+    }
+
+    orders.forEach(order=>{
+      if(order.is_draft || !order.created_at) return;
+      const date = new Date(order.created_at);
+      if(Number.isNaN(date.getTime())) return;
+      const key = localDateKey(date);
+      if(countByKey.has(key)) countByKey.set(key,countByKey.get(key)+1);
+    });
+  }
+
+  const values = buckets.map(bucket=>countByKey.get(bucket.key)||0);
+  const total = values.reduce((sum,value)=>sum+value,0);
+  activityTotal.textContent = total.toLocaleString("ru-RU");
+  activityCaption.textContent = caption;
+
+  const width = 720;
+  const height = 238;
+  const left = 38;
+  const right = 18;
+  const top = 18;
+  const bottom = 198;
+  const plotWidth = width-left-right;
+  const plotHeight = bottom-top;
+  const maxValue = Math.max(1,...values);
+  const maxY = Math.max(4,Math.ceil(maxValue/4)*4);
+  const xAt = index => left + (values.length <= 1 ? plotWidth/2 : index*plotWidth/(values.length-1));
+  const yAt = value => bottom - (value/maxY)*plotHeight;
+  const points = values.map((value,index)=>({x:xAt(index),y:yAt(value),value,label:buckets[index].label}));
+
+  let grid = "";
+  for(let i=0;i<=4;i++){
+    const value = maxY - i*(maxY/4);
+    const y = top + i*(plotHeight/4);
+    grid += `<line class="chart-grid-line" x1="${left}" y1="${y.toFixed(1)}" x2="${width-right}" y2="${y.toFixed(1)}"></line>`;
+    grid += `<text class="chart-axis-label" x="${left-10}" y="${(y+3).toFixed(1)}" text-anchor="end">${Math.round(value)}</text>`;
+  }
+
+  const linePath = points.map((point,index)=>`${index===0?"M":"L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
+  const areaPath = `${linePath} L ${points[points.length-1].x.toFixed(1)} ${bottom} L ${points[0].x.toFixed(1)} ${bottom} Z`;
+
+  const labelIndices = activityPeriod === "week"
+    ? points.map((point,index)=>index)
+    : activityPeriod === "month"
+      ? [0,5,10,15,20,25,29]
+      : [0,2,4,6,8,10,11];
+
+  let xLabels = "";
+  labelIndices.forEach(index=>{
+    const point = points[index];
+    if(!point) return;
+    xLabels += `<text class="chart-x-label" x="${point.x.toFixed(1)}" y="224" text-anchor="middle">${point.label}</text>`;
+  });
+
+  let dots = "";
+  points.forEach((point,index)=>{
+    const fullLabel = activityPeriod === "year"
+      ? new Date(buckets[index].key + "-01T12:00:00").toLocaleDateString("ru-RU",{month:"long",year:"numeric"})
+      : new Date(buckets[index].key + "T12:00:00").toLocaleDateString("ru-RU",{day:"2-digit",month:"long"});
+    dots += `<circle class="chart-point" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="${activityPeriod==="month"?2.7:4}"><title>${fullLabel}: ${point.value} заказов</title></circle>`;
+  });
+
+  activityChart.innerHTML = `
+    <defs>
+      <linearGradient id="activityAreaFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#43dfa0" stop-opacity=".25"></stop>
+        <stop offset="100%" stop-color="#43dfa0" stop-opacity=".015"></stop>
+      </linearGradient>
+    </defs>
+    ${grid}
+    <path class="chart-area" d="${areaPath}"></path>
+    <path class="chart-line" d="${linePath}"></path>
+    ${dots}
+    ${xLabels}
+  `;
+}
+
+function renderStatusDistribution(){
+  const validOrders = orders.filter(order=>!order.is_draft);
+  const values = [
+    {key:"awaiting_review",count:validOrders.filter(order=>order.status==="awaiting_review").length,color:"#f6c96a"},
+    {key:"paid",count:validOrders.filter(order=>order.status==="paid").length,color:"#69aaff"},
+    {key:"completed",count:validOrders.filter(order=>order.status==="completed").length,color:"#43dfa0"},
+    {key:"cancelled",count:validOrders.filter(order=>order.status==="cancelled").length,color:"#ff7886"}
+  ];
+  const total = values.reduce((sum,item)=>sum+item.count,0);
+  statusTotal.textContent = total.toLocaleString("ru-RU");
+  statusAwaiting.textContent = values[0].count.toLocaleString("ru-RU");
+  statusPaid.textContent = values[1].count.toLocaleString("ru-RU");
+  statusCompleted.textContent = values[2].count.toLocaleString("ru-RU");
+  statusCancelled.textContent = values[3].count.toLocaleString("ru-RU");
+
+  if(!total){
+    statusDonut.style.background = "conic-gradient(#273342 0deg 360deg)";
+    statusDonut.setAttribute("aria-label","Заказов пока нет");
+    return;
+  }
+
+  let angle = 0;
+  const segments = values.map(item=>{
+    const start = angle;
+    angle += item.count / total * 360;
+    return `${item.color} ${start.toFixed(2)}deg ${angle.toFixed(2)}deg`;
+  });
+  statusDonut.style.background = `conic-gradient(${segments.join(",")})`;
+  statusDonut.setAttribute("aria-label",values.map(item=>`${item.key}: ${item.count}`).join(", "));
+}
+
+function renderAnalytics(){
+  renderActivityChart();
+  renderStatusDistribution();
+}
+
+document.querySelectorAll("[data-activity-period]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    activityPeriod = button.dataset.activityPeriod;
+    document.querySelectorAll("[data-activity-period]").forEach(item=>{
+      item.classList.toggle("active",item === button);
+    });
+    renderActivityChart();
+  });
+});
+
+/* =========================
    RENDER
 ========================= */
 
@@ -2465,6 +2917,20 @@ function render(){
 
   draftCount.textContent =
     `${allDraft.length} заказов`;
+
+  newApplicationsValue.textContent =
+    allActive.length.toLocaleString("ru-RU");
+
+  document.getElementById("tabActiveCount").textContent =
+    allActive.length.toLocaleString("ru-RU");
+  document.getElementById("tabCompletedCount").textContent =
+    allCompleted.length.toLocaleString("ru-RU");
+  document.getElementById("tabCancelledCount").textContent =
+    allCancelled.length.toLocaleString("ru-RU");
+  document.getElementById("tabDraftCount").textContent =
+    allDraft.length.toLocaleString("ru-RU");
+
+  renderAnalytics();
 
   const visible =
     sortOrders(
