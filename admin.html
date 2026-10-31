@@ -1721,6 +1721,13 @@ body{
         </button>
 
         <button
+          id="advertisingAdminButton"
+          class="btn btn-yellow"
+        >
+          📣 Расходы на рекламу
+        </button>
+
+        <button
           id="reviewsAdminButton"
           class="btn btn-purple"
         >
@@ -4046,6 +4053,15 @@ document
     "click",
     function () {
       window.location.href = "/finance-admin/";
+    }
+  );
+
+document
+  .getElementById("advertisingAdminButton")
+  .addEventListener(
+    "click",
+    function () {
+      window.location.href = "/advertising-admin/";
     }
   );
 
