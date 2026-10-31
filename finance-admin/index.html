@@ -121,9 +121,9 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
 .chart-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;flex-wrap:wrap}
 .chart-title{font-size:14px;font-weight:950}
 .chart-range{margin-top:4px;color:var(--muted);font-size:10px}
-.legend{display:flex;gap:14px;flex-wrap:wrap}
-.legend-item{display:flex;align-items:center;gap:6px;color:#a5b2c1;font-size:10px;font-weight:750}
-.legend-dot{width:9px;height:9px;border-radius:50%}
+.chart-total{text-align:right;white-space:nowrap}
+.chart-total strong{display:block;color:#8fecc0;font-size:21px;font-weight:950;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.chart-total span{display:block;margin-top:3px;color:var(--muted);font-size:10px}
 .chart-wrap{margin-top:12px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-color:rgba(130,150,170,.4) transparent}
 .chart-svg{display:block;height:auto;min-height:220px;max-width:none;overflow:visible}
 .chart-empty{padding:46px 10px;text-align:center;color:var(--muted);font-size:12px}
@@ -234,51 +234,52 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
       <div class="level" data-target="2000000"><div class="level-icon">🚀</div><div class="level-name">Новый масштаб</div><div class="level-value">2 000 000 ₽</div></div>
     </section>
 
-    <section aria-label="Сравнение финансовых периодов">
+    <section aria-label="Финансовый график">
       <div class="section-head">
         <div>
-          <div class="section-title">Динамика дохода</div>
-          <div class="section-sub">Сравнивай текущий результат с таким же отрезком предыдущего периода.</div>
+          <div class="section-title">Динамика заработка</div>
+          <div class="section-sub">Тот же выбор периодов, что и в основной админ-панели.</div>
         </div>
-        <div class="period-tabs" role="tablist" aria-label="Выбор периода">
-          <button class="period-tab active" data-period="week" type="button" role="tab" aria-selected="true">Неделя</button>
-          <button class="period-tab" data-period="month" type="button" role="tab" aria-selected="false">Месяц</button>
-          <button class="period-tab" data-period="year" type="button" role="tab" aria-selected="false">Год</button>
+        <div class="period-tabs" role="group" aria-label="Период графика">
+          <button class="period-tab active" data-period="days" type="button" aria-pressed="true">По дням</button>
+          <button class="period-tab" data-period="weeks" type="button" aria-pressed="false">По неделям</button>
+          <button class="period-tab" data-period="months" type="button" aria-pressed="false">По месяцам</button>
+          <button class="period-tab" data-period="years" type="button" aria-pressed="false">По годам</button>
         </div>
       </div>
 
       <div class="period-overview">
         <article class="metric current">
-          <div class="metric-label" id="currentLabel">Эта неделя</div>
+          <div class="metric-label" id="currentLabel">Заработано за диапазон</div>
           <div class="metric-value" id="currentValue">—</div>
           <div class="metric-note" id="currentRange">—</div>
         </article>
         <article class="metric">
-          <div class="metric-label" id="previousLabel">Прошлая неделя</div>
+          <div class="metric-label" id="previousLabel">Среднее за интервал</div>
           <div class="metric-value" id="previousValue">—</div>
           <div class="metric-note" id="previousRange">—</div>
         </article>
         <article class="metric change neutral" id="changeMetric">
-          <div class="metric-label">Разница</div>
+          <div class="metric-label">Самый доходный интервал</div>
           <div class="metric-value" id="changeValue">—</div>
-          <div class="metric-note" id="changeNote">Сравнение периодов</div>
+          <div class="metric-note" id="changeNote">—</div>
         </article>
         <article class="metric">
           <div class="metric-label">Завершено заказов · справочно</div>
           <div class="metric-value" id="ordersValue">—</div>
-          <div class="metric-note" id="ordersNote">За выбранный период</div>
+          <div class="metric-note" id="ordersNote">—</div>
         </article>
       </div>
 
       <div class="chart-card">
         <div class="chart-head">
           <div>
-            <div class="chart-title" id="chartTitle">Рост по дням</div>
-            <div class="chart-range" id="chartRange">Текущий период и предыдущий</div>
+            <div class="chart-title" id="chartTitle">Заработок по дням</div>
+            <div class="chart-range" id="chartRange">—</div>
           </div>
-          <div class="legend">
-            <span class="legend-item"><i class="legend-dot" style="background:#43dfa0"></i> Текущий период</span>
-            <span class="legend-item"><i class="legend-dot" style="background:#ad8bff"></i> Предыдущий период</span>
+          <div class="chart-total">
+            <strong id="chartTotal">— ₽</strong>
+            <span id="chartCaption">за 7 дней</span>
           </div>
         </div>
         <div class="chart-wrap" id="chartWrap" aria-live="polite">
@@ -287,8 +288,8 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
       </div>
 
       <div class="insight">
-        <div class="insight-icon" id="insightIcon">✦</div>
-        <div><strong id="insightTitle">Каждый период — новый шаг</strong><span id="insightText">Здесь появится сравнение текущего и предыдущего периода.</span></div>
+        <div class="insight-icon" id="insightIcon">₽</div>
+        <div><strong id="insightTitle">Самый доходный интервал</strong><span id="insightText">Здесь появится сумма заработка.</span></div>
       </div>
     </section>
 
@@ -304,7 +305,7 @@ const SUPABASE_URL="https://dkgipfotfjntlhabakns.supabase.co";
 const SUPABASE_KEY="sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
-let activePeriod="week";
+let activePeriod="days";
 let busy=false;
 
 function money(value){
@@ -396,7 +397,13 @@ function renderMilestone(allTime){
   });
 }
 function escapeXml(value){
-  return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&apos;"}[ch]));
+  return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[ch]));
+}
+function moneyCompact(value){
+  const n=Number(value)||0;
+  if(n>=1000000)return (n/1000000).toLocaleString("ru-RU",{maximumFractionDigits:1})+" млн ₽";
+  if(n>=1000)return (n/1000).toLocaleString("ru-RU",{maximumFractionDigits:1})+" тыс. ₽";
+  return number(n)+" ₽";
 }
 function niceCeiling(value){
   const target=Math.max(1,value*1.12);
@@ -407,57 +414,46 @@ function niceCeiling(value){
 }
 function svgChart(series,period){
   if(!Array.isArray(series)||!series.length){
-    return '<div class="chart-empty">За выбранные периоды пока нет данных.</div>';
+    return '<div class="chart-empty">За выбранный период пока нет данных.</div>';
   }
-  const L=58,R=20,T=27,B=43,H=300;
-  const W=period==="month"?Math.max(920,L+R+series.length*34):920;
-  const plotW=W-L-R,plotH=H-T-B;
-  const current=series.map(p=>{
-    const value=Number(p.current);
-    return Number.isFinite(value)?Math.max(0,value):0;
+  const W=Math.max(720,series.length*62+60);
+  const H=238,L=42,R=18,T=22,B=190;
+  const plotW=W-L-R,plotH=B-T;
+  const values=series.map(point=>Math.max(0,Number(point.value)||0));
+  const maxValue=Math.max(0,...values);
+  const maxY=Math.max(100,niceCeiling(maxValue));
+  const slotW=plotW/Math.max(values.length,1);
+  const barW=Math.max(6,Math.min(46,slotW*.56));
+  const y=value=>B-(value/maxY)*plotH;
+
+  let grid="";
+  for(let i=0;i<=4;i++){
+    const value=maxY-i*(maxY/4);
+    const yy=T+i*(plotH/4);
+    grid+='<line x1="'+L+'" y1="'+yy.toFixed(1)+'" x2="'+(W-R)+'" y2="'+yy.toFixed(1)+'" stroke="rgba(255,255,255,.075)" stroke-dasharray="3 6"></line>';
+    grid+='<text x="'+(L-10)+'" y="'+(yy+3).toFixed(1)+'" text-anchor="end" fill="#8290a3" font-size="10">'+moneyCompact(value)+'</text>';
+  }
+  let bars="";
+  let labels="";
+  values.forEach((value,index)=>{
+    const bucket=series[index];
+    const x=L+slotW*index+(slotW-barW)/2;
+    const height=value===0?2:Math.max(4,(value/maxY)*plotH);
+    const barY=B-height;
+    const fill=value>0?"url(#incomeBarFill)":"url(#incomeBarEmpty)";
+    const detail=String(bucket.tooltip||bucket.label||"");
+    const title=detail+": "+money(value)+" · "+number(bucket.orders)+" завершённых заказов";
+    const valueLabel=value>0
+      ?'<text x="'+(x+barW/2).toFixed(1)+'" y="'+Math.max(12,barY-7).toFixed(1)+'" text-anchor="middle" fill="#bcefd7" font-size="10" font-weight="800">'+moneyCompact(value)+'</text>'
+      :"";
+    bars+='<rect x="'+x.toFixed(1)+'" y="'+barY.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+height.toFixed(1)+'" rx="'+Math.min(6,barW/2).toFixed(1)+'" fill="'+fill+'"><title>'+escapeXml(title)+'</title></rect>'+valueLabel;
+    labels+='<text x="'+(x+barW/2).toFixed(1)+'" y="218" text-anchor="middle" fill="#9aa8b8" font-size="10">'+escapeXml(bucket.label)+'</text>';
   });
-  const previous=series.map(p=>{
-    if(p.previous===null||p.previous===undefined)return null;
-    const value=Number(p.previous);
-    return Number.isFinite(value)?Math.max(0,value):null;
-  });
-  const maxValue=Math.max(0,...current,...previous.filter(value=>value!==null));
-  const ceiling=niceCeiling(maxValue);
-  const y=value=>T+plotH-(value/ceiling)*plotH;
-  const slot=plotW/series.length;
-  const barWidth=Math.min(24,Math.max(7,slot*.29));
-  const gap=Math.max(2,barWidth*.14);
-  const baseline=T+plotH;
-  const rect=(x,value,fill,title)=>{
-    const height=Math.max(1.5,(value/ceiling)*plotH);
-    return '<g><title>'+escapeXml(title)+'</title><rect x="'+x.toFixed(1)+'" y="'+(baseline-height).toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+height.toFixed(1)+'" rx="3" fill="'+fill+'"/></g>';
-  };
-  const grid=[0,.25,.5,.75,1].map(r=>{
-    const value=ceiling*r,yy=y(value);
-    return '<line x1="'+L+'" y1="'+yy.toFixed(1)+'" x2="'+(W-R)+'" y2="'+yy.toFixed(1)+'" stroke="rgba(255,255,255,.075)" stroke-dasharray="3 6"/>'+
-      '<text x="'+(L-9)+'" y="'+(yy+4).toFixed(1)+'" text-anchor="end" fill="#8290a3" font-size="10">'+compact(value)+' ₽</text>';
-  }).join("");
-  const axisTitle='<text x="'+L+'" y="13" fill="#9aa9b9" font-size="10" font-weight="700">Чистый доход · ₽</text>';
-  const labelStep=period==="month"?5:1;
-  const bars=series.map((point,index)=>{
-    const center=L+(index+.5)*slot;
-    const left=center-barWidth-gap/2;
-    const right=center+gap/2;
-    const label=String(point.label??"");
-    const currTitle=label+" · текущий период: "+money(current[index]);
-    let result=rect(left,current[index],"#43dfa0",currTitle);
-    if(previous[index]!==null){
-      result+=rect(right,previous[index],"#ad8bff",label+" · предыдущий период: "+money(previous[index]));
-    }
-    return result;
-  }).join("");
-  const labels=series.map((point,index)=>{
-    if(index%labelStep!==0&&index!==series.length-1)return "";
-    const center=L+(index+.5)*slot;
-    return '<text x="'+center.toFixed(1)+'" y="'+(H-13)+'" text-anchor="middle" fill="#8290a3" font-size="10">'+escapeXml(point.label??"")+'</text>';
-  }).join("");
-  return '<svg class="chart-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Парные столбцы чистого дохода в рублях: текущий и предыдущий периоды">'+
-    axisTitle+grid+bars+labels+'</svg>';
+  return '<svg class="chart-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Столбчатый график чистого заработка в рублях">'+
+    '<defs>'+
+      '<linearGradient id="incomeBarFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#79e7b7"></stop><stop offset="100%" stop-color="#269b70"></stop></linearGradient>'+
+      '<linearGradient id="incomeBarEmpty" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3b4a58"></stop><stop offset="100%" stop-color="#263341"></stop></linearGradient>'+
+    '</defs>'+grid+bars+labels+'</svg>';
 }
 function render(data){
   const allTime=Number(data.all_time_net)||0;
@@ -465,54 +461,50 @@ function render(data){
   $("allTimeOrders").textContent=number(data.all_time_orders)+" завершённых заказов учтено";
   renderMilestone(allTime);
 
-  const current=Number(data.current_net)||0;
-  const previous=Number(data.previous_net)||0;
-  const delta=Number(data.delta)||0;
-  const pct=data.delta_percent===null||data.delta_percent===undefined?null:Number(data.delta_percent);
-  const names={week:["Эта неделя","Прошлая неделя","Рост по дням"],month:["Этот месяц","Прошлый месяц","Рост по дням"],year:["Этот год","Прошлый год","Рост по месяцам"]};
-  const label=names[data.period]||names.week;
+  const total=Number(data.total_net)||0;
+  const average=Number(data.average_net)||0;
+  const best=Number(data.best_net)||0;
+  const series=Array.isArray(data.series)?data.series:[];
+  const labels={
+    days:["Заработок по дням","за 7 дней"],
+    weeks:["Заработок по неделям","за 12 недель"],
+    months:["Заработок по месяцам","за текущий год"],
+    years:["Заработок по годам","за все календарные годы"]
+  };
+  const periodLabels=labels[data.period]||labels.days;
+  const startText=shortDate(data.period_start);
+  const endText=shortDate(data.period_end);
 
-  $("currentLabel").textContent=label[0];
-  $("previousLabel").textContent=label[1];
-  $("currentValue").textContent=money(current);
-  $("previousValue").textContent=money(previous);
-  $("currentRange").textContent=rangeText(data.current_start,data.current_end)+" · текущий период";
-  $("previousRange").textContent=rangeText(data.previous_start,data.previous_end)+" · сопоставимый период";
-  $("changeValue").textContent=signedMoney(delta);
-  $("ordersValue").textContent=number(data.current_orders);
-  $("ordersNote").textContent=number(data.previous_orders)+" в предыдущем периоде";
-  $("chartTitle").textContent=label[2];
-  $("chartRange").textContent=rangeText(data.current_start,data.current_end)+"  ↔  "+rangeText(data.previous_start,data.previous_end);
-  $("chartWrap").innerHTML=svgChart(data.series,data.period);
+  $("currentLabel").textContent="Заработано за диапазон";
+  $("currentValue").textContent=money(total);
+  $("currentRange").textContent=startText+" — "+endText;
 
-  const card=$("changeMetric");
-  card.classList.remove("positive","negative","neutral");
-  if(delta>0){
-    card.classList.add("positive");
-    $("changeNote").textContent=pct===null?"Выше нулевого результата":"Рост на "+Math.abs(pct).toLocaleString("ru-RU",{maximumFractionDigits:1})+"%";
-    $("insightIcon").textContent="↗";
-    $("insightTitle").textContent="AppCore прибавляет обороты";
-    $("insightText").textContent="За выбранный период чистый доход выше на "+money(delta)+". Это "+(pct===null?"положительный результат относительно нулевой базы":"на "+Math.abs(pct).toLocaleString("ru-RU",{maximumFractionDigits:1})+"% больше, чем за сопоставимую часть прошлого периода")+". Продолжай движение — следующий рубеж становится ближе.";
-  }else if(delta<0){
-    card.classList.add("negative");
-    $("changeNote").textContent=pct===null?"Ниже предыдущего периода":"Снижение на "+Math.abs(pct).toLocaleString("ru-RU",{maximumFractionDigits:1})+"%";
-    $("insightIcon").textContent="↘";
-    $("insightTitle").textContent="Есть пространство для нового рывка";
-    $("insightText").textContent="Сейчас чистый доход ниже сопоставимого периода на "+money(Math.abs(delta))+". Это ориентир для анализа: посмотри, как изменилось количество завершённых заказов и возвращай темп.";
-  }else{
-    card.classList.add("neutral");
-    $("changeNote").textContent="Результат не изменился";
-    $("insightIcon").textContent="＝";
-    $("insightTitle").textContent="Сохраняется прежний уровень";
-    $("insightText").textContent="Чистый доход совпал с сопоставимым периодом. Следующий шаг — увеличить число завершённых заказов.";
-  }
+  $("previousLabel").textContent="Среднее за интервал";
+  $("previousValue").textContent=money(average);
+  $("previousRange").textContent="По завершённым интервалам";
+
+  $("changeValue").textContent=money(best);
+  $("changeNote").textContent=data.best_label||"—";
+
+  $("ordersValue").textContent=number(data.orders_count);
+  $("ordersNote").textContent="Только завершённые заказы";
+
+  $("chartTitle").textContent=periodLabels[0];
+  $("chartRange").textContent=startText+" — "+endText+" · суммы в рублях";
+  $("chartTotal").textContent=money(total);
+  $("chartCaption").textContent=periodLabels[1];
+  $("chartWrap").innerHTML=svgChart(series,data.period);
+
+  $("insightIcon").textContent="₽";
+  $("insightTitle").textContent="Самый доходный интервал";
+  $("insightText").textContent=(data.best_label||"Выбранный период")+": "+money(best)+". В графике учитываются только завершённые заказы без черновиков и отмен.";
 }
 async function load(period,quiet){
   if(busy)return;
   setLoading(true);
   if(!quiet)$("chartWrap").innerHTML='<div class="chart-empty">Обновляем график…</div>';
   try{
-    const result=await supabaseClient.rpc("get_financial_growth_dashboard",{p_period:period});
+    const result=await supabaseClient.rpc("get_financial_growth_chart",{p_period:period});
     if(result.error)throw new Error(result.error.message||"Не удалось загрузить финансовые данные");
     const data=Array.isArray(result.data)?result.data[0]:result.data;
     if(!data||!Array.isArray(data.series))throw new Error("Сервер вернул неполные финансовые данные");
@@ -549,7 +541,7 @@ async function init(){
       $("accessMessage").textContent="Сначала войдите через основную админ-панель.";
       return;
     }
-    await load("week",false);
+    await load("days",false);
   }catch(error){
     $("loadingState").hidden=true;$("accessState").hidden=false;
     $("accessMessage").textContent="Не удалось проверить административную сессию.";
