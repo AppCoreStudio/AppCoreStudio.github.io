@@ -504,7 +504,9 @@ function openCampaignModal(campaign,repeat){
     $("advertiserName").value=campaign.advertiser_name||"";
     $("advertiserPhone").value=campaign.advertiser_phone||"";
     $("campaignCost").value=campaign.cost_total||"";
-    if(!repeat){
+    if(repeat){
+      setDuration(Number(campaign.duration_days)||1);
+    }else{
       const start=new Date(campaign.start_at);
       const parts=getTzParts(start);
       $("campaignDate").value=parts.year+"-"+parts.month+"-"+parts.day;
@@ -548,6 +550,7 @@ async function saveCampaign(event){
     if(result.error)throw result.error;
     $("campaignModal").hidden=true;
     editingId=null;
+    setBusy(false);
     await loadAll(false);
     showToast("Рекламное размещение сохранено");
   }catch(error){
@@ -563,6 +566,7 @@ async function deleteCampaign(){
     if(result.error)throw result.error;
     $("deleteModal").hidden=true;
     deleteTarget=null;
+    setBusy(false);
     await loadAll(false);
     showToast("Размещение удалено, статистика пересчитана");
   }catch(error){
