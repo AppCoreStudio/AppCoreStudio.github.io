@@ -1065,6 +1065,13 @@ button:active{
   </button>
 </div>
         <button
+          id="financeAdminButton"
+          class="btn btn-purple"
+        >
+          📈 Финансовый рост
+        </button>
+
+        <button
           id="reviewsAdminButton"
           class="btn btn-purple"
         >
@@ -3186,6 +3193,15 @@ document
     function () {
       window.location.href =
         "/referral-admin/";
+    }
+  );
+
+document
+  .getElementById("financeAdminButton")
+  .addEventListener(
+    "click",
+    function () {
+      window.location.href = "/finance-admin/";
     }
   );
 
