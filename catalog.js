@@ -226,6 +226,55 @@ function getDiscount(count){
   return 0;
 }
 
+function updateDiscountProgress(count){
+  const title=$("discountProgressTitle");
+  const message=$("discountProgressMessage");
+  const value=$("discountProgressValue");
+  const fill=$("discountProgressFill");
+  const track=$("discountProgressTrack");
+  if(!title||!message||!value||!fill||!track)return;
+
+  const discount=getDiscount(count);
+  value.textContent=discount+"%";
+
+  let progress=0;
+  if(count===1)progress=12.5;
+  else if(count>=2)progress=Math.min(100,25+(Math.min(count,5)-2)*25);
+  fill.style.width=progress+"%";
+  track.setAttribute("aria-valuenow",String(Math.min(count,5)));
+
+  if(count===0){
+    title.textContent="🎁 Скидка до 20% за комплект";
+    message.textContent="Выберите 2 приложения — получите скидку 5%";
+  }else if(count===1){
+    title.textContent="🔥 Остался 1 выбор до скидки 5%";
+    message.textContent="Добавьте ещё одно приложение и сэкономьте на всём заказе.";
+  }else if(count<5){
+    title.textContent="Ваша скидка уже "+discount+"%";
+    const nextDiscount=getDiscount(count+1);
+    message.textContent="Ещё 1 приложение — скидка вырастет до "+nextDiscount+"%.";
+  }else{
+    title.textContent="🏆 Максимальная скидка получена";
+    message.textContent="Скидка 20% уже применена ко всему заказу.";
+  }
+
+  document.querySelectorAll("[data-discount-level]").forEach(level=>{
+    const threshold=Number(level.dataset.discountLevel);
+    level.classList.toggle("active",count>=threshold);
+  });
+}
+
+const discountDetailsToggle=$("discountDetailsToggle");
+const discountProgressDetails=$("discountProgressDetails");
+if(discountDetailsToggle&&discountProgressDetails){
+  discountDetailsToggle.addEventListener("click",()=>{
+    const willOpen=discountProgressDetails.hidden;
+    discountProgressDetails.hidden=!willOpen;
+    discountDetailsToggle.setAttribute("aria-expanded",willOpen?"true":"false");
+    discountDetailsToggle.textContent=willOpen?"Скрыть":"Условия";
+  });
+}
+
 function calculatePrice(count){
 
   const original=count*PRICE;
@@ -264,6 +313,7 @@ function initials(name){
 function updatePrice(){
 
   const count=selected.size;
+  updateDiscountProgress(count);
 
   if(!count){
 
