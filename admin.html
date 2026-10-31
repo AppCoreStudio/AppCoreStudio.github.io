@@ -3642,11 +3642,33 @@ async function startOrdersRealtime(){
           
         }
       )
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"ad_campaigns"
+        },
+        async()=>{
+          await loadStatistics();
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"referral_rewards"
+        },
+        async()=>{
+          await loadStatistics();
+        }
+      )
       .subscribe(
         status=>{
 
           console.log(
-            "Orders realtime:",
+            "Orders and finance realtime:",
             status
           );
 
