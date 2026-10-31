@@ -170,6 +170,25 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
   .chart-svg{min-height:195px}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* Unified finance ledger breakdown */
+.finance-breakdown{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;
+  margin:0 0 17px;
+}
+.breakdown-item{
+  min-width:0;padding:15px 16px;border:1px solid var(--line);
+  border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.008)),var(--panel);
+}
+.breakdown-label{color:var(--muted);font-size:9px;font-weight:900;letter-spacing:.5px;line-height:1.45}
+.breakdown-item strong{display:block;margin-top:9px;color:var(--text);font-size:20px;font-weight:950;letter-spacing:-.45px;overflow-wrap:anywhere}
+.breakdown-item span{display:block;margin-top:5px;color:#718197;font-size:9px;line-height:1.45}
+.breakdown-item:nth-child(2) strong{color:#f6c96a}
+.breakdown-item:nth-child(3) strong{color:#ff9c83}
+.breakdown-item.future strong{color:#aeb2ff}
+@media(max-width:850px){.finance-breakdown{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.finance-breakdown{gap:7px}.breakdown-item{padding:12px}.breakdown-item strong{font-size:17px}}
+
 </style>
 </head>
 <body>
@@ -197,7 +216,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
         <div class="eyebrow"><span class="live-dot"></span> Финансовый пульс AppCoreStudio</div>
         <div class="hero-caption">ЧИСТЫЙ ДОХОД ЗА ВСЁ ВРЕМЯ</div>
         <div class="hero-value" id="allTimeValue">— <span class="currency">₽</span></div>
-        <div class="hero-desc">Реальный результат по завершённым заказам за вычетом начисленных реферальных вознаграждений. Каждый новый завершённый заказ приближает AppCore к следующей вершине.</div>
+        <div class="hero-desc">Единый результат AppCore: завершённые заказы минус начисленные реферальные вознаграждения и рекламные расходы, уже отнесённые на прошедшее время размещений.</div>
         <div class="hero-foot">
           <span class="hero-chip">✦ Движение вперёд</span>
           <span class="hero-subtle" id="allTimeOrders">— завершённых заказов учтено</span>
@@ -224,6 +243,29 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
       </div>
     </section>
 
+    <section class="finance-breakdown" aria-label="Состав чистого результата">
+      <article class="breakdown-item">
+        <div class="breakdown-label">Выручка завершённых заказов</div>
+        <strong id="grossRevenueValue">— ₽</strong>
+        <span>До вычета расходов</span>
+      </article>
+      <article class="breakdown-item">
+        <div class="breakdown-label">Реферальные начисления</div>
+        <strong id="referralRewardsValue">— ₽</strong>
+        <span>Вычитаются один раз по заказам</span>
+      </article>
+      <article class="breakdown-item">
+        <div class="breakdown-label">Реклама за прошедшее время</div>
+        <strong id="advertisingAccruedValue">— ₽</strong>
+        <span>Учтено в чистом результате</span>
+      </article>
+      <article class="breakdown-item future">
+        <div class="breakdown-label">Реклама на будущие дни</div>
+        <strong id="advertisingFutureValue">— ₽</strong>
+        <span>Предоплата, пока не списанная в результат</span>
+      </article>
+    </section>
+
     <section class="levels" aria-label="Этапы роста компании" id="levels">
       <div class="level" data-target="0"><div class="level-icon">🌱</div><div class="level-name">Старт</div><div class="level-value">0 ₽</div></div>
       <div class="level" data-target="50000"><div class="level-icon">🥉</div><div class="level-name">Первый рубеж</div><div class="level-value">50 000 ₽</div></div>
@@ -237,8 +279,8 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
     <section aria-label="Финансовый график">
       <div class="section-head">
         <div>
-          <div class="section-title">Динамика заработка</div>
-          <div class="section-sub">Все три показателя и график относятся к выбранному периоду. Переключите день, неделю, месяц или год.</div>
+          <div class="section-title">Динамика чистого результата</div>
+          <div class="section-sub">Заказы относятся к дате оформления; сумма включается после выполнения заказа. Реклама распределяется по дням её действия.</div>
         </div>
         <div class="period-tabs" role="group" aria-label="Период графика">
           <button class="period-tab active" data-period="days" type="button" aria-pressed="true">По дням</button>
@@ -288,7 +330,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
       </div>
     </section>
 
-    <p class="footnote">В расчёт входят только заказы со статусом «Завершён». Черновики и отменённые заказы не учитываются. Из суммы вычитаются начисленные реферальные вознаграждения — выплаты рефералам второй раз не вычитаются. Даты считаются по часовому поясу Хельсинки. Показатель не учитывает налоги и остальные расходы компании.</p>
+    <p class="footnote">Единая формула AppCore: выручка по завершённым заказам без черновиков и отменённых заказов − начисления из referral_rewards со статусом «earned» − рекламные расходы, распределённые на уже прошедшее время размещений. Реферальные выводы денег повторно не вычитаются. Заказ относится к дате его создания, но попадает в доход только после статуса «Завершён» — так финансовая статистика совпадает с периодами активности рекламы. Будущая часть предоплаченной рекламы показана отдельно и войдёт в расходы по мере прохождения дней. Часовой пояс — Хельсинки. Налоги и другие неучтённые расходы сюда не входят.</p>
   </div>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -411,49 +453,73 @@ function svgChart(series,period){
   if(!Array.isArray(series)||!series.length){
     return '<div class="chart-empty">За выбранный период пока нет данных.</div>';
   }
+
   const W=Math.max(720,series.length*62+60);
-  const H=238,L=42,R=18,T=22,B=190;
+  const H=238,L=54,R=18,T=22,B=190;
   const plotW=W-L-R,plotH=B-T;
-  const values=series.map(point=>Math.max(0,Number(point.value)||0));
-  const maxValue=Math.max(0,...values);
-  const maxY=Math.max(100,niceCeiling(maxValue));
+  const values=series.map(point=>{
+    const value=Number(point.value);
+    return Number.isFinite(value)?value:0;
+  });
+  const maxPositive=Math.max(0,...values);
+  const minNegative=Math.min(0,...values);
+  const magnitude=Math.max(100,niceCeiling(Math.max(maxPositive,Math.abs(minNegative))));
+  const yMax=maxPositive>0?magnitude:0;
+  const yMin=minNegative<0?-magnitude:0;
+  const safeMax=yMax===yMin?100:yMax;
+  const safeMin=yMax===yMin?0:yMin;
+  const y=value=>T+((safeMax-value)/(safeMax-safeMin))*plotH;
+  const baseline=y(0);
   const slotW=plotW/Math.max(values.length,1);
   const barW=Math.max(6,Math.min(46,slotW*.56));
-  const y=value=>B-(value/maxY)*plotH;
 
   let grid="";
   for(let i=0;i<=4;i++){
-    const value=maxY-i*(maxY/4);
-    const yy=T+i*(plotH/4);
-    grid+='<line x1="'+L+'" y1="'+yy.toFixed(1)+'" x2="'+(W-R)+'" y2="'+yy.toFixed(1)+'" stroke="rgba(255,255,255,.075)" stroke-dasharray="3 6"></line>';
+    const value=safeMax-i*((safeMax-safeMin)/4);
+    const yy=y(value);
+    const isZero=Math.abs(value)<0.0001;
+    grid+='<line x1="'+L+'" y1="'+yy.toFixed(1)+'" x2="'+(W-R)+'" y2="'+yy.toFixed(1)+'" stroke="'+(isZero?"rgba(255,255,255,.28)":"rgba(255,255,255,.075)")+'" stroke-dasharray="'+(isZero?"":"3 6")+'"></line>';
     grid+='<text x="'+(L-10)+'" y="'+(yy+3).toFixed(1)+'" text-anchor="end" fill="#8290a3" font-size="10">'+moneyCompact(value)+'</text>';
   }
+
   let bars="";
   let labels="";
   values.forEach((value,index)=>{
     const bucket=series[index];
     const x=L+slotW*index+(slotW-barW)/2;
-    const height=value===0?2:Math.max(4,(value/maxY)*plotH);
-    const barY=B-height;
-    const fill=value>0?"url(#incomeBarFill)":"url(#incomeBarEmpty)";
+    const valueY=y(value);
+    const top=Math.min(baseline,valueY);
+    const rawHeight=Math.abs(valueY-baseline);
+    const height=value===0?2:Math.max(3,rawHeight);
+    const barY=value===0?baseline-1:top;
+    const fill=value>0?"url(#incomeBarFill)":value<0?"url(#incomeBarLoss)":"url(#incomeBarEmpty)";
     const detail=String(bucket.tooltip||bucket.label||"");
-    const title=detail+": "+money(value)+" · "+number(bucket.orders)+" завершённых заказов";
-    const valueLabel=value>0
-      ?'<text x="'+(x+barW/2).toFixed(1)+'" y="'+Math.max(12,barY-7).toFixed(1)+'" text-anchor="middle" fill="#bcefd7" font-size="10" font-weight="800">'+moneyCompact(value)+'</text>'
+    const title=detail+": "+signedMoney(value)+" · "+number(bucket.orders)+" завершённых заказов";
+    const labelY=value>0?Math.max(12,barY-7):value<0?Math.min(208,barY+height+13):Math.max(12,baseline-7);
+    const labelColor=value>0?"#bcefd7":value<0?"#ffabb1":"#9aa8b8";
+    const valueLabel=value!==0
+      ?'<text x="'+(x+barW/2).toFixed(1)+'" y="'+labelY.toFixed(1)+'" text-anchor="middle" fill="'+labelColor+'" font-size="10" font-weight="800">'+moneyCompact(value)+'</text>'
       :"";
     bars+='<rect x="'+x.toFixed(1)+'" y="'+barY.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+height.toFixed(1)+'" rx="'+Math.min(6,barW/2).toFixed(1)+'" fill="'+fill+'"><title>'+escapeXml(title)+'</title></rect>'+valueLabel;
     labels+='<text x="'+(x+barW/2).toFixed(1)+'" y="218" text-anchor="middle" fill="#9aa8b8" font-size="10">'+escapeXml(bucket.label)+'</text>';
   });
-  return '<svg class="chart-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Столбчатый график чистого заработка в рублях">'+
+
+  return '<svg class="chart-svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="График чистого финансового результата в рублях">'+
     '<defs>'+
       '<linearGradient id="incomeBarFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#79e7b7"></stop><stop offset="100%" stop-color="#269b70"></stop></linearGradient>'+
+      '<linearGradient id="incomeBarLoss" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff9ca5"></stop><stop offset="100%" stop-color="#b94457"></stop></linearGradient>'+
       '<linearGradient id="incomeBarEmpty" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3b4a58"></stop><stop offset="100%" stop-color="#263341"></stop></linearGradient>'+
     '</defs>'+grid+bars+labels+'</svg>';
 }
+
 function render(data){
   const allTime=Number(data.all_time_net)||0;
   $("allTimeValue").innerHTML=number(allTime)+' <span class="currency">₽</span>';
   $("allTimeOrders").textContent=number(data.all_time_orders)+" завершённых заказов учтено";
+  $("grossRevenueValue").textContent=money(data.all_time_gross_revenue);
+  $("referralRewardsValue").textContent=money(data.all_time_referral_rewards);
+  $("advertisingAccruedValue").textContent=money(data.all_time_ad_spend);
+  $("advertisingFutureValue").textContent=money(data.all_time_unallocated_ad_spend);
   renderMilestone(allTime);
 
   const total=Number(data.total_net)||0;
