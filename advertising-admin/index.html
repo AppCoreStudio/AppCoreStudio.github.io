@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b11">
+<meta name="robots" content="noindex,nofollow">
+<title>AppCore — Рекламные расходы</title>
+<script src="/supabase-lite.js?v=20261031ads"></script>
+<style>
+:root{color-scheme:dark;--bg:#080b11;--panel:#111722;--panel2:#151e2b;--line:rgba(255,255,255,.08);--text:#f5f8fc;--muted:#8997aa;--green:#43dfa0;--blue:#69aaff;--purple:#ad8bff;--gold:#f6c96a;--red:#ff7886;--shadow:0 22px 70px rgba(0,0,0,.26)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:radial-gradient(ellipse at 5% -10%,rgba(66,222,161,.10),transparent 32%),radial-gradient(ellipse at 95% 0%,rgba(111,128,255,.11),transparent 30%),linear-gradient(180deg,#080b11,#090e16 60%,#080b11)}
+button,input{font:inherit}
+button,a,input{ -webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+button{cursor:pointer}
+button:disabled{opacity:.55;cursor:not-allowed;transform:none!important}
+a{color:inherit;text-decoration:none}
+[hidden]{display:none!important}
+.page{width:min(1240px,calc(100% - 30px));margin:0 auto;padding:24px 0 60px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand-mark{width:48px;height:48px;display:grid;place-items:center;border:1px solid rgba(67,223,160,.24);border-radius:16px;background:linear-gradient(145deg,rgba(67,223,160,.18),rgba(173,139,255,.1));font-size:23px;box-shadow:0 8px 28px rgba(32,183,125,.1)}
+.brand-title{font-size:18px;font-weight:950;letter-spacing:-.4px}
+.brand-title span{color:var(--green)}
+.brand-sub{margin-top:4px;color:var(--muted);font-size:11px}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.action{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 13px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:#dfe8f2;font-size:11px;font-weight:850}
+.action.primary{border-color:rgba(67,223,160,.3);background:linear-gradient(135deg,rgba(67,223,160,.16),rgba(67,223,160,.06));color:#a8f1d0}
+.action:hover{border-color:rgba(255,255,255,.22);transform:translateY(-1px)}
+.hero{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(220px,.8fr);gap:22px;align-items:center;padding:clamp(22px,4vw,34px);margin-bottom:15px;border:1px solid rgba(255,255,255,.09);border-radius:26px;background:linear-gradient(112deg,#122d2b,#142334 58%,#292344);box-shadow:var(--shadow)}
+.hero:before{content:"";position:absolute;z-index:-1;right:4%;top:-180px;width:400px;height:400px;border-radius:50%;background:rgba(67,223,160,.13);filter:blur(24px)}
+.hero:after{content:"";position:absolute;z-index:-1;right:-100px;bottom:-260px;width:400px;height:400px;border:1px solid rgba(173,139,255,.18);border-radius:50%;box-shadow:0 0 0 35px rgba(173,139,255,.03),0 0 0 75px rgba(173,139,255,.02)}
+.eyebrow{display:flex;align-items:center;gap:9px;color:#a7bbca;font-size:9px;font-weight:950;letter-spacing:1.8px;text-transform:uppercase}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 14px rgba(67,223,160,.7)}
+.hero h1{margin:13px 0 8px;font-size:clamp(27px,4vw,39px);line-height:1.08;letter-spacing:-1.25px}
+.hero h1 span{color:transparent;background:linear-gradient(90deg,#76edba,#aeb2ff);background-clip:text;-webkit-background-clip:text}
+.hero p{max-width:620px;margin:0;color:#a6b7c7;font-size:12px;line-height:1.7}
+.hero-side{justify-self:end;width:min(100%,270px);padding:17px;border:1px solid rgba(255,255,255,.12);border-radius:19px;background:rgba(255,255,255,.055);backdrop-filter:blur(12px)}
+.hero-side-label{color:#9dafc0;font-size:9px;font-weight:900;letter-spacing:1.2px}
+.hero-side-value{margin-top:7px;font-size:25px;font-weight:950;letter-spacing:-.7px}
+.hero-side-note{margin-top:5px;color:#9dafc0;font-size:10px;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:14px}
+.stat{position:relative;overflow:hidden;min-height:124px;padding:17px;border:1px solid var(--line);border-radius:19px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.008)),var(--panel);box-shadow:0 12px 35px rgba(0,0,0,.15)}
+.stat:after{content:"";position:absolute;width:100px;height:100px;right:-40px;bottom:-50px;border-radius:50%;background:currentColor;opacity:.055}
+.stat-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.stat-title{color:var(--muted);font-size:10px;font-weight:850}
+.stat-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:rgba(255,255,255,.06);font-size:15px}
+.stat-value{margin-top:15px;font-size:clamp(20px,2.8vw,27px);font-weight:950;letter-spacing:-.7px;color:#fff;overflow-wrap:anywhere}
+.stat-foot{margin-top:5px;color:#718197;font-size:9px}
+.stat.green{color:var(--green)}.stat.blue{color:var(--blue)}.stat.gold{color:var(--gold)}.stat.purple{color:var(--purple)}
+.note{display:flex;align-items:flex-start;gap:10px;margin:0 0 16px;padding:12px 14px;border:1px solid rgba(105,170,255,.13);border-radius:14px;background:rgba(105,170,255,.045);color:#a8b9ca;font-size:10px;line-height:1.6}
+.note b{color:#d5e7fa}
+.section{margin:0 0 16px;padding:18px;border:1px solid var(--line);border-radius:21px;background:rgba(17,23,34,.84);box-shadow:0 12px 35px rgba(0,0,0,.12)}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.section-title{font-size:15px;font-weight:950;letter-spacing:-.3px}
+.section-sub{margin-top:4px;color:var(--muted);font-size:10px;line-height:1.5}
+.add-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid rgba(67,223,160,.3);border-radius:13px;background:linear-gradient(135deg,#2ac18a,#168a70);color:#051b16;font-size:11px;font-weight:950;box-shadow:0 9px 24px rgba(35,185,128,.15)}
+.add-btn:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.today-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.today-item{padding:12px;border:1px solid rgba(255,255,255,.06);border-radius:14px;background:rgba(255,255,255,.025);min-width:0}
+.today-label{color:var(--muted);font-size:9px;font-weight:800}
+.today-value{margin-top:7px;font-size:17px;font-weight:950;overflow-wrap:anywhere}
+.today-item.profit .today-value{color:var(--green)}
+.today-item.loss .today-value{color:var(--red)}
+.campaign-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.campaign-card{position:relative;overflow:hidden;min-width:0;padding:15px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.04),rgba(255,255,255,.012)),#121b28}
+.campaign-card:before{content:"";position:absolute;right:-40px;top:-55px;width:145px;height:145px;border-radius:50%;background:var(--campaign-color,rgba(67,223,160,.12));opacity:.12;filter:blur(4px)}
+.campaign-top{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.campaign-person{display:flex;align-items:center;gap:10px;min-width:0}
+.campaign-avatar{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(145deg,var(--campaign-color,#43dfa0),rgba(255,255,255,.15));color:#07131a;font-size:13px;font-weight:950;box-shadow:0 8px 18px rgba(0,0,0,.16)}
+.campaign-name{font-size:14px;font-weight:950;overflow-wrap:anywhere}
+.campaign-phone{margin-top:4px;color:var(--muted);font-size:10px}
+.state-pill{display:inline-flex;align-items:center;gap:6px;min-height:25px;padding:0 9px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.035);color:#ccd5df;font-size:9px;font-weight:900;white-space:nowrap}
+.state-pill.active{border-color:rgba(67,223,160,.25);background:rgba(67,223,160,.08);color:#8cebbd}
+.state-pill.future{border-color:rgba(105,170,255,.25);background:rgba(105,170,255,.08);color:#9fc8ff}
+.campaign-cost{position:relative;display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-top:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.campaign-amount{font-size:23px;font-weight:950;letter-spacing:-.6px}
+.campaign-daily{color:#a8b5c4;font-size:10px;text-align:right}
+.campaign-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.campaign-meta-item{padding:9px;border:1px solid rgba(255,255,255,.055);border-radius:12px;background:rgba(0,0,0,.12);min-width:0}
+.campaign-meta-label{color:#77889d;font-size:8px;font-weight:900;letter-spacing:.6px;text-transform:uppercase}
+.campaign-meta-value{margin-top:5px;font-size:10px;font-weight:850;line-height:1.45;overflow-wrap:anywhere}
+.campaign-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.small-btn{display:inline-flex;align-items:center;justify-content:center;min-height:35px;padding:0 11px;border:1px solid rgba(255,255,255,.09);border-radius:10px;background:rgba(255,255,255,.04);color:#dce6f0;font-size:9px;font-weight:850}
+.small-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18)}
+.small-btn.danger{color:#ff9da6;border-color:rgba(255,120,134,.18);background:rgba(255,120,134,.055)}
+.daily-list{display:grid;gap:8px}
+.daily-card{display:grid;grid-template-columns:minmax(120px,1.05fr) repeat(4,minmax(0,1fr));gap:10px;align-items:center;padding:12px;border:1px solid rgba(255,255,255,.06);border-radius:14px;background:rgba(255,255,255,.022)}
+.daily-date{font-size:11px;font-weight:900}
+.daily-weekday{margin-top:4px;color:var(--muted);font-size:9px}
+.daily-metric-label{color:var(--muted);font-size:8px;font-weight:850;letter-spacing:.45px;text-transform:uppercase}
+.daily-metric-value{margin-top:5px;font-size:12px;font-weight:900;overflow-wrap:anywhere}
+.daily-metric-value.good{color:var(--green)}.daily-metric-value.bad{color:var(--red)}
+.rank-list{display:grid;gap:8px}
+.rank-row{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid rgba(255,255,255,.055);border-radius:13px;background:rgba(255,255,255,.02)}
+.rank-num{width:29px;height:29px;display:grid;place-items:center;border-radius:10px;background:rgba(246,201,106,.1);color:#f3d58d;font-size:11px;font-weight:950}
+.rank-title{font-size:11px;font-weight:900}
+.rank-detail{margin-top:3px;color:var(--muted);font-size:9px}
+.rank-profit{font-size:13px;font-weight:950;text-align:right}
+.rank-profit.good{color:var(--green)}.rank-profit.bad{color:var(--red)}
+.empty{padding:28px 14px;text-align:center;border:1px dashed rgba(255,255,255,.12);border-radius:15px;color:var(--muted);font-size:11px;line-height:1.6}
+.loading{padding:28px;text-align:center;color:var(--muted);font-size:12px}
+.state{padding:30px 18px;border:1px solid var(--line);border-radius:18px;background:var(--panel);text-align:center;color:var(--muted);font-size:12px;line-height:1.6}
+.state strong{display:block;color:var(--text);font-size:16px;margin-bottom:8px}
+.state a{color:#94c5ff;text-decoration:underline}
+.modal-backdrop{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.78);backdrop-filter:blur(8px)}
+.modal{width:min(520px,100%);max-height:min(92vh,850px);overflow:auto;padding:21px;border:1px solid rgba(255,255,255,.12);border-radius:23px;background:#111925;box-shadow:0 30px 100px rgba(0,0,0,.55)}
+.modal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:17px}
+.modal-title{font-size:19px;font-weight:950;letter-spacing:-.4px}
+.modal-sub{margin-top:5px;color:var(--muted);font-size:10px;line-height:1.5}
+.close-btn{width:36px;height:36px;flex:0 0 36px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.04);color:#dce5ed;font-size:17px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{min-width:0}
+.field.full{grid-column:1/-1}
+.field label{display:block;margin-bottom:7px;color:#aebccc;font-size:10px;font-weight:850}
+.field input{width:100%;min-width:0;min-height:47px;padding:0 12px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:#090f17;color:#f4f7fb;font-size:16px;outline:none}
+.field input:focus{border-color:rgba(67,223,160,.55);box-shadow:0 0 0 3px rgba(67,223,160,.08)}
+.field-note{margin-top:5px;color:#77889d;font-size:9px;line-height:1.45}
+.date-time{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.quick-times{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.quick-time{min-height:31px;padding:0 10px;border:1px solid rgba(255,255,255,.09);border-radius:9px;background:rgba(255,255,255,.035);color:#cbd5e0;font-size:9px;font-weight:800}
+.quick-time:hover{border-color:rgba(67,223,160,.3);color:#a8f1d0}
+.duration-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.duration-btn{min-height:43px;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:rgba(255,255,255,.035);color:#cbd5e0;font-size:12px;font-weight:950}
+.duration-btn.active{border-color:rgba(67,223,160,.42);background:rgba(67,223,160,.12);color:#9df0c7;box-shadow:inset 0 0 0 1px rgba(67,223,160,.08)}
+.preview{margin-top:14px;padding:12px;border:1px solid rgba(105,170,255,.15);border-radius:13px;background:rgba(105,170,255,.055)}
+.preview-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:10px}
+.preview-row+.preview-row{margin-top:8px}
+.preview-label{color:var(--muted)}
+.preview-value{font-weight:900;text-align:right}
+.form-error{min-height:17px;margin-top:9px;color:#ff9da6;font-size:10px;line-height:1.4}
+.modal-actions{display:flex;gap:8px;margin-top:15px}
+.modal-actions button{flex:1;min-height:44px;border-radius:12px;font-size:11px;font-weight:900}
+.cancel-btn{border:1px solid var(--line);background:rgba(255,255,255,.04);color:#dce5ee}
+.save-btn{border:1px solid rgba(67,223,160,.3);background:linear-gradient(135deg,#2ac18a,#168a70);color:#061b15}
+.toast{position:fixed;z-index:1200;left:50%;bottom:20px;transform:translate(-50%,16px);max-width:calc(100% - 28px);padding:12px 16px;border:1px solid rgba(255,255,255,.13);border-radius:12px;background:#172231;color:#fff;text-align:center;font-size:11px;font-weight:850;box-shadow:0 12px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.2s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.today-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:680px){.page{width:calc(100% - 18px);padding-top:13px}.topbar{align-items:flex-start;flex-direction:column}.top-actions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr;gap:15px;padding:22px}.hero-side{justify-self:stretch;width:100%}.stats{grid-template-columns:1fr 1fr;gap:8px}.stat{min-height:108px;padding:13px}.stat-value{font-size:21px}.section{padding:13px;border-radius:17px}.section-head{align-items:flex-start}.add-btn{min-height:41px;padding:0 11px;font-size:10px}.today-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.campaign-grid{grid-template-columns:1fr}.daily-card{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.daily-card-head{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between}.daily-metric-label{font-size:7px}.daily-metric-value{font-size:11px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.modal{padding:16px}.duration-grid{gap:4px}.duration-btn{min-height:41px}.brand-sub{max-width:250px}}
+@media(max-width:380px){.stats{grid-template-columns:1fr}.today-grid{grid-template-columns:1fr 1fr}.daily-card{gap:8px}.hero h1{font-size:27px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">📣</div>
+      <div>
+        <div class="brand-title">AppCore <span>/</span> Реклама</div>
+        <div class="brand-sub">Рекламные размещения · дневной результат · окупаемость</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a class="action" href="/admin.html">← Админ-панель</a>
+      <a class="action" href="/finance-admin/">↗ Финансовый рост</a>
+      <button class="action primary" id="refreshButton" type="button">↻ Обновить</button>
+    </div>
+  </header>
+
+  <div id="loadingState" class="state"><strong>Загружаем рекламную статистику…</strong>Проверяем доступ и собираем рекламные расходы вместе с заказами.</div>
+  <div id="accessState" class="state" hidden><strong>Доступ только для администратора</strong><span id="accessMessage">Войдите через основную админ-панель.</span><p><a href="/admin.html">Перейти ко входу в админ-панель →</a></p></div>
+
+  <div id="dashboard" hidden>
+    <section class="hero">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> Рекламная аналитика AppCore</div>
+        <h1>Считаем не просто расходы.<br><span>Считаем результат рекламы.</span></h1>
+        <p>Добавляй размещения у друзей, указывай реальную дату и время публикации. Система сама сопоставит их с заказами, созданными только пока реклама активна, и распределит стоимость по дням.</p>
+      </div>
+      <div class="hero-side">
+        <div class="hero-side-label">ЕЩЁ НЕ ОТНЕСЕНО НА ПРОШЕДШИЕ ДНИ</div>
+        <div class="hero-side-value" id="futureAllocation">0 ₽</div>
+        <div class="hero-side-note">Часть оплаченной рекламы, которая приходится на будущие дни действующих или запланированных размещений.</div>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Рекламные показатели">
+      <article class="stat blue"><div class="stat-head"><div class="stat-title">Оплачено за рекламу</div><div class="stat-icon">₽</div></div><div class="stat-value" id="paidTotal">0 ₽</div><div class="stat-foot">Полная стоимость всех размещений</div></article>
+      <article class="stat gold"><div class="stat-head"><div class="stat-title">Расход за прошедшие дни</div><div class="stat-icon">◷</div></div><div class="stat-value" id="allocatedTotal">0 ₽</div><div class="stat-foot">Стоимость, распределённая по календарным дням</div></article>
+      <article class="stat green"><div class="stat-head"><div class="stat-title">Доход во время рекламы</div><div class="stat-icon">↗</div></div><div class="stat-value" id="revenueTotal">0 ₽</div><div class="stat-foot">Завершённые заказы за вычетом реферальных выплат</div></article>
+      <article class="stat purple"><div class="stat-head"><div class="stat-title">Результат после рекламы</div><div class="stat-icon">✦</div></div><div class="stat-value" id="profitTotal">0 ₽</div><div class="stat-foot">Доход минус расход за прошедшие дни рекламы</div></article>
+    </section>
+
+    <div class="note"><span aria-hidden="true">ⓘ</span><div><b>Как считается результат:</b> заказ попадает в рекламу, только если его время создания попало хотя бы в один активный рекламный период. При одновременной рекламе заказ учитывается один раз в общей статистике. Без персональных ссылок нельзя достоверно определить, какой именно рекламодатель привёл конкретного человека.</div></div>
+
+    <section class="section">
+      <div class="section-head"><div><div class="section-title">Результат сегодня</div><div class="section-sub" id="todayCaption">По местному времени Хельсинки</div></div></div>
+      <div class="today-grid">
+        <div class="today-item"><div class="today-label">Расход рекламы</div><div class="today-value" id="todaySpend">0 ₽</div></div>
+        <div class="today-item"><div class="today-label">Все заказы</div><div class="today-value" id="todayOrders">0</div></div>
+        <div class="today-item"><div class="today-label">Завершено</div><div class="today-value" id="todayCompleted">0</div></div>
+        <div class="today-item"><div class="today-label">Доход</div><div class="today-value" id="todayRevenue">0 ₽</div></div>
+        <div class="today-item profit" id="todayProfitBox"><div class="today-label">Итог дня</div><div class="today-value" id="todayProfit">0 ₽</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><div class="section-title">Рекламные размещения</div><div class="section-sub">Каждое размещение можно изменить, повторить или удалить.</div></div><button class="add-btn" id="addCampaignButton" type="button">＋ Добавить рекламу</button></div>
+      <div class="campaign-grid" id="campaignList"><div class="loading">Загружаем размещения…</div></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><div class="section-title">Результат по дням</div><div class="section-sub">Заказы считаются по времени создания, доход — когда заказ выполнен.</div></div></div>
+      <div class="daily-list" id="dailyList"><div class="loading">Подготавливаем ежедневную статистику…</div></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><div class="section-title">Рейтинг рекламных дней</div><div class="section-sub">Дни с рекламой, отсортированные по результату после рекламных расходов.</div></div></div>
+      <div class="rank-list" id="rankList"><div class="loading">Считаем лучшие дни…</div></div>
+    </section>
+  </div>
+</main>
+
+<div class="modal-backdrop" id="campaignModal" hidden>
+  <form class="modal" id="campaignForm" novalidate>
+    <div class="modal-top">
+      <div><div class="modal-title" id="modalTitle">Добавить рекламу</div><div class="modal-sub">Укажи время фактической публикации, даже если добавляешь запись позже.</div></div>
+      <button class="close-btn" id="closeModalButton" type="button" aria-label="Закрыть">×</button>
+    </div>
+    <div class="form-grid">
+      <div class="field full"><label for="advertiserName">Имя рекламодателя</label><input id="advertiserName" name="advertiserName" list="advertiserSuggestions" maxlength="100" autocomplete="off" placeholder="Например, Андрей" required><datalist id="advertiserSuggestions"></datalist></div>
+      <div class="field full"><label for="advertiserPhone">Номер телефона</label><input id="advertiserPhone" name="advertiserPhone" type="tel" maxlength="40" autocomplete="tel" placeholder="+7..." required></div>
+      <div class="field full"><label for="campaignCost">Стоимость рекламы, ₽</label><input id="campaignCost" name="campaignCost" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="500" required></div>
+      <div class="field full"><label>Дата и время публикации</label><div class="date-time"><input id="campaignDate" name="campaignDate" type="date" required aria-label="Дата начала"><input id="campaignTime" name="campaignTime" type="time" step="60" required aria-label="Время начала"></div><div class="quick-times"><button class="quick-time" type="button" data-time-preset="now">Сейчас</button><button class="quick-time" type="button" data-time-preset="09:00">09:00</button><button class="quick-time" type="button" data-time-preset="12:00">12:00</button><button class="quick-time" type="button" data-time-preset="15:00">15:00</button><button class="quick-time" type="button" data-time-preset="18:00">18:00</button></div><div class="field-note">Дата автоматически ставится сегодняшняя. Её можно поменять, если вносишь рекламу задним числом.</div></div>
+      <div class="field full"><label>Продолжительность рекламы</label><div class="duration-grid" id="durationGrid" role="group" aria-label="Продолжительность в днях"><button type="button" class="duration-btn active" data-days="1" aria-pressed="true">1</button><button type="button" class="duration-btn" data-days="2" aria-pressed="false">2</button><button type="button" class="duration-btn" data-days="3" aria-pressed="false">3</button><button type="button" class="duration-btn" data-days="4" aria-pressed="false">4</button><button type="button" class="duration-btn" data-days="5" aria-pressed="false">5</button><button type="button" class="duration-btn" data-days="6" aria-pressed="false">6</button><button type="button" class="duration-btn" data-days="7" aria-pressed="false">7</button></div><div class="field-note">Выбирается количество дней, не часов. Один день — ровно 24 часа с выбранного времени.</div></div>
+    </div>
+    <div class="preview">
+      <div class="preview-row"><span class="preview-label">Реклама закончится</span><span class="preview-value" id="endPreview">—</span></div>
+      <div class="preview-row"><span class="preview-label">Расход на один день рекламы</span><span class="preview-value" id="dailyCostPreview">—</span></div>
+    </div>
+    <div class="form-error" id="formError" role="alert"></div>
+    <div class="modal-actions"><button class="cancel-btn" id="cancelModalButton" type="button">Отмена</button><button class="save-btn" id="saveCampaignButton" type="submit">Сохранить рекламу</button></div>
+  </form>
+</div>
+
+<div class="modal-backdrop" id="deleteModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="deleteTitle">
+    <div class="modal-top"><div><div class="modal-title" id="deleteTitle">Удалить размещение?</div><div class="modal-sub" id="deleteText">Расход будет убран из истории и пересчитает дневную статистику.</div></div><button class="close-btn" id="closeDeleteButton" type="button" aria-label="Закрыть">×</button></div>
+    <div class="modal-actions"><button class="cancel-btn" id="keepCampaignButton" type="button">Не удалять</button><button class="save-btn" id="confirmDeleteButton" type="button" style="background:linear-gradient(135deg,#ef7682,#b8435e);color:#fff">Удалить</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+const SUPABASE_URL="https://dkgipfotfjntlhabakns.supabase.co";
+const SUPABASE_KEY="sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
+const $=function(id){return document.getElementById(id);};
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const TZ="Europe/Helsinki";
+let campaigns=[];
+let analytics=null;
+let durationDays=1;
+let editingId=null;
+let deleteTarget=null;
+let busy=false;
+
+function money(value){
+  const number=Number(value)||0;
+  return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(number)+" ₽";
+}
+function count(value){return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:0}).format(Number(value)||0);}
+function signedMoney(value){
+  const n=Number(value)||0;
+  return (n>0?"+":n<0?"−":"")+money(Math.abs(n));
+}
+function escapeHtml(value){
+  return String(value==null?"":value).replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];});
+}
+function getTzParts(date){
+  const parts=new Intl.DateTimeFormat("en-GB",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(date);
+  const out={};
+  parts.forEach(function(part){if(part.type!=="literal")out[part.type]=part.value;});
+  return out;
+}
+function todayInput(){
+  const p=getTzParts(new Date());
+  return p.year+"-"+p.month+"-"+p.day;
+}
+function nowTimeInput(){
+  const p=getTzParts(new Date());
+  return p.hour+":"+p.minute;
+}
+function setCurrentStart(){
+  $("campaignDate").value=todayInput();
+  $("campaignTime").value=nowTimeInput();
+  updatePreview();
+}
+function makeZonedIso(dateValue,timeValue){
+  const d=String(dateValue||"").split("-").map(Number);
+  const t=String(timeValue||"").split(":").map(Number);
+  if(d.length!==3||t.length<2||d.some(function(v){return !Number.isFinite(v);})||t.some(function(v){return !Number.isFinite(v);}))return null;
+  const desired=Date.UTC(d[0],d[1]-1,d[2],t[0],t[1],0,0);
+  let candidate=desired;
+  for(let i=0;i<4;i++){
+    const parts=getTzParts(new Date(candidate));
+    const represented=Date.UTC(Number(parts.year),Number(parts.month)-1,Number(parts.day),Number(parts.hour),Number(parts.minute),0,0);
+    const adjustment=desired-represented;
+    candidate+=adjustment;
+    if(adjustment===0)break;
+  }
+  const result=new Date(candidate);
+  if(!Number.isFinite(result.getTime()))return null;
+  const actual=getTzParts(result);
+  if(actual.year!==String(d[0])||actual.month!==String(d[1]).padStart(2,"0")||actual.day!==String(d[2]).padStart(2,"0")||actual.hour!==String(t[0]).padStart(2,"0")||actual.minute!==String(t[1]).padStart(2,"0"))return null;
+  return result.toISOString();
+}
+function parseDateValue(value){
+  if(!value)return null;
+  const p=String(value).split("-").map(Number);
+  if(p.length!==3||p.some(function(v){return !Number.isFinite(v);}))return null;
+  return new Date(Date.UTC(p[0],p[1]-1,p[2],12));
+}
+function dateOnly(value){
+  const d=parseDateValue(value);
+  return d?new Intl.DateTimeFormat("ru-RU",{timeZone:"UTC",day:"numeric",month:"long",year:"numeric"}).format(d):"—";
+}
+function dateTime(value){
+  if(!value)return "—";
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime()))return "—";
+  return new Intl.DateTimeFormat("ru-RU",{timeZone:TZ,day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).format(d);
+}
+function shortDay(value){
+  const d=parseDateValue(value);
+  return d?new Intl.DateTimeFormat("ru-RU",{timeZone:"UTC",weekday:"short",day:"numeric",month:"short"}).format(d):String(value||"—");
+}
+function isoForLocalDate(dateString,timeString){
+  return makeZonedIso(dateString,timeString);
+}
+function updatePreview(){
+  const startIso=isoForLocalDate($("campaignDate").value,$("campaignTime").value);
+  const cost=Number($("campaignCost").value);
+  if(!startIso){
+    $("endPreview").textContent="Выбери дату и время";
+  }else{
+    const end=new Date(new Date(startIso).getTime()+durationDays*86400000);
+    $("endPreview").textContent=dateTime(end.toISOString());
+  }
+  $("dailyCostPreview").textContent=Number.isFinite(cost)&&cost>0?money(cost/durationDays):"—";
+}
+function setDuration(days){
+  durationDays=Math.max(1,Math.min(7,Number(days)||1));
+  document.querySelectorAll(".duration-btn").forEach(function(btn){
+    const active=Number(btn.dataset.days)===durationDays;
+    btn.classList.toggle("active",active);
+    btn.setAttribute("aria-pressed",active?"true":"false");
+  });
+  updatePreview();
+}
+function showToast(message){
+  const el=$("toast");
+  el.textContent=message;
+  el.classList.add("show");
+  clearTimeout(showToast.timer);
+  showToast.timer=setTimeout(function(){el.classList.remove("show");},2600);
+}
+function setBusy(value){
+  busy=value;
+  $("refreshButton").disabled=value;
+  $("addCampaignButton").disabled=value;
+  $("saveCampaignButton").disabled=value;
+  $("saveCampaignButton").textContent=value?"Сохраняем…":(editingId?"Сохранить изменения":"Сохранить рекламу");
+}
+function showAccess(message){
+  $("loadingState").hidden=true;
+  $("dashboard").hidden=true;
+  $("accessState").hidden=false;
+  $("accessMessage").textContent=message||"Нет доступа.";
+}
+function normalizeArray(data){
+  if(Array.isArray(data))return data;
+  if(typeof data==="string"){
+    try{const parsed=JSON.parse(data);return Array.isArray(parsed)?parsed:[];}catch(error){return [];}
+  }
+  return [];
+}
+async function loadAll(showMessage){
+  if(busy)return;
+  setBusy(true);
+  try{
+    const results=await Promise.all([
+      supabaseClient.rpc("get_advertising_campaigns"),
+      supabaseClient.rpc("get_advertising_analytics")
+    ]);
+    if(results[0].error)throw results[0].error;
+    if(results[1].error)throw results[1].error;
+    campaigns=normalizeArray(results[0].data);
+    analytics=Array.isArray(results[1].data)?results[1].data[0]:results[1].data;
+    if(!analytics||!Array.isArray(analytics.daily))throw new Error("Сервер вернул неполную рекламную статистику.");
+    render();
+    $("loadingState").hidden=true;
+    $("accessState").hidden=true;
+    $("dashboard").hidden=false;
+    if(showMessage)showToast("Рекламная статистика обновлена");
+  }catch(error){
+    console.error("Advertising admin:",error);
+    if(!$("dashboard").hidden){
+      showToast(error.message||"Не удалось обновить рекламу");
+    }else{
+      showAccess(error.message==="Access denied"?"У этой учётной записи нет прав администратора.":(error.message||"Не удалось загрузить рекламные данные."));
+    }
+  }finally{
+    setBusy(false);
+  }
+}
+function getCampaignStatus(campaign){
+  const start=new Date(campaign.start_at).getTime();
+  const end=start+Number(campaign.duration_days)*86400000;
+  const now=Date.now();
+  if(now<start)return {label:"Запланирована",className:"future",end:end,active:false};
+  if(now<end)return {label:"Идёт реклама",className:"active",end:end,active:true};
+  return {label:"Завершена",className:"",end:end,active:false};
+}
+function renderStats(){
+  const a=analytics||{};
+  $("paidTotal").textContent=money(a.paid_total);
+  $("allocatedTotal").textContent=money(a.allocated_to_date);
+  $("revenueTotal").textContent=money(a.revenue_during_ads);
+  $("profitTotal").textContent=signedMoney(a.profit_to_date);
+  $("futureAllocation").textContent=money(a.not_yet_allocated);
+  const today=a.daily.find(function(row){return row.date===a.today;})||{ad_spend:0,orders:0,completed:0,revenue:0,profit:0};
+  $("todayCaption").textContent="За "+dateOnly(a.today)+" · время Хельсинки";
+  $("todaySpend").textContent=money(today.ad_spend);
+  $("todayOrders").textContent=count(today.orders);
+  $("todayCompleted").textContent=count(today.completed);
+  $("todayRevenue").textContent=money(today.revenue);
+  $("todayProfit").textContent=signedMoney(today.profit);
+  $("todayProfitBox").classList.toggle("loss",Number(today.profit)<0);
+  $("todayProfitBox").classList.toggle("profit",Number(today.profit)>=0);
+}
+function campaignCard(campaign,index){
+  const state=getCampaignStatus(campaign);
+  const colors=["#43dfa0","#ffad83","#ad8bff","#69aaff","#f6c96a"];
+  const name=String(campaign.advertiser_name||"Без имени");
+  const initials=name.trim().split(/\s+/).filter(Boolean).slice(0,2).map(function(part){return Array.from(part)[0]||"";}).join("").toUpperCase()||"AD";
+  const daily=Number(campaign.cost_total)/Number(campaign.duration_days);
+  return '<article class="campaign-card" style="--campaign-color:'+colors[index%colors.length]+'">'+
+    '<div class="campaign-top"><div class="campaign-person"><div class="campaign-avatar">'+escapeHtml(initials)+'</div><div style="min-width:0"><div class="campaign-name">'+escapeHtml(name)+'</div><a class="campaign-phone" href="tel:'+escapeHtml(campaign.advertiser_phone)+'">'+escapeHtml(campaign.advertiser_phone)+'</a></div></div><span class="state-pill '+state.className+'">'+state.label+'</span></div>'+
+    '<div class="campaign-cost"><div><div class="campaign-meta-label">Стоимость размещения</div><div class="campaign-amount">'+money(campaign.cost_total)+'</div></div><div class="campaign-daily">'+money(daily)+'<br>за день рекламы</div></div>'+
+    '<div class="campaign-meta"><div class="campaign-meta-item"><div class="campaign-meta-label">Начало</div><div class="campaign-meta-value">'+dateTime(campaign.start_at)+'</div></div><div class="campaign-meta-item"><div class="campaign-meta-label">Окончание</div><div class="campaign-meta-value">'+dateTime(new Date(state.end).toISOString())+'</div></div><div class="campaign-meta-item"><div class="campaign-meta-label">Продолжительность</div><div class="campaign-meta-value">'+count(campaign.duration_days)+' '+(Number(campaign.duration_days)===1?"день":"дн.")+'</div></div><div class="campaign-meta-item"><div class="campaign-meta-label">Добавлено в систему</div><div class="campaign-meta-value">'+dateTime(campaign.created_at)+'</div></div></div>'+
+    '<div class="campaign-actions"><button class="small-btn" type="button" data-repeat="'+escapeHtml(campaign.id)+'">＋ Повторить</button><button class="small-btn" type="button" data-edit="'+escapeHtml(campaign.id)+'">✎ Изменить</button><button class="small-btn danger" type="button" data-delete="'+escapeHtml(campaign.id)+'">Удалить</button></div>'+
+    '</article>';
+}
+function renderCampaigns(){
+  const list=$("campaignList");
+  if(!campaigns.length){
+    list.innerHTML='<div class="empty" style="grid-column:1/-1">Пока нет рекламных размещений.<br>Нажми «Добавить рекламу», чтобы записать первую публикацию.</div>';
+    return;
+  }
+  list.innerHTML=campaigns.map(campaignCard).join("");
+  const suggestions=new Map();
+  campaigns.forEach(function(c){const key=String(c.advertiser_name||"").trim().toLowerCase();if(key&&!suggestions.has(key))suggestions.set(key,c);});
+  $("advertiserSuggestions").innerHTML=Array.from(suggestions.values()).map(function(c){return '<option value="'+escapeHtml(c.advertiser_name)+'"></option>';}).join("");
+}
+function renderDaily(){
+  const daily=[...(analytics.daily||[])].sort(function(a,b){return String(b.date).localeCompare(String(a.date));});
+  const list=$("dailyList");
+  if(!daily.length){
+    list.innerHTML='<div class="empty">Статистика появится после добавления первого рекламного размещения.</div>';
+    return;
+  }
+  list.innerHTML=daily.map(function(row){
+    const profit=Number(row.profit)||0;
+    return '<article class="daily-card">'+
+      '<div class="daily-card-head"><div class="daily-date">'+escapeHtml(dateOnly(row.date))+'</div><div class="daily-weekday">'+(row.date===analytics.today?"Сегодня":escapeHtml(new Intl.DateTimeFormat("ru-RU",{timeZone:"UTC",weekday:"long"}).format(parseDateValue(row.date))))+'</div></div>'+
+      '<div><div class="daily-metric-label">Заказы</div><div class="daily-metric-value">'+count(row.orders)+'</div></div>'+
+      '<div><div class="daily-metric-label">Выполнено</div><div class="daily-metric-value">'+count(row.completed)+'</div></div>'+
+      '<div><div class="daily-metric-label">Доход / расход</div><div class="daily-metric-value">'+money(row.revenue)+' / '+money(row.ad_spend)+'</div></div>'+
+      '<div><div class="daily-metric-label">Итог</div><div class="daily-metric-value '+(profit>=0?"good":"bad")+'">'+signedMoney(profit)+'</div></div>'+
+      '</article>';
+  }).join("");
+}
+function renderRanks(){
+  const list=$("rankList");
+  const rows=(analytics.daily||[]).filter(function(row){return Number(row.ad_spend)>0;}).sort(function(a,b){return Number(b.profit)-Number(a.profit);}).slice(0,5);
+  if(!rows.length){list.innerHTML='<div class="empty">Рейтинг появится после первых рекламных дней.</div>';return;}
+  list.innerHTML=rows.map(function(row,index){
+    const profit=Number(row.profit)||0;
+    return '<div class="rank-row"><div class="rank-num">'+(index+1)+'</div><div><div class="rank-title">'+escapeHtml(dateOnly(row.date))+'</div><div class="rank-detail">'+count(row.completed)+' выполнено · '+count(row.orders)+' заказов · расходы '+money(row.ad_spend)+'</div></div><div class="rank-profit '+(profit>=0?"good":"bad")+'">'+signedMoney(profit)+'</div></div>';
+  }).join("");
+}
+function render(){
+  renderStats();
+  renderCampaigns();
+  renderDaily();
+  renderRanks();
+}
+function openCampaignModal(campaign,repeat){
+  editingId=campaign&&!repeat?campaign.id:null;
+  $("campaignForm").reset();
+  $("formError").textContent="";
+  $("modalTitle").textContent=editingId?"Изменить рекламное размещение":"Добавить рекламу";
+  $("saveCampaignButton").textContent=editingId?"Сохранить изменения":"Сохранить рекламу";
+  $("campaignDate").value=todayInput();
+  $("campaignTime").value=nowTimeInput();
+  setDuration(1);
+  if(campaign){
+    $("advertiserName").value=campaign.advertiser_name||"";
+    $("advertiserPhone").value=campaign.advertiser_phone||"";
+    $("campaignCost").value=campaign.cost_total||"";
+    if(!repeat){
+      const start=new Date(campaign.start_at);
+      const parts=getTzParts(start);
+      $("campaignDate").value=parts.year+"-"+parts.month+"-"+parts.day;
+      $("campaignTime").value=parts.hour+":"+parts.minute;
+      setDuration(Number(campaign.duration_days)||1);
+    }
+  }
+  updatePreview();
+  $("campaignModal").hidden=false;
+  $("advertiserName").focus();
+}
+function closeCampaignModal(){
+  if(busy)return;
+  $("campaignModal").hidden=true;
+  editingId=null;
+}
+function openDeleteModal(campaign){
+  deleteTarget=campaign;
+  $("deleteText").textContent="Размещение «"+campaign.advertiser_name+"» на "+money(campaign.cost_total)+" будет удалено. Дневные расходы и результаты пересчитаются.";
+  $("deleteModal").hidden=false;
+}
+function closeDeleteModal(){if(busy)return;$("deleteModal").hidden=true;deleteTarget=null;}
+function lookupCampaign(id){return campaigns.find(function(c){return c.id===id;})||null;}
+async function saveCampaign(event){
+  event.preventDefault();
+  if(busy)return;
+  const name=$("advertiserName").value.trim();
+  const phone=$("advertiserPhone").value.trim();
+  const cost=Number($("campaignCost").value);
+  const startIso=makeZonedIso($("campaignDate").value,$("campaignTime").value);
+  if(!name||!phone){$("formError").textContent="Укажи имя рекламодателя и номер телефона.";return;}
+  if(!Number.isFinite(cost)||cost<=0){$("formError").textContent="Укажи сумму больше нуля.";return;}
+  if(!startIso){$("formError").textContent="Проверь дату и время публикации.";return;}
+  if(durationDays<1||durationDays>7){$("formError").textContent="Продолжительность должна быть от 1 до 7 дней.";return;}
+  setBusy(true);
+  try{
+    const args={p_advertiser_name:name,p_advertiser_phone:phone,p_cost_total:cost,p_start_at:startIso,p_duration_days:durationDays};
+    const result=editingId
+      ?await supabaseClient.rpc("update_advertising_campaign",Object.assign({p_id:editingId},args))
+      :await supabaseClient.rpc("create_advertising_campaign",args);
+    if(result.error)throw result.error;
+    $("campaignModal").hidden=true;
+    editingId=null;
+    await loadAll(false);
+    showToast("Рекламное размещение сохранено");
+  }catch(error){
+    console.error("Save campaign:",error);
+    $("formError").textContent=error.message||"Не удалось сохранить размещение.";
+  }finally{setBusy(false);}
+}
+async function deleteCampaign(){
+  if(!deleteTarget||busy)return;
+  setBusy(true);
+  try{
+    const result=await supabaseClient.rpc("delete_advertising_campaign",{p_id:deleteTarget.id});
+    if(result.error)throw result.error;
+    $("deleteModal").hidden=true;
+    deleteTarget=null;
+    await loadAll(false);
+    showToast("Размещение удалено, статистика пересчитана");
+  }catch(error){
+    console.error("Delete campaign:",error);
+    showToast(error.message||"Не удалось удалить размещение");
+  }finally{setBusy(false);}
+}
+function setupEvents(){
+  $("refreshButton").addEventListener("click",function(){loadAll(true);});
+  $("addCampaignButton").addEventListener("click",function(){openCampaignModal(null,false);});
+  $("campaignForm").addEventListener("submit",saveCampaign);
+  $("closeModalButton").addEventListener("click",closeCampaignModal);
+  $("cancelModalButton").addEventListener("click",closeCampaignModal);
+  $("campaignModal").addEventListener("click",function(event){if(event.target===$("campaignModal"))closeCampaignModal();});
+  $("closeDeleteButton").addEventListener("click",closeDeleteModal);
+  $("keepCampaignButton").addEventListener("click",closeDeleteModal);
+  $("confirmDeleteButton").addEventListener("click",deleteCampaign);
+  $("deleteModal").addEventListener("click",function(event){if(event.target===$("deleteModal"))closeDeleteModal();});
+  $("durationGrid").addEventListener("click",function(event){const btn=event.target.closest("[data-days]");if(btn)setDuration(btn.dataset.days);});
+  ["campaignDate","campaignTime","campaignCost"].forEach(function(id){$(id).addEventListener("input",updatePreview);$(id).addEventListener("change",updatePreview);});
+  document.querySelectorAll("[data-time-preset]").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      if(btn.dataset.timePreset==="now"){setCurrentStart();}
+      else{$("campaignTime").value=btn.dataset.timePreset;updatePreview();}
+    });
+  });
+  $("advertiserName").addEventListener("change",function(){
+    const match=campaigns.find(function(c){return String(c.advertiser_name||"").trim().toLowerCase()===$("advertiserName").value.trim().toLowerCase();});
+    if(match&&!$("advertiserPhone").value.trim())$("advertiserPhone").value=match.advertiser_phone||"";
+  });
+  $("campaignList").addEventListener("click",function(event){
+    const edit=event.target.closest("[data-edit]");
+    const repeat=event.target.closest("[data-repeat]");
+    const remove=event.target.closest("[data-delete]");
+    if(edit){const c=lookupCampaign(edit.dataset.edit);if(c)openCampaignModal(c,false);}
+    if(repeat){const c=lookupCampaign(repeat.dataset.repeat);if(c)openCampaignModal(c,true);}
+    if(remove){const c=lookupCampaign(remove.dataset.delete);if(c)openDeleteModal(c);}
+  });
+  document.addEventListener("keydown",function(event){
+    if(event.key==="Escape"){
+      if(!$("campaignModal").hidden)closeCampaignModal();
+      if(!$("deleteModal").hidden)closeDeleteModal();
+    }
+  });
+}
+async function init(){
+  if(!window.supabase||!window.supabase.createClient){
+    showAccess("Не удалось загрузить клиент базы данных.");return;
+  }
+  try{
+    const sessionResult=await supabaseClient.auth.getSession();
+    if(sessionResult.error||!sessionResult.data||!sessionResult.data.session){
+      showAccess("Сначала войди через основную админ-панель.");return;
+    }
+    setupEvents();
+    await loadAll(false);
+  }catch(error){
+    console.error("Advertising init:",error);
+    showAccess("Не удалось проверить административную сессию.");
+  }
+}
+init();
+})();
+</script>
+</body>
+</html>
