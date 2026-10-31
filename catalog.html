@@ -21,7 +21,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>AppCore</title>
 
-<link rel="stylesheet" href="catalog.css?v=20261101cartbar2">
+<link rel="stylesheet" href="catalog.css?v=20261101cartbar3">
 <style>
 .catalog-bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:500;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(8,9,13,.94);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.08)}
 .catalog-bottom-nav a{min-width:0;text-align:center;text-decoration:none;color:#aeb4c4;font-size:19px;font-weight:700;padding:6px 4px;border-radius:12px}
@@ -248,10 +248,13 @@ body{padding-bottom:150px}
     <span class="price-summary-count"><b id="count">0</b> <span id="countLabel">приложений</span></span>
     <span class="price-summary-amounts">
       <span id="original" class="price-value">0 ₽</span>
-      <span id="priceArrow" class="price-arrow">→</span>
-      <span class="price-total-group"><span id="priceDueLabel" class="price-due-label" hidden>К оплате</span><span id="total" class="price-total">0 ₽</span></span>
+      <span id="priceArrow" class="price-arrow" hidden>→</span>
+      <span id="total" class="price-total" hidden>0 ₽</span>
     </span>
-    <span id="priceDiscount" class="price-discount">🎁 <span id="discount">0%</span></span>
+    <span id="priceDiscount" class="price-discount">🎁 <span id="discount">До −20%</span></span>
+  </div>
+  <div class="price-promo-row" id="pricePromoRow" aria-live="polite">
+    <span id="pricePromoMessage">Ещё 1 приложение = скидка 5%</span>
   </div>
 </div>
 
@@ -388,7 +391,7 @@ body{padding-bottom:150px}
 
 <div id="toast" class="toast"></div>
 
-<script src="catalog.js?v=20261101cartbar2"></script>
+<script src="catalog.js?v=20261101cartbar3"></script>
 <script src="install-enhancements.js?v=20261007"></script>
 <style>
 .install-steps{
