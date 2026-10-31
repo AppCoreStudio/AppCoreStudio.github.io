@@ -211,10 +211,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offs
   <div id="accessState" class="state" hidden><strong>Доступ только для администратора</strong><span id="accessMessage">Войдите через основную админ-панель.</span><p><a href="/admin.html">Перейти ко входу в админ-панель →</a></p></div>
 
   <div id="financeContent" hidden>
-    <section class="hero" aria-label="Общий чистый доход AppCore">
+    <section class="hero" aria-label="Общий финансовый результат AppCore">
       <div class="hero-main">
         <div class="eyebrow"><span class="live-dot"></span> Финансовый пульс AppCoreStudio</div>
-        <div class="hero-caption">ЧИСТЫЙ ДОХОД ЗА ВСЁ ВРЕМЯ</div>
+        <div class="hero-caption">ЧИСТЫЙ РЕЗУЛЬТАТ APPCORE</div>
         <div class="hero-value" id="allTimeValue">— <span class="currency">₽</span></div>
         <div class="hero-desc">Единый результат AppCore: завершённые заказы минус начисленные реферальные вознаграждения и рекламные расходы, уже отнесённые на прошедшее время размещений.</div>
         <div class="hero-foot">
@@ -532,10 +532,10 @@ function render(data){
   const best=Number(data.best_net)||0;
   const series=Array.isArray(data.series)?data.series:[];
   const labels={
-    days:["Заработок по дням","за 7 дней"],
-    weeks:["Заработок по неделям","за 12 недель"],
-    months:["Заработок по месяцам","за текущий год"],
-    years:["Заработок по годам","за все календарные годы"]
+    days:["Чистый результат по дням","за 7 дней"],
+    weeks:["Чистый результат по неделям","за 12 недель"],
+    months:["Чистый результат по месяцам","за текущий год"],
+    years:["Чистый результат по годам","за все календарные годы"]
   };
   const periodLabels=labels[data.period]||labels.days;
   const startText=shortDate(data.period_start);
