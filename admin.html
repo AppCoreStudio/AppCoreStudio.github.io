@@ -1390,6 +1390,90 @@ body{
   .stat,.btn,.tab,.chart-period{transition:none!important}
 }
 
+
+/* APPCORE ORDER TILES — clean, modern admin cards */
+.tabs{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;
+  overflow:visible;padding:0;margin:0 0 18px;border:0;background:transparent;
+}
+.tab{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  min-width:0;min-height:86px;padding:15px 16px;flex:initial;
+  border:1px solid rgba(255,255,255,.09);border-radius:19px;
+  background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018)),#111925;
+  color:#dce5ef;text-align:left;white-space:normal;
+  box-shadow:0 12px 28px rgba(0,0,0,.16);
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.tab:hover{transform:translateY(-2px);background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025)),#141e2b}
+.tab-label{display:flex;align-items:center;gap:11px;min-width:0;font-size:12px;font-weight:850;line-height:1.3}
+.tab-icon{width:39px;height:39px;flex:0 0 39px;display:grid;place-items:center;border-radius:13px;font-size:19px;font-weight:900;background:rgba(255,255,255,.07)}
+.tab-count{min-width:34px;height:34px;flex:0 0 auto;display:grid;place-items:center;padding:0 9px;border-radius:11px;background:rgba(255,255,255,.07);color:#f5f8fc;font-size:14px;font-weight:950;font-variant-numeric:tabular-nums}
+.tab-new .tab-icon{color:#9bbdff;background:rgba(105,170,255,.12)}
+.tab-completed .tab-icon{color:#7ce8b1;background:rgba(67,223,160,.12)}
+.tab-cancelled .tab-icon{color:#ff9ca4;background:rgba(255,120,134,.12)}
+.tab-draft .tab-icon{color:#c8b5ff;background:rgba(173,139,255,.12)}
+.tab-new.active{border-color:rgba(105,170,255,.35);background:linear-gradient(145deg,rgba(105,170,255,.14),rgba(105,170,255,.045)),#111925;box-shadow:0 12px 30px rgba(65,125,220,.10)}
+.tab-completed.active{border-color:rgba(67,223,160,.35);background:linear-gradient(145deg,rgba(67,223,160,.13),rgba(67,223,160,.04)),#111925;box-shadow:0 12px 30px rgba(32,180,120,.09)}
+.tab-cancelled.active{border-color:rgba(255,120,134,.32);background:linear-gradient(145deg,rgba(255,120,134,.12),rgba(255,120,134,.035)),#111925}
+.tab-draft.active{border-color:rgba(173,139,255,.35);background:linear-gradient(145deg,rgba(173,139,255,.13),rgba(173,139,255,.04)),#111925}
+.tab-new.active .tab-count{background:rgba(105,170,255,.18);color:#b8d3ff}
+.tab-completed.active .tab-count{background:rgba(67,223,160,.17);color:#a5f2c8}
+.tab-cancelled.active .tab-count{background:rgba(255,120,134,.17);color:#ffb0b6}
+.tab-draft.active .tab-count{background:rgba(173,139,255,.18);color:#d4c6ff}
+
+.section{overflow:visible;border:0;background:transparent;box-shadow:none}
+.section-head{margin-bottom:11px;padding:0 3px 5px;border:0}
+.section-title{font-size:16px;letter-spacing:-.25px}
+.section-count{padding:6px 10px;border:1px solid rgba(255,255,255,.07);border-radius:999px;background:rgba(255,255,255,.035)}
+.orders{gap:12px;padding:0;background:transparent}
+.order{
+  padding:19px;border:1px solid rgba(255,255,255,.085);border-radius:20px;
+  background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012)),#111823;
+  box-shadow:0 13px 32px rgba(0,0,0,.16);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.order:last-child{border-bottom:1px solid rgba(255,255,255,.085)}
+.order:hover{transform:translateY(-2px);border-color:rgba(130,160,195,.23);background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.018)),#121c28;box-shadow:0 17px 38px rgba(0,0,0,.22)}
+.order-main-row{align-items:flex-start;gap:14px}
+.order-checkbox-wrap{padding-top:5px}
+.order-checkbox{width:19px;height:19px;cursor:pointer}
+.order-head{align-items:center}
+.order-client{color:#f5f8fc;font-size:17px;font-weight:950;letter-spacing:-.45px;line-height:1.3;overflow-wrap:anywhere}
+.order-number{margin-top:5px;color:#9fb0c3;font-size:11px;font-weight:800;letter-spacing:.2px}
+.order-date{margin-top:4px;color:#77889d;font-size:10px}
+.status{min-height:30px;padding:0 12px;border-radius:999px;font-size:10px;letter-spacing:.1px}
+.order-info{grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:16px}
+.info{min-width:0;min-height:65px;padding:11px 12px;border:1px solid rgba(255,255,255,.055);border-radius:13px;background:rgba(5,10,17,.38)}
+.info-label{font-size:9px;letter-spacing:.65px}
+.info-value{margin-top:7px;font-size:13px;line-height:1.35;font-weight:900}
+.apps{gap:7px;margin-top:13px}
+.app-tag{padding:7px 10px;border-radius:999px;background:rgba(105,170,255,.07);border-color:rgba(105,170,255,.11);color:#c4d7ef;font-size:10px}
+.order-bottom{margin-top:15px;padding-top:13px;border-top:1px solid rgba(255,255,255,.055)}
+.order-actions{gap:8px}
+.order-actions .btn{min-height:38px;padding:0 13px;border-radius:11px;font-size:10px}
+@media(max-width:850px){
+ .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .order-info{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+ .tabs{gap:8px}
+ .tab{min-height:78px;padding:12px;border-radius:16px;gap:6px}
+ .tab-label{gap:8px;font-size:11px}
+ .tab-icon{width:34px;height:34px;flex-basis:34px;border-radius:11px;font-size:17px}
+ .tab-count{min-width:29px;height:29px;padding:0 7px;border-radius:9px;font-size:12px}
+ .order{padding:15px 13px;border-radius:17px}
+ .order-main-row{gap:10px}
+ .order-head{flex-direction:row;align-items:flex-start}
+ .order-client{font-size:15px}
+ .order-info{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .info{min-height:60px;padding:10px}
+ .order-bottom{align-items:stretch;flex-direction:column}
+ .order-actions{width:100%}
+ .order-actions .btn{flex:1 1 100%}
+ .status{align-self:flex-start}
+}
+
 </style>
 </head>
 
@@ -1660,15 +1744,27 @@ body{
 
     <!-- TABS -->
 
-    <div class="tabs">
+    <div class="tabs" aria-label="Категории заказов">
 
-      <button class="tab active" data-tab="active">🆕 Новые <span class="tab-count" id="tabActiveCount">0</span></button>
+      <button class="tab tab-new active" data-tab="active">
+        <span class="tab-label"><span class="tab-icon">✦</span><span>Новые заявки</span></span>
+        <span class="tab-count" id="tabActiveCount">0</span>
+      </button>
 
-      <button class="tab" data-tab="completed">✅ Завершённые <span class="tab-count" id="tabCompletedCount">0</span></button>
+      <button class="tab tab-completed" data-tab="completed">
+        <span class="tab-label"><span class="tab-icon">✓</span><span>Завершённые</span></span>
+        <span class="tab-count" id="tabCompletedCount">0</span>
+      </button>
 
-      <button class="tab" data-tab="cancelled">❌ Отклонённые <span class="tab-count" id="tabCancelledCount">0</span></button>
+      <button class="tab tab-cancelled" data-tab="cancelled">
+        <span class="tab-label"><span class="tab-icon">×</span><span>Отклонённые</span></span>
+        <span class="tab-count" id="tabCancelledCount">0</span>
+      </button>
 
-      <button class="tab" data-tab="draft">🗑️ Черновики <span class="tab-count" id="tabDraftCount">0</span></button>
+      <button class="tab tab-draft" data-tab="draft">
+        <span class="tab-label"><span class="tab-icon">⌑</span><span>Черновики</span></span>
+        <span class="tab-count" id="tabDraftCount">0</span>
+      </button>
 
     </div>
 
@@ -2329,15 +2425,15 @@ function renderOrder(order,{draft=false}={}){
 
           <div class="order-head">
 
-            <div>
-              <div class="order-number">
-                ${escapeHtml(
-                  order.order_number || "Без номера"
-                )}
+            <div class="order-person">
+              <div class="order-client">
+                ${escapeHtml(order.client_name || "Клиент без имени")}
               </div>
-
+              <div class="order-number">
+                Заказ №${escapeHtml(order.order_number || "Без номера")}
+              </div>
               <div class="order-date">
-                ${formatDate(order.created_at)}
+                Создан: ${formatDate(order.created_at)}
               </div>
             </div>
 
@@ -2356,16 +2452,6 @@ function renderOrder(order,{draft=false}={}){
           </div>
 
           <div class="order-info">
-
-            <div class="info">
-              <div class="info-label">
-                Клиент
-              </div>
-
-              <div class="info-value">
-                ${escapeHtml(order.client_name || 'Имя не указано')}
-              </div>
-            </div>
 
             <div class="info">
               <div class="info-label">
