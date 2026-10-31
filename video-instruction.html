@@ -78,6 +78,25 @@ h1{text-align:center;font-size:clamp(28px,5vw,46px);line-height:1.12;letter-spac
 footer{text-align:center;color:#91a5c7;font-size:15px;margin:42px 0 8px}
 footer strong{color:#cbd8f0}
 @media(max-width:560px){body{padding:28px 14px}.brand{margin-bottom:34px}.warning{gap:14px;padding:20px 16px;border-radius:18px}.warning-icon{flex-basis:42px;width:42px;height:42px;font-size:27px;border-width:2px}.intro{margin-bottom:24px}.credentials{padding:20px 16px;border-radius:18px}.credential-row{grid-template-columns:minmax(0,1fr);gap:10px}.copy-button{width:100%}.player{border-radius:16px}footer{font-size:12px;margin-top:30px}}
+
+[hidden]{display:none!important}
+body.promo-mode{padding:clamp(22px,6vh,64px) 16px;align-items:center}
+body.promo-mode main{max-width:680px}
+body.promo-mode .brand{margin:0 0 clamp(24px,5vh,38px);font-size:clamp(30px,5vw,44px)}
+body.promo-mode footer{display:none}
+body.promo-mode .promo-page{display:block;position:relative;overflow:hidden;max-width:680px;margin:0 auto;padding:clamp(30px,6vw,54px);border:1px solid #244875;border-radius:28px;background:radial-gradient(ellipse at 50% 0%,#18365d 0%,#0c1b32 48%,#091323 100%);box-shadow:0 28px 80px #0009;text-align:center}
+body.promo-mode .promo-page:before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,#52b5ff,transparent)}
+body.promo-mode .promo-icon{display:none}
+body.promo-mode .promo-page h2{margin:0 0 24px;color:#fff;font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.03em}
+body.promo-mode .promo-page p{max-width:510px;margin:0 auto 14px;color:#d0def2;font-size:clamp(17px,2.6vw,21px);line-height:1.6}
+body.promo-mode .promo-actions{display:grid;gap:14px;max-width:500px;margin:34px auto 0}
+body.promo-mode .promo-button{min-height:62px;padding:17px 22px;border-radius:16px;font-size:clamp(14px,2.1vw,16px);font-weight:850;letter-spacing:.01em;transition:transform .18s ease,filter .18s ease}
+body.promo-mode .promo-button:hover{transform:translateY(-2px);filter:brightness(1.07)}
+body.promo-mode .promo-whatsapp{background:linear-gradient(110deg,#21d879,#11b966);color:#062314;box-shadow:0 10px 28px #13c66b38}
+body.promo-mode .promo-catalog{background:linear-gradient(110deg,#2879ee,#6650ed);color:#fff;box-shadow:0 10px 28px #4168ee38}
+body.promo-mode .promo-footer{margin-top:30px;color:#a9c2e2;font-size:15px;font-weight:600;letter-spacing:.02em}
+@media(max-width:560px){body.promo-mode{padding:24px 14px}body.promo-mode .brand{margin-bottom:24px}body.promo-mode .promo-page{padding:30px 20px;border-radius:22px}body.promo-mode .promo-page h2{margin-bottom:20px}body.promo-mode .promo-page p{font-size:17px}body.promo-mode .promo-actions{margin-top:28px;gap:12px}body.promo-mode .promo-button{min-height:58px;padding:15px 14px}}
+
 </style>
 </head>
 <body>
@@ -130,7 +149,6 @@ footer strong{color:#cbd8f0}
 </div>
 
 <section class="promo-page" id="expiredPromo" hidden aria-live="polite">
-  <div class="promo-icon" aria-hidden="true">✓</div>
   <h2>👋 Добро пожаловать!</h2>
   <p>Хотите установить приложения на свой iPhone?</p>
   <p>Мы поможем подобрать приложения и провести установку.</p>
@@ -177,6 +195,7 @@ footer strong{color:#cbd8f0}
   function showPromo(){
     if(accessClosed) return;
     accessClosed = true;
+    document.body.classList.add('promo-mode');
     if(countdownInterval) window.clearInterval(countdownInterval);
     if(accessPollInterval) window.clearInterval(accessPollInterval);
     video.pause();
