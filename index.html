@@ -68,11 +68,11 @@
 <div class="all-reviews-list" id="allReviewsList"></div>
 </div></div>
 
-<div class="modal" id="reviewModal" aria-hidden="true"><form class="modal-card" id="reviewForm">
-<div class="modal-head"><strong>Ваш отзыв</strong><button type="button" id="reviewClose" aria-label="Закрыть">×</button></div>
-<div class="star-pick" id="starPick"><button type="button">★</button><button type="button">★</button><button type="button">★</button><button type="button">★</button><button type="button">★</button></div>
-<input name="author" maxlength="40" placeholder="Ваше имя (необязательно)" autocomplete="given-name">
-<textarea name="text" rows="4" maxlength="500" placeholder="Расскажите, как всё прошло…" required></textarea>
+<div class="modal" id="reviewModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle"><form class="modal-card" id="reviewForm">
+<div class="modal-head"><strong id="reviewModalTitle">Ваш отзыв</strong><button type="button" id="reviewClose" aria-label="Закрыть">×</button></div>
+<div class="star-pick" id="starPick" role="group" aria-label="Ваша оценка"><button type="button" aria-label="1 из 5 звёзд">★</button><button type="button" aria-label="2 из 5 звёзд">★</button><button type="button" aria-label="3 из 5 звёзд">★</button><button type="button" aria-label="4 из 5 звёзд">★</button><button type="button" aria-label="5 из 5 звёзд">★</button></div>
+<label class="sr-only" for="reviewAuthor">Ваше имя (необязательно)</label><input id="reviewAuthor" name="author" maxlength="40" placeholder="Ваше имя (необязательно)" autocomplete="given-name">
+<label class="sr-only" for="reviewText">Текст отзыва</label><textarea id="reviewText" name="text" rows="4" maxlength="500" placeholder="Расскажите, как всё прошло…" required></textarea>
 <button class="btn primary" type="submit">Отправить</button><small>Не указывайте в отзыве пароли, коды подтверждения и платёжные данные.</small>
 </form></div>
 <div class="toast" id="toast"></div>
