@@ -389,6 +389,15 @@ function syncCardSelection(){
     card.classList.toggle("selected",isSelected);
     card.setAttribute("aria-pressed",isSelected ? "true" : "false");
 
+    const app=apps.find(item=>item.id===appId);
+    if(app){
+      card.setAttribute(
+        "aria-label",
+        app.name+", "+app.type+", "+money(unitPrice)+
+        (isSelected ? ", выбрано" : ", не выбрано")
+      );
+    }
+
     const oldPrice=card.querySelector(".app-card-old-price");
     const currentPrice=card.querySelector(".app-card-current-price");
     if(!oldPrice || !currentPrice) return;
@@ -444,8 +453,15 @@ function render(){
     const card=document.createElement("button");
     card.type="button";
     card.className="app-card";
-    card.setAttribute("aria-pressed",selected.has(app.id) ? "true" : "false");
-    card.setAttribute("aria-label",app.name + ", " + app.type + ", " + PRICE + " рублей");
+    const initialDiscount=getDiscount(selected.size);
+    const initialUnitPrice=PRICE*(1-initialDiscount/100);
+    const initiallySelected=selected.has(app.id);
+    card.setAttribute("aria-pressed",initiallySelected ? "true" : "false");
+    card.setAttribute(
+      "aria-label",
+      app.name+", "+app.type+", "+money(initialUnitPrice)+
+      (initiallySelected ? ", выбрано" : ", не выбрано")
+    );
 
     if(selected.has(app.id)){
       card.classList.add("selected");
