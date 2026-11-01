@@ -95,9 +95,10 @@ h1 span{color:#aaa0ff}
 .hero-points{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
 .hero-points span{padding:7px 10px;border:1px solid rgba(255,255,255,.09);border-radius:99px;background:rgba(255,255,255,.04);color:#d8dced;font-size:10px;font-weight:650}
 .reviews{padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:21px;background:linear-gradient(145deg,rgba(23,28,41,.94),rgba(14,17,25,.9));box-shadow:0 15px 40px rgba(0,0,0,.16)}
-.review-title-row{margin:0 2px 10px;align-items:baseline}
-.review-title-row strong{text-transform:none;font-size:15px;letter-spacing:-.2px}
-.review-title-row span{font-size:10px;color:#858fa4}
+.review-title-row{margin:0 2px 10px;align-items:center}
+.review-title-row .section-title{font-size:16px}
+.order-notes{gap:9px}
+.order-notes>.section-title{margin-bottom:2px}
 .rating-summary{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.07)}
 .slider{padding-bottom:5px}
 .review{background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025));border-color:rgba(255,255,255,.08);border-radius:15px}
@@ -195,3 +196,7 @@ h1 span{color:#aaa0ff}
 /* Clear visual hierarchy for the homepage order steps. */
 .steps{gap:7px}
 .section-title{margin:0 2px 2px;color:#e9ebf3;font-size:14px;font-weight:800;letter-spacing:-.2px;line-height:1.3}
+
+
+/* Consistent typography for homepage section headings. */
+.faq h2{font-size:14px;font-weight:800;letter-spacing:-.2px;line-height:1.3}
