@@ -166,6 +166,7 @@ let toastTimer=null;
 const $=id=>document.getElementById(id);
 
 const appList=$("appList");
+const resultsCount=$("resultsCount");
 const empty=$("empty");
 const search=$("search");
 const clear=$("clear");
