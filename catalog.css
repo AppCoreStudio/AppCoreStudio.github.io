@@ -1757,3 +1757,28 @@ font-weight:800
   .app-card{min-height:166px}
   .app-type{font-size:9px}
 }
+
+
+.catalog-quick-info{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+.catalog-quick-info span{
+  display:inline-flex;
+  align-items:center;
+  min-height:29px;
+  padding:6px 9px;
+  border:1px solid rgba(255,255,255,.075);
+  border-radius:9px;
+  background:rgba(255,255,255,.035);
+  color:#b9bfcc;
+  font-size:10px;
+  font-weight:700;
+  line-height:1.25;
+}
+@media(max-width:360px){
+  .catalog-quick-info{gap:5px}
+  .catalog-quick-info span{padding:6px 7px;font-size:9px}
+}
