@@ -1630,3 +1630,112 @@ font-weight:800
 @media(prefers-reduced-motion:reduce){
   .discount-progress-track span{transition:none}
 }
+
+/* Visible keyboard focus and comfortable touch targets for catalog controls. */
+.category{
+  min-height:40px;
+}
+.category:focus-visible,
+.clear:focus-visible{
+  outline:2px solid #a995ff;
+  outline-offset:3px;
+}
+.clear{
+  min-width:40px;
+  min-height:40px;
+}
+@media(prefers-reduced-motion:reduce){
+  .category,
+  .clear{
+    scroll-behavior:auto;
+    transition:none;
+  }
+}
+
+/* Show the app category/type directly in each catalog card. */
+.app-card{
+  min-height:138px;
+  justify-content:flex-start;
+}
+.app-name{
+  min-height:2.3em;
+  white-space:normal;
+  overflow:visible;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  line-height:1.15;
+}
+.app-type{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:100%;
+  margin-top:4px;
+  color:#9da5b5;
+  font-size:10px;
+  font-weight:650;
+  line-height:1.2;
+  text-align:center;
+}
+.app-card-price{
+  margin-top:auto;
+}
+
+/* Clear, customer-facing explanation of the post-checkout steps. */
+.checkout-next{
+  margin-top:14px;
+  padding:14px;
+  border:1px solid rgba(118,143,255,.2);
+  border-radius:16px;
+  background:linear-gradient(145deg,rgba(83,104,190,.12),rgba(255,255,255,.025));
+}
+.checkout-next-title{
+  margin-bottom:11px;
+  color:#f2f4ff;
+  font-size:13px;
+  font-weight:850;
+}
+.checkout-next-steps{
+  display:grid;
+  gap:11px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+.checkout-next-steps li{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  min-width:0;
+}
+.checkout-step-number{
+  display:flex;
+  flex:0 0 23px;
+  width:23px;
+  height:23px;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  background:rgba(118,143,255,.18);
+  color:#cbd5ff;
+  font-size:11px;
+  font-weight:900;
+}
+.checkout-next-steps li>span:last-child{
+  display:block;
+  min-width:0;
+}
+.checkout-next-steps b{
+  display:block;
+  color:#f1f3fa;
+  font-size:12px;
+  line-height:1.35;
+}
+.checkout-next-steps small{
+  display:block;
+  margin-top:3px;
+  color:#9ca4b5;
+  font-size:11px;
+  line-height:1.4;
+}

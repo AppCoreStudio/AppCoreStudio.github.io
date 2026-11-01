@@ -218,3 +218,24 @@ h2{margin:20px 0 10px;font-size:17px}
 .guide-answer input{flex:0 0 auto;margin:2px 0 0;accent-color:#8b73ff}
 .guide-feedback{min-height:0;margin:8px 0 0;color:#ff9ca5;font-size:12px;line-height:1.4}
 .guide-modal .btn:disabled{opacity:.6;cursor:not-allowed}
+
+/* Consistent keyboard focus across profile and recovery controls. */
+.p-form input:focus-visible{
+  outline:2px solid #a995ff;
+  outline-offset:2px;
+}
+.page a:focus-visible,
+.page button:focus-visible,
+.tabbar a:focus-visible,
+.recovery-help summary:focus-visible,
+.guide-answer:focus-within{
+  outline:2px solid #a995ff;
+  outline-offset:3px;
+}
+@media(prefers-reduced-motion:reduce){
+  .page *,
+  .tabbar *{
+    scroll-behavior:auto;
+    transition:none;
+  }
+}
