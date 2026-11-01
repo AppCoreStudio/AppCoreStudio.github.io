@@ -23,7 +23,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Каталог приложений — AppCore</title>
 
-<link rel="stylesheet" href="catalog.css?v=20261102resultcount">
+<link rel="stylesheet" href="catalog.css?v=20261102premiumtop">
 <style>
 .catalog-bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:500;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(8,9,13,.94);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.08)}
 .catalog-bottom-nav a{min-width:0;text-align:center;text-decoration:none;color:#aeb4c4;font-size:19px;font-weight:700;padding:6px 4px;border-radius:12px}
@@ -50,48 +50,19 @@ body{padding-bottom:150px}
   </div>
 </div>
 
-<div class="support-top">
-  <div>
-    <div class="support-top-text">🛠️ Техническая поддержка</div>
-    <div class="support-top-sub">Проблема или нужна помощь?</div>
-  </div>
-
-  <a
-    id="supportTopButton"
-    class="support-button"
-    href="#"
-  >Написать</a>
-</div>
 
 
 
-<a id="referralBanner" class="referral-banner" href="referral/index.html">
-  🎁 Приглашай друзей и зарабатывай
-</a>
 
-<div class="search-wrap">
-  <span class="search-icon">⌕</span>
 
-  <input
-    id="search"
-    aria-label="Поиск приложений"
-    class="search"
-    type="search"
-    placeholder="Поиск приложения…"
-    autocomplete="off"
-    autocorrect="off"
-    spellcheck="false"
-  >
 
-  <button id="clear" class="clear" type="button" aria-label="Очистить поиск">×</button>
-</div>
 
-<div class="categories" id="categories">
-  <button class="category active" type="button" data-category="all" aria-pressed="true">Все</button>
-  <button class="category" type="button" data-category="finance" aria-pressed="false">Банки и инвестиции</button>
-  <button class="category" type="button" data-category="social" aria-pressed="false">Социальные</button>
-  <button class="category" type="button" data-category="useful" aria-pressed="false">Сервисы</button>
-</div>
+
+
+
+
+
+
 
 <div class="discount-progress" id="discountProgress">
   <div class="discount-progress-head">
@@ -122,6 +93,30 @@ body{padding-bottom:150px}
   <div class="discount-progress-details" id="discountProgressDetails" hidden>
     Скидка автоматически применяется ко всей сумме заказа: 2 приложения — 5%, 3 — 10%, 4 — 15%, 5 и более — 20%.
   </div>
+</div>
+
+<div class="search-wrap">
+  <span class="search-icon">⌕</span>
+
+  <input
+    id="search"
+    aria-label="Поиск приложений"
+    class="search"
+    type="search"
+    placeholder="Поиск приложения…"
+    autocomplete="off"
+    autocorrect="off"
+    spellcheck="false"
+  >
+
+  <button id="clear" class="clear" type="button" aria-label="Очистить поиск">×</button>
+</div>
+
+<div class="categories" id="categories">
+  <button class="category active" type="button" data-category="all" aria-pressed="true">Все</button>
+  <button class="category" type="button" data-category="finance" aria-pressed="false">Банки и инвестиции</button>
+  <button class="category" type="button" data-category="social" aria-pressed="false">Социальные</button>
+  <button class="category" type="button" data-category="useful" aria-pressed="false">Сервисы</button>
 </div>
 
 </header>
@@ -237,6 +232,23 @@ body{padding-bottom:150px}
     Попробуйте изменить запрос или категорию.
   </div>
 </div>
+
+<div class="support-top">
+  <div>
+    <div class="support-top-text">🛠️ Техническая поддержка</div>
+    <div class="support-top-sub">Проблема или нужна помощь?</div>
+  </div>
+
+  <a
+    id="supportTopButton"
+    class="support-button"
+    href="#"
+  >Написать</a>
+</div>
+
+<a id="referralBanner" class="referral-banner" href="referral/index.html">
+  🎁 Приглашай друзей и зарабатывай
+</a>
 
 </div>
 
