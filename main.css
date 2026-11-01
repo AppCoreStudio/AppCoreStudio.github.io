@@ -671,3 +671,26 @@ h1 span{
   .page{padding-top:44px;gap:22px}
   .reviews,.steps{padding:20px}
 }
+
+
+/* Original hero artwork — integrated as a responsive visual centerpiece */
+.hero-visual{
+  display:block;
+  width:min(100%,520px);
+  height:auto;
+  aspect-ratio:900/560;
+  object-fit:contain;
+  margin:clamp(5px,1.5vh,14px) auto 0;
+  filter:drop-shadow(0 22px 38px rgba(35,48,110,.24));
+  animation:heroArtworkIn .85s cubic-bezier(.2,.75,.25,1) both;
+}
+@keyframes heroArtworkIn{
+  from{opacity:0;transform:translateY(14px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(max-height:740px){
+  .hero-visual{width:min(100%,390px);max-height:205px;margin-top:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-visual{animation:none}
+}
