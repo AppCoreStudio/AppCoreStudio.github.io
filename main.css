@@ -190,3 +190,8 @@ h1 span{color:#aaa0ff}
   .hero-cta{min-height:46px;margin-top:12px}
   .hero-cta-note{margin-top:4px}
 }
+
+
+/* Clear visual hierarchy for the homepage order steps. */
+.steps{gap:7px}
+.section-title{margin:0 2px 2px;color:#e9ebf3;font-size:14px;font-weight:800;letter-spacing:-.2px;line-height:1.3}
