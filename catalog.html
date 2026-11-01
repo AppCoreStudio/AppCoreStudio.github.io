@@ -78,6 +78,7 @@ body{padding-bottom:150px}
 
   <input
     id="search"
+    aria-label="Поиск приложений"
     class="search"
     type="search"
     placeholder="Поиск приложения…"
@@ -86,14 +87,14 @@ body{padding-bottom:150px}
     spellcheck="false"
   >
 
-  <button id="clear" class="clear" type="button">×</button>
+  <button id="clear" class="clear" type="button" aria-label="Очистить поиск">×</button>
 </div>
 
 <div class="categories" id="categories">
-  <button class="category active" data-category="all">Все</button>
-  <button class="category" data-category="finance">Банки и инвестиции</button>
-  <button class="category" data-category="social">Социальные</button>
-  <button class="category" data-category="useful">Сервисы</button>
+  <button class="category active" type="button" data-category="all" aria-pressed="true">Все</button>
+  <button class="category" type="button" data-category="finance" aria-pressed="false">Банки и инвестиции</button>
+  <button class="category" type="button" data-category="social" aria-pressed="false">Социальные</button>
+  <button class="category" type="button" data-category="useful" aria-pressed="false">Сервисы</button>
 </div>
 
 <div class="discount-progress" id="discountProgress">
