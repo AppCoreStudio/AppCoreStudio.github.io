@@ -1789,3 +1789,64 @@ font-weight:800
   .catalog-quick-info{gap:5px}
   .catalog-quick-info span{padding:6px 7px;font-size:9px}
 }
+
+
+/* Refined first-screen hierarchy: brand, live offer, search and filters. */
+.header{margin-bottom:14px}
+.discount-progress{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  margin:15px 0 0;
+  padding:15px 15px 13px;
+  border-radius:20px;
+  border:1px solid rgba(151,126,255,.34);
+  background:
+    radial-gradient(ellipse at 100% 0%,rgba(113,83,255,.22),transparent 48%),
+    linear-gradient(120deg,rgba(31,27,54,.98),rgba(15,24,35,.98));
+  box-shadow:0 12px 32px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.055);
+}
+.discount-progress:before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  width:150px;
+  height:150px;
+  right:-72px;
+  top:-94px;
+  border-radius:50%;
+  background:rgba(120,91,255,.2);
+  filter:blur(18px);
+  pointer-events:none;
+}
+.discount-progress-title{font-size:14px;letter-spacing:-.2px}
+.discount-progress-message{font-size:12px;line-height:1.4;color:#c0c3d0}
+.discount-progress-value{
+  min-width:50px;
+  padding:7px 9px;
+  border:1px solid rgba(174,151,255,.2);
+  border-radius:12px;
+  background:rgba(125,91,232,.2);
+  color:#d7caff;
+  font-size:15px;
+}
+.discount-progress-track{height:6px;margin-top:12px;background:rgba(255,255,255,.1)}
+.discount-progress-track span{background:linear-gradient(90deg,#8061f5,#c5adff);box-shadow:0 0 12px rgba(157,125,255,.35)}
+.discount-progress-footer{margin-top:10px}
+.discount-progress-levels{gap:6px}
+.discount-progress-levels span{padding:5px 7px;border:1px solid rgba(255,255,255,.045);border-radius:8px;font-size:10px}
+.discount-progress-levels span.active{border-color:rgba(174,151,255,.24);background:rgba(125,91,232,.25);color:#e0d5ff}
+.search-wrap{margin-top:16px}
+.search{height:52px;border-radius:16px;background:rgba(19,22,31,.92);border-color:rgba(255,255,255,.1)}
+.categories{padding:11px 1px 3px;gap:8px}
+.category{height:39px;padding:0 15px;border-radius:13px;background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.09)}
+.category.active{background:linear-gradient(135deg,rgba(112,83,255,.34),rgba(69,52,157,.24));border-color:rgba(151,126,255,.48);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.support-top{margin-top:22px}
+.referral-banner{margin-top:12px}
+@media(max-width:480px){
+  .container{padding:15px 13px 28px}
+  .discount-progress{margin-top:13px;padding:14px 13px 12px;border-radius:18px}
+  .discount-progress-title{font-size:13px}
+  .discount-progress-levels{gap:4px}
+  .discount-progress-levels span{padding:5px 6px;font-size:9px}
+}
