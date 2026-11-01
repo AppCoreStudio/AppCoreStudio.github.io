@@ -1060,7 +1060,7 @@ function buildWhatsAppMessage(type){
 }
 
 function buildWhatsAppUrl(message){
-  return "https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(message);
+  return "whatsapp://send?phone="+WHATSAPP_NUMBER+"&text="+encodeURIComponent(message);
 }
 
 function updateWhatsAppLinks(){
