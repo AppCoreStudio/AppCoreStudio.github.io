@@ -273,6 +273,13 @@ font-weight:800
   background:linear-gradient(135deg,rgba(110,77,255,.28),rgba(73,52,170,.2))
 }
 
+.results-count{
+  margin:10px 2px 0;
+  color:#858b99;
+  font-size:12px;
+  line-height:1.4;
+}
+
 .grid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
