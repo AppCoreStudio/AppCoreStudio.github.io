@@ -420,6 +420,11 @@ function render(){
 
   const searchText=query.trim().toLowerCase();
   const hasSearch=searchText.length>0;
+  const categorySearchTerms={
+    finance:["финансы"],
+    social:["социальные","соцсети"],
+    useful:["сервисы","полезные"]
+  };
 
   const filtered=apps.filter(app=>{
 
@@ -427,10 +432,12 @@ function render(){
       currentCategory==="all"||
       app.category===currentCategory;
 
+    const categoryTerms=categorySearchTerms[app.category]||[];
     const searchOk=
       !hasSearch||
       app.name.toLowerCase().includes(searchText)||
-      app.type.toLowerCase().includes(searchText);
+      app.type.toLowerCase().includes(searchText)||
+      categoryTerms.some(term=>term.includes(searchText));
 
     return categoryOk&&searchOk;
   }).sort((a,b)=>POPULAR_APP_IDS.indexOf(a.id)-POPULAR_APP_IDS.indexOf(b.id));
