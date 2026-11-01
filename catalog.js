@@ -449,6 +449,8 @@ function render(){
     return categoryOk&&searchOk;
   }).sort((a,b)=>POPULAR_APP_IDS.indexOf(a.id)-POPULAR_APP_IDS.indexOf(b.id));
 
+  resultsCount.textContent=`Показано ${filtered.length} из ${apps.length} приложений`;
+
   appList.innerHTML="";
 
   if(!filtered.length){
