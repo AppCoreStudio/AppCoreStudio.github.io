@@ -1630,3 +1630,24 @@ font-weight:800
 @media(prefers-reduced-motion:reduce){
   .discount-progress-track span{transition:none}
 }
+
+/* Visible keyboard focus and comfortable touch targets for catalog controls. */
+.category{
+  min-height:40px;
+}
+.category:focus-visible,
+.clear:focus-visible{
+  outline:2px solid #a995ff;
+  outline-offset:3px;
+}
+.clear{
+  min-width:40px;
+  min-height:40px;
+}
+@media(prefers-reduced-motion:reduce){
+  .category,
+  .clear{
+    scroll-behavior:auto;
+    transition:none;
+  }
+}
