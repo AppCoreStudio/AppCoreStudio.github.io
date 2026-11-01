@@ -1833,14 +1833,10 @@ categories.addEventListener(
       )
       .forEach(item=>{
 
-        item.classList.remove(
-          "active"
-        );
+        const isActive=item===button;
+        item.classList.toggle("active",isActive);
+        item.setAttribute("aria-pressed",isActive ? "true" : "false");
       });
-
-    button.classList.add(
-      "active"
-    );
 
     currentCategory=
       button.dataset.category;
