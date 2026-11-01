@@ -416,9 +416,16 @@ function syncCardSelection(){
   });
 }
 
+function normalizeSearchText(value){
+  return String(value||"")
+    .toLocaleLowerCase("ru-RU")
+    .replace(/ё/g,"е")
+    .trim();
+}
+
 function render(){
 
-  const searchText=query.trim().toLowerCase();
+  const searchText=normalizeSearchText(query);
   const hasSearch=searchText.length>0;
   const categorySearchTerms={
     finance:["финансы"],
@@ -435,9 +442,9 @@ function render(){
     const categoryTerms=categorySearchTerms[app.category]||[];
     const searchOk=
       !hasSearch||
-      app.name.toLowerCase().includes(searchText)||
-      app.type.toLowerCase().includes(searchText)||
-      categoryTerms.some(term=>term.includes(searchText));
+      normalizeSearchText(app.name).includes(searchText)||
+      normalizeSearchText(app.type).includes(searchText)||
+      categoryTerms.some(term=>normalizeSearchText(term).includes(searchText));
 
     return categoryOk&&searchOk;
   }).sort((a,b)=>POPULAR_APP_IDS.indexOf(a.id)-POPULAR_APP_IDS.indexOf(b.id));
