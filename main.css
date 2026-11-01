@@ -164,3 +164,29 @@ h1 span{color:#aaa0ff}
 
 /* Visually hidden labels remain available to assistive technologies. */
 .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+
+/* Prominent catalog entry point in the homepage hero. */
+.hero-cta{
+  width:100%;
+  min-height:52px;
+  margin-top:18px;
+  border:0;
+  border-radius:15px;
+  background:linear-gradient(110deg,#f8f7ff,#dcd7ff);
+  color:#08090d;
+  box-shadow:0 10px 30px rgba(112,82,255,.24);
+  font-size:14px;
+}
+.hero-cta span{font-size:20px}
+.hero-cta-note{
+  margin:7px 0 0;
+  color:#8f99ad;
+  font-size:10px;
+  line-height:1.4;
+  text-align:center;
+}
+@media(max-height:740px){
+  .hero-cta{min-height:46px;margin-top:12px}
+  .hero-cta-note{margin-top:4px}
+}
