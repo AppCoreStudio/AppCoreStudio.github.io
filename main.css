@@ -383,3 +383,86 @@ h1 span{
   .steps .step b{flex-basis:31px;width:31px;height:31px}
   .actions .btn.primary{height:47px;min-height:47px}
 }
+
+
+/* Brighter, more expressive homepage palette */
+body{
+  background:
+    radial-gradient(ellipse 70% 34% at 8% 8%,rgba(126,87,255,.25),transparent 72%),
+    radial-gradient(ellipse 58% 32% at 95% 28%,rgba(0,190,255,.17),transparent 72%),
+    radial-gradient(ellipse 65% 34% at 85% 82%,rgba(255,89,160,.12),transparent 74%),
+    radial-gradient(ellipse 55% 28% at 8% 88%,rgba(38,220,180,.10),transparent 74%),
+    #090b13;
+}
+.hero-mark{position:relative}
+.hero-logo{
+  background:linear-gradient(145deg,rgba(140,115,255,.28),rgba(41,197,255,.13));
+  border-color:rgba(177,158,255,.32);
+  box-shadow:0 9px 30px rgba(83,67,210,.28),0 0 34px rgba(65,177,255,.13);
+}
+.hero-kicker{
+  color:#c9c0ff;
+  text-shadow:0 0 18px rgba(148,121,255,.35);
+}
+h1 span{
+  background:linear-gradient(100deg,#c4a7ff 0%,#8c9dff 43%,#72dcff 76%,#7df0d0 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.sub{color:#c0c9da}
+.reviews{
+  position:relative;overflow:hidden;
+  border-color:rgba(123,177,255,.23);
+  background:linear-gradient(135deg,rgba(34,40,67,.97),rgba(19,24,40,.96) 58%,rgba(24,31,47,.96));
+  box-shadow:0 18px 48px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08),0 0 28px rgba(62,139,255,.07);
+}
+.reviews:before,.steps:before{
+  content:"";position:absolute;left:18px;right:18px;top:0;height:2px;border-radius:0 0 8px 8px;
+  background:linear-gradient(90deg,#8b70ff,#45c8ff,#54e3c1);
+  opacity:.95;
+}
+.reviews .section-title,.steps>.section-title{color:#fff}
+.review{
+  border-color:rgba(117,194,255,.16);
+  background:linear-gradient(135deg,rgba(66,103,164,.18),rgba(255,255,255,.035) 65%);
+}
+.review .stars,.rating-score .stars{color:#ffd66b;text-shadow:0 0 12px rgba(255,197,75,.22)}
+.review-dots .review-dot.active{background:linear-gradient(90deg,#9d83ff,#55d6ff)}
+.steps{
+  position:relative;overflow:hidden;
+  border-color:rgba(162,132,255,.26);
+  background:linear-gradient(135deg,rgba(55,39,103,.65),rgba(24,31,52,.96) 53%,rgba(17,40,54,.92));
+  box-shadow:0 18px 44px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.07),0 0 30px rgba(124,88,255,.08);
+}
+.steps .step{
+  border-color:rgba(255,255,255,.10);
+  background:linear-gradient(110deg,rgba(255,255,255,.085),rgba(255,255,255,.035));
+}
+.steps .step:nth-of-type(2) b{
+  background:linear-gradient(145deg,#54d6ff,#3478e8);
+  box-shadow:0 7px 19px rgba(52,145,235,.28);
+}
+.steps .step:nth-of-type(3) b{
+  background:linear-gradient(145deg,#55e3c0,#19a98d);
+  box-shadow:0 7px 19px rgba(25,169,141,.26);
+}
+.steps .step:nth-of-type(4) b{
+  background:linear-gradient(145deg,#ffb86b,#f0788d);
+  box-shadow:0 7px 19px rgba(240,120,141,.25);
+}
+.steps .step span{color:#c2cde0}
+.actions .btn.primary{
+  background:linear-gradient(105deg,#fff4d9 0%,#e8ddff 42%,#d7f3ff 100%);
+  box-shadow:0 12px 34px rgba(118,91,255,.30),0 0 24px rgba(68,197,255,.10),inset 0 1px 0 #fff;
+}
+.actions .row .btn{
+  background:linear-gradient(135deg,rgba(89,121,176,.18),rgba(255,255,255,.045));
+  border-color:rgba(125,174,255,.19);
+}
+.actions .row .referral-link{
+  color:#f0dcff;
+  background:linear-gradient(120deg,rgba(153,91,255,.24),rgba(61,177,255,.12));
+  border-color:rgba(178,140,255,.30);
+}
+.tabbar{background:rgba(10,13,23,.91);border-color:rgba(112,155,255,.15)}
+.tabbar a{color:#c1cbe0}
+.tabbar a:active{background:rgba(120,104,255,.16)}
