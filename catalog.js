@@ -892,6 +892,22 @@ function openPaymentModal(){
     selectedApps.appendChild(row);
   });
 
+  if(price.discountAmount>0){
+    const discountRow=document.createElement("div");
+    discountRow.className="selected-app selected-app-discount";
+
+    const discountLabel=document.createElement("span");
+    discountLabel.className="selected-app-name";
+    discountLabel.textContent="Скидка за комплект ("+price.discountPercent+"%)";
+
+    const discountValue=document.createElement("span");
+    discountValue.className="selected-app-price";
+    discountValue.textContent="−"+money(price.discountAmount);
+
+    discountRow.append(discountLabel,discountValue);
+    selectedApps.appendChild(discountRow);
+  }
+
   paymentTotal.textContent=
     money(price.total);
 
@@ -1027,33 +1043,17 @@ function buildWhatsAppMessage(type){
   );
 }
 
+function buildWhatsAppUrl(message){
+  return "https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(message);
+}
+
 function updateWhatsAppLinks(){
 
-  const supportUrl=
-    "whatsapp://send?phone="+
-    WHATSAPP_NUMBER+
-    "&text="+
-    encodeURIComponent(
-      buildWhatsAppMessage("support")
-    );
+  supportTopButton.href=buildWhatsAppUrl(buildWhatsAppMessage("support"));
 
-  supportTopButton.href=supportUrl;
+  statusSupportButton.href=buildWhatsAppUrl(buildWhatsAppMessage("status"));
 
-  statusSupportButton.href=
-    "whatsapp://send?phone="+
-    WHATSAPP_NUMBER+
-    "&text="+
-    encodeURIComponent(
-      buildWhatsAppMessage("status")
-    );
-
-  activationWhatsapp.href=
-    "whatsapp://send?phone="+
-    WHATSAPP_NUMBER+
-    "&text="+
-    encodeURIComponent(
-      buildWhatsAppMessage("activation")
-    );
+  activationWhatsapp.href=buildWhatsAppUrl(buildWhatsAppMessage("activation"));
 }
 
 const ORDER_REQUEST_KEY="appcore_pending_request_id";
@@ -1144,9 +1144,9 @@ function buildOrderWhatsAppText(createdOrder, selectedList){
 }
 
 function ensureOrderWhatsAppButton(order, selectedList){
-  const whatsappUrl =
-    "whatsapp://send?phone=" + WHATSAPP_NUMBER +
-    "&text=" + encodeURIComponent(buildOrderWhatsAppText(order, selectedList || order.apps || []));
+  const whatsappUrl = buildWhatsAppUrl(
+    buildOrderWhatsAppText(order, selectedList || order.apps || [])
+  );
 
   let orderWhatsapp=document.getElementById("orderWhatsapp");
   if(!orderWhatsapp){
