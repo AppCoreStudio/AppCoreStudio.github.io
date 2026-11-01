@@ -99,5 +99,37 @@ async function loadReviews(sb) {
   }
 }
 function initDetail(sb){const modal=$("reviewDetailModal"),close=$("reviewDetailClose"),slider=$("reviewsSlider"),list=$("allReviewsList");if(!modal||!close||!slider||!list)return;slider.addEventListener("click",e=>{if(e.target.closest(".review"))openAllReviews()});close.onclick=closeDetail;modal.onclick=e=>{if(e.target===modal)closeDetail()};list.addEventListener("click",async e=>{const like=e.target.closest(".all-review-like");if(!like||like.disabled)return;const i=Number(like.dataset.reviewIndex),r=currentReviews[i];if(!r)return;like.disabled=true;try{const {data,error}=await sb.rpc("like_review",{p_review_id:r.id});if(error)throw error;r.likes=Number(data||r.likes||0);localStorage.setItem(likedKey+r.id,"1");like.setAttribute("aria-pressed","true");like.querySelector(".all-review-like-label").textContent="Понравилось";like.querySelector(".all-review-like-count").textContent=String(r.likes);updateHomepageCard(r,i)}catch(err){console.error(err);like.disabled=false}});document.addEventListener("keydown",e=>{if(e.key==="Escape"&&modal.classList.contains("show"))closeDetail()})}
-function initForm(sb){const m=$("reviewModal"),f=$("reviewForm"),sp=[...document.querySelectorAll("#starPick button")];let rating=5;const paint=()=>sp.forEach((b,i)=>b.classList.toggle("on",i<rating));sp.forEach((b,i)=>b.onclick=()=>{rating=i+1;paint()});paint();$("reviewOpen").onclick=()=>m.classList.add("show");$("reviewClose").onclick=()=>m.classList.remove("show");m.onclick=e=>{if(e.target===m)m.classList.remove("show")};f.onsubmit=async e=>{e.preventDefault();const author=f.elements.author.value.trim()||"Клиент",text=f.elements.text.value.trim();if(text.length<10)return toast("Напишите хотя бы 10 символов");const b=f.querySelector("[type=submit]");b.disabled=true;try{const {error}=await sb.rpc("submit_review",{p_author:author.slice(0,40),p_rating:rating,p_text:text.slice(0,500)});if(error)throw error;f.reset();rating=5;paint();m.classList.remove("show");toast("Спасибо! Отзыв опубликован");await loadReviews(sb)}catch(err){console.error(err);toast("Не удалось отправить отзыв. Попробуйте ещё раз")}finally{b.disabled=false}}}
+function initForm(sb){
+  const m=$("reviewModal"),f=$("reviewForm"),trigger=$("reviewOpen"),close=$("reviewClose"),sp=[...document.querySelectorAll("#starPick button")];
+  let rating=5;
+  const paint=()=>sp.forEach((b,i)=>{b.classList.toggle("on",i<rating);b.setAttribute("aria-pressed",i<rating?"true":"false")});
+  const open=()=>{m.classList.add("show");m.setAttribute("aria-hidden","false");document.body.classList.add("modal-open");f.elements.author.focus()};
+  const dismiss=()=>{m.classList.remove("show");m.setAttribute("aria-hidden","true");document.body.classList.remove("modal-open");trigger.focus()};
+  sp.forEach((b,i)=>{b.onclick=()=>{rating=i+1;paint()}});
+  paint();
+  trigger.onclick=open;
+  close.onclick=dismiss;
+  m.onclick=e=>{if(e.target===m)dismiss()};
+  m.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){e.preventDefault();dismiss();return}
+    if(e.key!=="Tab")return;
+    const items=[...m.querySelectorAll('button:not([disabled]),input:not([disabled]),textarea:not([disabled]),[href],[tabindex]:not([tabindex="-1"])')].filter(x=>x.offsetParent!==null);
+    if(!items.length)return;
+    const first=items[0],last=items[items.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+  });
+  f.onsubmit=async e=>{
+    e.preventDefault();
+    const author=f.elements.author.value.trim()||"Клиент",text=f.elements.text.value.trim();
+    if(text.length<10)return toast("Напишите хотя бы 10 символов");
+    const b=f.querySelector("[type=submit]");b.disabled=true;
+    try{
+      const {error}=await sb.rpc("submit_review",{p_author:author.slice(0,40),p_rating:rating,p_text:text.slice(0,500)});
+      if(error)throw error;
+      f.reset();rating=5;paint();dismiss();toast("Спасибо! Отзыв опубликован");await loadReviews(sb)
+    }catch(err){console.error(err);toast("Не удалось отправить отзыв. Попробуйте ещё раз")}
+    finally{b.disabled=false}
+  }
+}
 export function initReviews(sb){loadReviews(sb);initForm(sb);initDetail(sb)}
