@@ -1651,3 +1651,33 @@ font-weight:800
     transition:none;
   }
 }
+
+/* Show the app category/type directly in each catalog card. */
+.app-card{
+  min-height:138px;
+  justify-content:flex-start;
+}
+.app-name{
+  min-height:2.3em;
+  white-space:normal;
+  overflow:visible;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  line-height:1.15;
+}
+.app-type{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:100%;
+  margin-top:4px;
+  color:#9da5b5;
+  font-size:10px;
+  font-weight:650;
+  line-height:1.2;
+  text-align:center;
+}
+.app-card-price{
+  margin-top:auto;
+}
